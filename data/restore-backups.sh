@@ -9,8 +9,8 @@ fi
 if [ -f "./data/fakezod.tar" ]; then
     echo "restore piers from backups"; sleep 2;
     rm -rf "./data/fakezod" "./data/fakewet"
-    tar xf "./data/fakezod.tar"
-    tar xf "./data/fakewet.tar"
+    tar xf "./data/fakezod.tar" --strip-components 1
+    tar xf "./data/fakewet.tar" --strip-components 1
 else
 
     # create piers if needed
