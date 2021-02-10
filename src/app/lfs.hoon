@@ -2,7 +2,7 @@
 ::  poke endpoints to request upload files 
 ::  http endpoints to upload, download data
 ::
-/-
+/-  lfs
 /+  default-agent, dbug
 |%
 +$  versioned-state
@@ -10,7 +10,7 @@
     ==
 ::
 +$  state-0
-  $:  =local-server  :: valid syntax?
+  $:  srv=local-server  :: valid syntax?
       
   ==
 --
