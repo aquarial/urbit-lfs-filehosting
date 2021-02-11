@@ -9,3 +9,12 @@ Optional LFS file server running on localhost
 Gall app running on every ship that coordinates upload and download of files
 
 Optional http server running on localhost, which stores files
+
+
+```
+|mount %
+|commit %home
+|start %lfs
+|fade %lfs
+:lfs +dbug
+```
