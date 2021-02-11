@@ -11,10 +11,10 @@
 ^-  agent:gall
 |_  =bowl:gall
 +*  this     .
-    default   ~(. (default-agent this %|) bowl)
+    default  ~(. (default-agent this %|) bowl)
 ::
 ++  on-init
-~&  >  'on-init'
+  ~&  >  'on-init'
   `this(state [%0 3])
 ++  on-save
   ^-  vase
@@ -23,7 +23,6 @@
   ~&  >  'on-load'
   on-load:default
 ++  on-poke  on-poke:default
-::
 ++  on-watch  on-watch:default
 ++  on-leave  on-leave:default
 ++  on-peek   on-peek:default
