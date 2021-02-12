@@ -19,8 +19,9 @@
 ::
 ++  on-init
   ^-  (quip card _this)
-  :-  [%pass /bind %arvo %e %connect [~ /'~upload'] %lfs]
-  this(state [%0 server-status=[%no-server ~] files=[~] active-endpoints=[~]])
+  :_  this(state [%0 server-status=[%no-server ~] files=[~] active-endpoints=[~]])
+  :~  [%pass /bind %arvo %e %connect [~ /'~upload'] %lfs]
+  ==
 ++  on-save
   ^-  vase
   !>(state)
