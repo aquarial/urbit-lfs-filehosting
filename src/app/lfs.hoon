@@ -32,6 +32,18 @@
   |=  [=mark =vase]
   :: ^-  (quip card _this)
   ?+  mark  (on-poke:default mark vase)
+  %handle-http-request
+    =+  !<([id=@ta =inbound-request:eyre] vase)
+    ~&  >>  "handle http : {<url.request.inbound-request>}"
+    :: REMOVE THESE AND FILE UPLOAD IS 'INSTANT'
+    :: LAZY LOADING OF HTTP REQUEST?
+    ~&  >>  "{<request.inbound-request>}"
+    ~&  >>  "{<inbound-request>}"
+    :: url.request.inbound-request
+    :_  this
+    %+  give-simple-payload:app:srv  id
+    %+  require-authorization:app:srv  inbound-request
+    handle-http-request
   %noun
      ~&  "poked with a {<vase>} of {<mark>}"
     `this
@@ -50,11 +62,40 @@
       `this
     ==
   ==
-++  on-watch  on-watch:default 
+++  on-watch
+  |=  =path
+  ?:  ?=([%http-response *] path)
+    ~&  >>>  "watch request on path: {<path>}"
+    `this
+  (on-watch:default path)
 ++  on-leave  on-leave:default
 ++  on-peek   on-peek:default
 ++  on-agent  on-agent:default
-++  on-arvo   on-arvo:default
+++  on-arvo
+  |=  [=wire =sign-arvo]
+  ^-  (quip card _this)
+  |^
+  ?:  ?=(%eyre -.sign-arvo)
+    ~&  >>  "Eyre returned: {<+.sign-arvo>}"
+    `this
+  ?:  ?=(%iris -.sign-arvo)
+  ?>  ?=(%http-response +<.sign-arvo)
+    =^  cards  state
+      (handle-response -.wire client-response.sign-arvo)
+    [cards this]
+  (on-arvo:default wire sign-arvo)
+  ::
+  ++  handle-response
+    |=  [url=@t resp=client-response:iris]
+    ^-  (quip card _state)
+    ?.  ?=(%finished -.resp)
+      ~&  >>>  -.resp
+      `state
+    ~&  >>  "got data from {<url>}"
+    ::  =.  files.state  (~(put by files.state) url full-file.resp)
+    `state
+  --
+::
 ++  on-fail   on-fail:default
 --
 ::  helper core
@@ -62,4 +103,15 @@
 ++  can-upload
   ~&  'assert {<src.bowl>} can upload'
   %.y
+++  handle-http-request
+  |=  req=inbound-request:eyre
+  ^-  simple-payload:http
+  =,  enjs:format
+  %-  json-response:gen:srv
+  %-  pairs
+  :~
+    [%msg [%s 'hello my friends']]
+    [%intent [%s 'peaceful']]
+    [%ship [%s (scot %p our.bowl)]]
+  ==
 --
