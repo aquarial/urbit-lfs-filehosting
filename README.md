@@ -1,14 +1,12 @@
-## File Hosting on Urbit [initial proposal](https://grants.urbit.org/proposals/1760204192)
-
-A gall app running on every ship
-
-Optional LFS file server running on localhost
+## File Hosting on Urbit (WIP)
 
 ## Design
 
 Gall app running on every ship that coordinates upload and download of files
 
-Optional http server running on localhost, which stores files
+Optional http server running to store and serve files. 
+One 'provider' running the http server handles the files for many
+clients.
 
 
 ```
