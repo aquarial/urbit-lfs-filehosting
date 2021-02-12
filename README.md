@@ -16,5 +16,9 @@ Optional http server running on localhost, which stores files
 |commit %home
 |start %lfs
 |fade %lfs
+
 :lfs +dbug
+
+:lfs %a
+:lfs &lfs-action [%connect-server port=9987]
 ```
