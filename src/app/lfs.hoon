@@ -4,7 +4,8 @@
 +$  versioned-state
     $%  state-0
     ==
-+$  state-0  [%0 =server-status files=(map fileid content-status)]
++$  state-0  [%0 =server-status files=(map fileid content-status) active-endpoints=(map ship [password=@p])]
+   :: =pending-upload-requests
 --
 %-  agent:dbug
 =|  state-0
@@ -16,7 +17,7 @@
     default  ~(. (default-agent this %|) bowl)
 ::
 ++  on-init
-  `this(state [%0 server-status=[%no-server ~] files=[~]])
+  `this(state [%0 server-status=[%no-server ~] files=[~] active-endpoints=[~]])
 ++  on-save
   ^-  vase
   !>(state)
@@ -26,14 +27,23 @@
 ++  on-poke
   |=  [=mark =vase]
   :: ^-  (quip card _this)
-  ~&  "poked with a {<vase>} of {<mark>}"
   ?+  mark  (on-poke:default mark vase)
   %noun
+     ~&  "poked with a {<vase>} of {<mark>}"
     `this
   %lfs-action
-    :: ?>  (team:title [our src]:bowl)
-    ~&  "src={<src.bowl>} val={<+.q.vase>}"
-    `this
+    ?+  -.q.vase  `this
+    %connect-server
+      ?>  (team:title [our src]:bowl)
+      ~&  "connecting to localhost:{<+.q.vase>}"
+      `this
+    %request-upload
+      ~&  "creating upload link for {<src.bowl>}"
+      =/  pass  `@p`(cut 3 [0 10] eny.bowl) :: todo
+      =/  endpoint  src.bowl
+      ~&  "go to localhost:8080/~lfs/upload/{<endpoint>} with {<pass>}"
+      `this
+    ==
   ==
 ++  on-watch  on-watch:default 
 ++  on-leave  on-leave:default

@@ -20,5 +20,6 @@ Optional http server running on localhost, which stores files
 :lfs +dbug
 
 :lfs %a
-:lfs &lfs-action [%connect-server port=9987]
+:lfs &lfs-action [%connect-server port=9.987]
+:lfs &lfs-action [%request-upload ~]
 ```
