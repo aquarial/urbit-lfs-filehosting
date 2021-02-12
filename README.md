@@ -23,6 +23,9 @@ Optional http server running on localhost, which stores files
 :lfs &lfs-action [%connect-server port=9.987]
 :lfs &lfs-action [%request-upload ~]
 
+rsync -a --info=progress2 --ignore-times ./src/ ./data/molnut/home/
+rm -rf data/molnut; cp -r ./data/old.molnut ./data/molnut; ./data/urbit -L ./data/molnut
+
 
 curl -i localhost:8080/~/login -X POST -d "password=hunter2"
 
