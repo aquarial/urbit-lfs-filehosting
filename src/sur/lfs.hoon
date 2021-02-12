@@ -1,4 +1,8 @@
 |%
++$  action
+  $%  [%connect-server port=@ud]
+      [%request-upload ~]
+  ==
 +$  server-status
   $%  [%no-server ~]
       [%not-connected port=@ud]

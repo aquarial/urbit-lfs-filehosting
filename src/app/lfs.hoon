@@ -23,7 +23,18 @@
 ++  on-load
   ~&  'lfs loaded'
   on-load:default
-++  on-poke  on-poke:default
+++  on-poke
+  |=  [=mark =vase]
+  :: ^-  (quip card _this)
+  ~&  "poked with a {<vase>} of {<mark>}"
+  ?+  mark  (on-poke:default mark vase)
+  %noun
+    `this
+  %lfs-action
+    :: ?>  (team:title [our src]:bowl)
+    ~&  "src={<src.bowl>} val={<+.q.vase>}"
+    `this
+  ==
 ++  on-watch  on-watch:default 
 ++  on-leave  on-leave:default
 ++  on-peek   on-peek:default
