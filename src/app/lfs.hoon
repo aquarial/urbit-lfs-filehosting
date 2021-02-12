@@ -1,6 +1,7 @@
 /-  *lfs
-/+  default-agent, dbug
+/+  srv=server, default-agent, dbug
 |%
++$  card  card:agent:gall
 +$  versioned-state
     $%  state-0
     ==
@@ -17,7 +18,9 @@
     default  ~(. (default-agent this %|) bowl)
 ::
 ++  on-init
-  `this(state [%0 server-status=[%no-server ~] files=[~] active-endpoints=[~]])
+  ^-  (quip card _this)
+  :-  [%pass /bind %arvo %e %connect [~ /'~upload'] %lfs]
+  this(state [%0 server-status=[%no-server ~] files=[~] active-endpoints=[~]])
 ++  on-save
   ^-  vase
   !>(state)
@@ -38,10 +41,11 @@
       ~&  "connecting to localhost:{<+.q.vase>}"
       `this
     %request-upload
+      :: filter by allowlist, groupstatus, btc payment, etc
       ~&  "creating upload link for {<src.bowl>}"
       =/  pass  `@p`(cut 3 [0 10] eny.bowl) :: todo
       =/  endpoint  src.bowl
-      ~&  "go to localhost:8080/~lfs/upload/{<endpoint>} with {<pass>}"
+      ~&  "your endpoint is /~lfs/upload/{<endpoint>} with {<pass>}"
       `this
     ==
   ==
