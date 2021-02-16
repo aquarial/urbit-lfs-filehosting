@@ -8,6 +8,7 @@ Optional http server running to store and serve files.
 One provider running the http server handles the files for many
 clients.
 
+How to 'respond' to a poke? Give response to file-upload-request
 
 ```
 |mount %
