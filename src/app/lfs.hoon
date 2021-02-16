@@ -35,14 +35,9 @@
   %handle-http-request
     =+  !<([id=@ta =inbound-request:eyre] vase)
     ~&  >>  "handle http : {<url.request.inbound-request>}"
-    :: REMOVE THESE AND FILE UPLOAD IS 'INSTANT'
-    :: LAZY LOADING OF HTTP REQUEST?
-    ~&  >>  "{<request.inbound-request>}"
-    ~&  >>  "{<inbound-request>}"
-    :: url.request.inbound-request
     :_  this
     %+  give-simple-payload:app:srv  id
-    %+  require-authorization:app:srv  inbound-request
+    :: %+  require-authorization:app:srv  inbound-request
     handle-http-request
   %noun
      ~&  "poked with a {<vase>} of {<mark>}"
