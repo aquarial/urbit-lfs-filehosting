@@ -51,6 +51,7 @@
       `this(state state(server-status [%connected address=+.action]))
     %request-access
       ~&  "{<src.bowl>} has requested access to {<+.action>}"
+      :: TODO create personal access url based on groupstatus, btc pay, etc
       `this
     %request-upload
       :: TODO filter by allowlist, groupstatus, btc payment, etc
