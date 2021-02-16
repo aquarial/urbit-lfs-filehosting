@@ -36,28 +36,35 @@
     ~&  >>  "handle http : {<url.request.inbound-request>}"
     :_  this
     %+  give-simple-payload:app:srv  id
-    :: %+  require-authorization:app:srv  inbound-request
+    %+  require-authorization:app:srv  inbound-request
     handle-http-request
   %noun
      ~&  "poked with a {<vase>} of {<mark>}"
     `this
   %lfs-action
-    ?+  -.q.vase  `this
+    =/  action  !<(action vase)
+    ~&  "received {<action>}"
+    ?-  -.action
     %connect-server
       ?>  (team:title [our src]:bowl)
-      ~&  "connecting to localhost:{<+.q.vase>}"
-      `this
+      :: TODO set state to %connecting and test connection
+      `this(state state(server-status [%connected address=+.action]))
     %request-access
-      ~&  "{<src.bowl>" has requested access to {<+.q.vase>}"
+      ~&  "{<src.bowl>} has requested access to {<+.action>}"
       `this
     %request-upload
-      :: filter by allowlist, groupstatus, btc payment, etc
-      ~&   "checking permissions"
-      ~&  "creating upload link for {<src.bowl>}"
-      =/  pass  `@p`(cut 3 [0 10] eny.bowl) :: todo
-      =/  endpoint  src.bowl
-      ~&  "your endpoint is /~lfs/upload/{<endpoint>} with {<pass>}"
-      `this
+      :: TODO filter by allowlist, groupstatus, btc payment, etc
+      ~&  "checking permissions"
+      =/  pass  `@uv`(cut 8 [0 1] eny.bowl)
+      ?-  -.server-status.state
+      %no-server  ~&  "can't upload, no server!"  `this
+      %not-connected  ~&  "can't upload, server offline!"  `this
+      %connected
+        ~&  "can upload, your url is: {address.server-status.state}/upload/{<pass>}"
+        ~&  "[sending http to open that url]"
+        `this
+      ==
+      :: ~[[%pass /poke-wire %agent [src.bowl %lfs] %poke %noun !>([%receive-poke 2])]]
     ==
   ==
 ++  on-watch
