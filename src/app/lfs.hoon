@@ -53,8 +53,12 @@
       ?>  (team:title [our src]:bowl)
       ~&  "connecting to localhost:{<+.q.vase>}"
       `this
+    %request-access
+      ~&  "{<src.bowl>" has requested access to {<+.q.vase>}"
+      `this
     %request-upload
       :: filter by allowlist, groupstatus, btc payment, etc
+      ~&   "checking permissions"
       ~&  "creating upload link for {<src.bowl>}"
       =/  pass  `@p`(cut 3 [0 10] eny.bowl) :: todo
       =/  endpoint  src.bowl
