@@ -9,8 +9,7 @@
    :: =pending-upload-requests
 --
 %-  agent:dbug
-=|  state-0
-=*  state  -
+=/  state  ^-  state-0  [%0 server-status=[%no-server ~] files=~ active-endpoints=~]
 ^-  agent:gall
 =<
 |_  =bowl:gall
