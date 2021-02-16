@@ -1,12 +1,13 @@
 |%
 +$  action
-  $%  [%connect-server port=@ud]
+  $%  [%connect-server address=tape]
       [%request-upload ~]
+      [%request-access =fileid]
   ==
 +$  server-status
   $%  [%no-server ~]
-      [%not-connected port=@ud]
-      [%connected port=@ud]
+      [%not-connected address=tape]
+      [%connected address=tape]
   ==
 +$  fileid  [=ship time=@da]
 +$  uploaded  (map fileid content-status)
