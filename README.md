@@ -5,7 +5,7 @@
 Gall app running on every ship that coordinates upload and download of files
 
 Optional http server running to store and serve files. 
-One 'provider' running the http server handles the files for many
+One provider running the http server handles the files for many
 clients.
 
 
