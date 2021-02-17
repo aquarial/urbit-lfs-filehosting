@@ -61,9 +61,12 @@
       %no-server  ~&  "can't upload, no server!"  `this
       %not-connected  ~&  "can't upload, server offline!"  `this
       %connected
-        ~&  "can upload, your url is: {address.server-status.state}/upload/{<pass>}"
+        =/  url  "{address.server-status.state}/upload/file/{<pass>}"
+        ~&  "can upload, your url is: {url}"
         ~&  "[sending http to open that url]"
-        `this
+        :_  this
+        :~  [%pass /pass %arvo %i %request [%'POST' url ~ ~] *outbound-config:iris]
+        ==
       ==
       :: ~[[%pass /poke-wire %agent [src.bowl %lfs] %poke %noun !>([%receive-poke 2])]]
     ==

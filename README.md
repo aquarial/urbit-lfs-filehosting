@@ -19,7 +19,7 @@ How to 'respond' to a poke? Give response to file-upload-request
 :lfs +dbug
 
 :lfs %a
-:lfs &lfs-action [%connect-server address="localhost:9090"]
+:lfs &lfs-action [%connect-server address="localhost:8000"]
 :lfs &lfs-action [%request-upload ~]
 
 rsync -a --info=progress2 --ignore-times ./src/ ./data/molnut/home/
