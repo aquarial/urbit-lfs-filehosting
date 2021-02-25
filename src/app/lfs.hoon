@@ -61,13 +61,18 @@
       %no-server  ~&  "can't upload, no server!"  `this
       %not-connected  ~&  "can't upload, server offline!"  `this
       %connected
-        =/  url  "{address.server-status.state}/upload/file/{<pass>}"
-        ~&  "can upload, your url is: {url}"
-        ~&  "[sending http to open that url]"
+        =/  up-url  "http://{address.server-status.state}/upload/file/{<pass>}"
+        =/  new-url  "http://{address.server-status.state}/upload/new/{<pass>}"
+        ~&  "sending http to open that {new-url}"
+        ~&  "can upload, your url is: {up-url}"
+        ^-  (quip card _this)
         :_  this
-        :~  [%pass /pass %arvo %i %request [%'POST' url ~ ~] *outbound-config:iris]
+        :~  [%pass /[(scot %uv pass)] %arvo %i %request [%'POST' (crip new-url) ~ ~] *outbound-config:iris]
+            [%pass /whatputherehuh %agent [src.bowl %lfs] %poke %noun !>(up-url)]
+            :: what wire to respond to poke?
         ==
       ==
+      :: :~  [%pass /bind %arvo %e %connect [~ /'~upload'] %lfs]
       :: ~[[%pass /poke-wire %agent [src.bowl %lfs] %poke %noun !>([%receive-poke 2])]]
     ==
   ==
