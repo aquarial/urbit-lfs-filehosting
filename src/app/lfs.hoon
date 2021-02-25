@@ -77,9 +77,21 @@
     ~&  >>>  "watch request on path: {<path>}"
     `this
   (on-watch:default path)
-++  on-leave  on-leave:default
+++  on-leave
+  |=  path
+  ~&  "on-leave?? {<path>}"
+  `this
 ++  on-peek   on-peek:default
-++  on-agent  on-agent:default
+++  on-agent
+  |=  [=wire =sign:agent:gall]
+  ~&  "got {<dap.bowl>} on wire {<wire>} with {<sign>}"
+  `this
+  :: ^-  (quip card:agent:gall _agent)
+  :: ?-    -.sign
+  ::     %poke-ack
+  ::   ?~  p.sign
+  ::     `agent
+  ::   %-  (slog leaf+"poke failed from {<dap.bowl>} on wire {<wire>}" u.p.sign)
 ++  on-arvo
   |=  [=wire =sign-arvo]
   ^-  (quip card _this)
@@ -90,6 +102,7 @@
   ?:  ?=(%iris -.sign-arvo)
   ?>  ?=(%http-response +<.sign-arvo)
     =^  cards  state
+       ~&  >>  "got on wire {<wire>} = {<client-response.sign-arvo>}"
       (handle-response -.wire client-response.sign-arvo)
     [cards this]
   (on-arvo:default wire sign-arvo)
@@ -100,7 +113,6 @@
     ?.  ?=(%finished -.resp)
       ~&  >>>  -.resp
       `state
-    ~&  >>  "got data from {<url>}"
     ::  =.  files.state  (~(put by files.state) url full-file.resp)
     `state
   --
