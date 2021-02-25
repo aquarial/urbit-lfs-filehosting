@@ -16,6 +16,7 @@ How to 'respond' to a poke? Give response to file-upload-request
 |start %lfs
 |fade %lfs
 
+:goad %force
 :lfs +dbug
 
 :lfs %a
