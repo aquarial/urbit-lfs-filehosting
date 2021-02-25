@@ -19,13 +19,13 @@
 ++  on-init
   ^-  (quip card _this)
   :_  this(state [%0 server-status=[%no-server ~] files=[~] active-endpoints=[~]])
-  :~  [%pass /bind %arvo %e %connect [~ /'~upload'] %lfs]
+  :~  [%pass /bind %arvo %e %connect [~ /'~upload'] %lfs-provider]
   ==
 ++  on-save
   ^-  vase
   !>(state)
 ++  on-load
-  ~&  'lfs loaded'
+  ~&  'lfs-provider loaded'
   on-load:default
 ++  on-poke
   |=  [=mark =vase]
@@ -68,12 +68,12 @@
         ^-  (quip card _this)
         :_  this
         :~  [%pass /[(scot %uv pass)] %arvo %i %request [%'POST' (crip new-url) ~ ~] *outbound-config:iris]
-            [%pass /whatputherehuh %agent [src.bowl %lfs] %poke %noun !>(up-url)]
+            [%pass /whatputherehuh %agent [src.bowl %lfs-provider] %poke %noun !>(up-url)]
             :: what wire to respond to poke?
         ==
       ==
-      :: :~  [%pass /bind %arvo %e %connect [~ /'~upload'] %lfs]
-      :: ~[[%pass /poke-wire %agent [src.bowl %lfs] %poke %noun !>([%receive-poke 2])]]
+      :: :~  [%pass /bind %arvo %e %connect [~ /'~upload'] %lfs-provider]
+      :: ~[[%pass /poke-wire %agent [src.bowl %lfs-provider] %poke %noun !>([%receive-poke 2])]]
     ==
   ==
 ++  on-watch
