@@ -1,4 +1,4 @@
-/-  *lfs
+/-  *lfs-provider
 /+  srv=server, default-agent, dbug
 |%
 +$  card  card:agent:gall
@@ -41,7 +41,8 @@
   %noun
      ~&  "poked with a {<vase>} of {<mark>}"
     `this
-  %lfs-action
+  :: /mar/lfs-provider/action.hoon
+  %lfs-provider-action
     =/  action  !<(action vase)
     ~&  "received {<action>}"
     ?-  -.action
