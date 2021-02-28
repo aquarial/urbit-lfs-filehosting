@@ -81,13 +81,15 @@
   ==
 ++  on-watch
   |=  =path
+  ^-  (quip card _this)
   ?:  ?=([%http-response *] path)
-    ~&  >>>  "watch request on path: {<path>}"
+    ~&  "on-watch http-response on path: {<path>}"
     `this
+  ~&  "on-watch request on path: {<path>}"
   (on-watch:default path)
 ++  on-leave
   |=  path
-  ~&  "on-leave?? {<path>}"
+  ~&  "on-leave from {<src.bowl>} on {<path>}"
   `this
 ++  on-peek   on-peek:default
 ++  on-agent
