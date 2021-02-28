@@ -15,10 +15,11 @@
 |_  =bowl:gall
 +*  this     .
     default  ~(. (default-agent this %|) bowl)
+    hc    ~(. +> bowl)
 ::
 ++  on-init
   ^-  (quip card _this)
-  :_  this(state [%0 server-status=[%no-server ~] files=[~] active-endpoints=[~]])
+  :_  this(state [%0 server-status=[%connected address="localhost:8000"] files=[~] active-endpoints=[~]])
   :~  [%pass /bind %arvo %e %connect [~ /'~upload'] %lfs-provider]
   ==
 ++  on-save
@@ -37,9 +38,10 @@
     :_  this
     %+  give-simple-payload:app:srv  id
     %+  require-authorization:app:srv  inbound-request
-    handle-http-request
+    handle-http-request:hc
   %noun
      ~&  "poked with a {<vase>} of {<mark>}"
+     ~&  "bolw is {<bowl>}"
     `this
   :: /mar/lfs-provider/action.hoon
   %lfs-provider-action
