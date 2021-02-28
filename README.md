@@ -13,15 +13,15 @@ How to 'respond' to a poke? Give response to file-upload-request
 ```
 |mount %
 |commit %home
-|start %lfs
-|fade %lfs
+|start %lfs-provider
+|fade %lfs-provider
 
 :goad %force
-:lfs +dbug
+:lfs-provider +dbug
 
-:lfs %a
-:lfs &lfs-action [%connect-server address="localhost:8000"]
-:lfs &lfs-action [%request-upload ~]
+:lfs-provider %a
+:lfs-provider &lfs-action [%connect-server address="localhost:8000"]
+:lfs-provider &lfs-action [%request-upload ~]
 
 rsync -a --info=progress2 --ignore-times ./src/ ./data/molnut/home/
 rm -rf data/molnut; cp -r ./data/old.molnut ./data/molnut; ./data/urbit -L ./data/molnut
