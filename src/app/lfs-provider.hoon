@@ -42,6 +42,9 @@
     handle-http-request:hc
   %noun
      ?+  +.vase  `this
+     %bowl
+        ~&  "{<bowl>}"
+       `this
      %heartbeat
         :: TODO use behn
         ~&  "provider will send subscribers hearbeat"

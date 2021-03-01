@@ -31,7 +31,8 @@
   %noun
      ?+  +.vase  `this
      :: add cases as needed
-     %test
+     %bowl
+        ~&  "{<bowl>}"
        `this
      ==
   :: /mar/lfs-client/action.hoon
