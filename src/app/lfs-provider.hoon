@@ -40,9 +40,12 @@
     %+  require-authorization:app:srv  inbound-request
     handle-http-request:hc
   %noun
-     ~&  "poked with a {<mark>} of {<vase>}"
-     ~&  "bowl is {<bowl>}"
-    `this
+     ?+  +.vase  `this
+     %heartbeat
+        :: TODO use behn
+        ~&  "send subscribers hearbeat"
+       `this
+     ==
   :: /mar/lfs-provider/action.hoon
   %lfs-provider-action
     =/  action  !<(action vase)
