@@ -8,7 +8,7 @@ dopzod-deep-clean:
 	tmux send-keys -t dopzod "z lfs" "ENTER"
 	rsync -a --delete ./data/old.dopzod/ ./data/dopzod
 	tmux send-keys -t dopzod "./data/urbit -L ./data/dopzod" "ENTER"
-	sleep 2.5 # startup eats ''enter keys'
+	sleep 1.5 # startup eats ''enter keys'
 	make dopzod-clean
 
 dopzod-clean:
