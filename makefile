@@ -13,6 +13,7 @@ dopzod-deep-clean:
 
 dopzod-clean:
 	tmux send-keys -t dopzod "C-l"; sleep 0.4
+	tmux send-keys -t dopzod "|fade %lfs-provider" "ENTER"; sleep 0.4
 	tmux send-keys -t dopzod "|fade %lfs-client" "ENTER"; sleep 0.4
 	rsync -a --ignore-times ./src/ ./data/dopzod/home/
 	tmux send-keys -t dopzod "|commit %home" "ENTER"; sleep 0.5
