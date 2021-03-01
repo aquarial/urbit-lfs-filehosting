@@ -28,7 +28,6 @@
   ^-  vase
   !>(state)
 ++  on-load
-  ~&  'lfs-provider loaded'
   on-load:default
 ++  on-poke
   |=  [=mark =vase]
@@ -36,7 +35,7 @@
   ?+  mark  (on-poke:default mark vase)
   %handle-http-request
     =+  !<([id=@ta =inbound-request:eyre] vase)
-    ~&  >>  "handle http : {<url.request.inbound-request>}"
+    ~&   "provider handle http : {<url.request.inbound-request>}"
     :_  this
     %+  give-simple-payload:app:srv  id
     %+  require-authorization:app:srv  inbound-request
@@ -45,13 +44,13 @@
      ?+  +.vase  `this
      %heartbeat
         :: TODO use behn
-        ~&  "send subscribers hearbeat"
+        ~&  "provider will send subscribers hearbeat"
        `this
      ==
   :: /mar/lfs-provider/action.hoon
   %lfs-provider-action
     =/  action  !<(action vase)
-    ~&  "received {<action>}"
+    ~&  "provider does {<action>}"
     ?-  -.action
     %connect-server
       ?>  (team:title [our src]:bowl)
@@ -63,7 +62,6 @@
       `this
     %request-upload
       :: TODO filter by allowlist, groupstatus, btc payment, etc
-      ~&  "checking permissions"
       =/  pass  `@uv`(cut 8 [0 1] eny.bowl)
       ?-  -.server-status.state
       %no-server  ~&  "can't upload, no server!"  `this
@@ -88,18 +86,19 @@
   |=  =path
   ^-  (quip card _this)
   ?:  ?=([%http-response *] path)
-    ~&  "on-watch http-response on path: {<path>}"
+    ~&  "provider on-watch http-response on path: {<path>}"
     `this
-  ~&  "on-watch request on path: {<path>}"
+  :: TODO: kick if path does not match src.bowl
+  ~&  "provider on-watch subscription from {<src.bowl>} on path: {<path>}"
   (on-watch:default path)
 ++  on-leave
   |=  path
-  ~&  "on-leave from {<src.bowl>} on {<path>}"
+  ~&  "provider on-leave from {<src.bowl>} on {<path>}"
   `this
 ++  on-peek   on-peek:default
 ++  on-agent
   |=  [=wire =sign:agent:gall]
-  ~&  "got {<dap.bowl>} on wire {<wire>} with {<sign>}"
+  ~&  "provider on-agent got {<-.sign>} from {<dap.bowl>} on wire {<wire>}"
   `this
   :: ^-  (quip card:agent:gall _agent)
   :: ?-    -.sign
@@ -112,12 +111,12 @@
   ^-  (quip card _this)
   |^
   ?:  ?=(%eyre -.sign-arvo)
-    ~&  >>  "Eyre returned: {<+.sign-arvo>}"
+    ~&  "provider on-arvo Eyre returned: {<+.sign-arvo>}"
     `this
   ?:  ?=(%iris -.sign-arvo)
   ?>  ?=(%http-response +<.sign-arvo)
     =^  cards  state
-       ~&  >>  "got on wire {<wire>} = {<client-response.sign-arvo>}"
+       ~&  "provider on-arvo got on wire {<wire>} = {<client-response.sign-arvo>}"
       (handle-response -.wire client-response.sign-arvo)
     [cards this]
   (on-arvo:default wire sign-arvo)
@@ -126,7 +125,7 @@
     |=  [url=@t resp=client-response:iris]
     ^-  (quip card _state)
     ?.  ?=(%finished -.resp)
-      ~&  >>>  -.resp
+      ~&  "provider handle-response got {<-.resp>}"
       `state
     ::  =.  files.state  (~(put by files.state) url full-file.resp)
     `state

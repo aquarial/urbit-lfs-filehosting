@@ -23,7 +23,6 @@
   ^-  vase
   !>(state)
 ++  on-load
-  ~&  'lfs-client loaded'
   on-load:default
 ++  on-poke
   |=  [=mark =vase]
@@ -60,7 +59,7 @@
 ++  on-peek   on-peek:default
 ++  on-agent
   |=  [=wire =sign:agent:gall]
-  ~&  "on-agent got {<dap.bowl>} on wire {<wire>} with {<sign>}"
+  ~&  "client on-agent got {<-.sign>} from {<dap.bowl>} on wire {<wire>}"
   `this
 ++  on-arvo
   |=  [=wire =sign-arvo]
