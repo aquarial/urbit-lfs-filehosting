@@ -27,6 +27,9 @@ How to 'respond' to a poke? Give response to file-upload-request
 :lfs-provider &lfs-action [%connect-server address="localhost:8000"]
 :lfs-provider &lfs-action [%request-upload ~]
 
+:lfs-client &lfs-client-action [%add-provider ~dopzod]
+:lfs-client &lfs-client-action [%remove-provider ~dopzod]
+
 rsync -a --info=progress2 --ignore-times ./src/ ./data/molnut/home/
 rm -rf data/molnut; cp -r ./data/old.molnut ./data/molnut; ./data/urbit -L ./data/molnut
 
