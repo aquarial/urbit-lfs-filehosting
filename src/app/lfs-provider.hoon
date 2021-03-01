@@ -9,7 +9,7 @@
    :: =pending-upload-requests
 --
 %-  agent:dbug
-=/  state  ^-  state-0  [%0 server-status=[%no-server ~] files=~ active-endpoints=~]
+=|  state=state-0
 ^-  agent:gall
 =<
 |_  =bowl:gall
@@ -40,8 +40,8 @@
     %+  require-authorization:app:srv  inbound-request
     handle-http-request:hc
   %noun
-     ~&  "poked with a {<vase>} of {<mark>}"
-     ~&  "bolw is {<bowl>}"
+     ~&  "poked with a {<mark>} of {<vase>}"
+     ~&  "bowl is {<bowl>}"
     `this
   :: /mar/lfs-provider/action.hoon
   %lfs-provider-action
