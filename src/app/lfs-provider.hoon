@@ -5,11 +5,13 @@
 +$  versioned-state
     $%  state-0
     ==
-+$  state-0  [%0 =server-status files=(map fileid content-status) active-endpoints=(map ship [password=@p])]
++$  state-0  [%0 =server-status]
+   :: files=(map fileid content-status)
    :: =pending-upload-requests
+   :: active-endpoints=(map ship [password=@p])
 --
 %-  agent:dbug
-=|  state=state-0
+=/  state=state-0  [%0 server-status=[%connected address="localhost:8000"]]
 ^-  agent:gall
 =<
 |_  =bowl:gall
@@ -19,7 +21,7 @@
 ::
 ++  on-init
   ^-  (quip card _this)
-  :_  this(state [%0 server-status=[%connected address="localhost:8000"] files=[~] active-endpoints=[~]])
+  :_  this
   :~  [%pass /bind %arvo %e %connect [~ /'~upload'] %lfs-provider]
   ==
 ++  on-save
