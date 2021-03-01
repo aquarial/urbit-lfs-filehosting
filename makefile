@@ -34,7 +34,7 @@ zod-deep-clean:
 zod-clean:
 	tmux send-keys -t zod "C-l"; sleep 0.4
 	tmux send-keys -t zod "|fade %lfs-provider" "ENTER"; sleep 0.4
-	rsync -a --ignore-times ./src/ ./data/zod/home/
+	rsync -a --ignore-times ./src/ ./data/zod/home/; sleep 0.3
 	tmux send-keys -t zod "|commit %home" "ENTER"; sleep 0.5
 	tmux send-keys -t zod "|start %lfs-provider" "ENTER"
 
