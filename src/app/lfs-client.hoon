@@ -32,26 +32,34 @@
   %noun
      ?+  +.vase  `this
      :: add cases as needed
+     %test
+       `this
      ==
   :: /mar/lfs-client/action.hoon
   %lfs-client-action
     ?>  (team:title [our src]:bowl)
     =/  action  !<(action vase)
-    ~&  "received {<action>}"
+    ~&  "lfs client does {<action>}"
     ?-  -.action
     %add-provider
-      `this
+      :_  this
+      :~
+      [%pass /lfs %agent [ship.action %lfs-provider] %watch /(scot %p our:bowl)]
+      ==
     %remove-provider
-      `this
+      :_  this
+      :~
+      [%pass /lfs %agent [ship.action %lfs-provider] %leave ~]
+      ==
     %request-upload
       `this
+    ==
   ==
 ++  on-watch  on-watch:default
 ++  on-leave  on-leave:default
 ++  on-peek   on-peek:default
 ++  on-agent
   |=  [=wire =sign:agent:gall]
-  ^-  (quip card:agent:gall _agent)
   ~&  "on-agent got {<dap.bowl>} on wire {<wire>} with {<sign>}"
   `this
 ++  on-arvo
