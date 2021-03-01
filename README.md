@@ -11,6 +11,10 @@ clients.
 How to 'respond' to a poke? Give response to file-upload-request
 
 ```
+[wex={[p=[wire=/counter/~timluc ship=~timluc term=%poketime] q=[acked=%.y path=/counter]]} sup={}]
+```
+
+```
 |mount %
 |commit %home
 |start %lfs-provider
