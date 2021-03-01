@@ -91,9 +91,10 @@
   ?:  ?=([%http-response *] path)
     ~&  "provider on-watch http-response on path: {<path>}"
     `this
-  :: TODO: kick if path does not match src.bowl
+  :: only ~ship can subscribe to /~ship path
+  ?>  =(-.path (scot %p src.bowl))
   ~&  "provider on-watch subscription from {<src.bowl>} on path: {<path>}"
-  (on-watch:default path)
+  `this
 ++  on-leave
   |=  path
   ~&  "provider on-leave from {<src.bowl>} on {<path>}"
