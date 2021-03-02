@@ -70,14 +70,14 @@
       %no-server  ~&  "can't upload, no server!"  `this
       %not-connected  ~&  "can't upload, server offline!"  `this
       %connected
+        ~&  >  "provider poke, check {<src.bowl>} is in {<~(key by sup.bowl)>}"
         =/  up-url  "http://{address.server-status.state}/upload/file/{<pass>}"
         =/  new-url  "http://{address.server-status.state}/upload/new/{<pass>}"
-        ~&  "sending http to open that {new-url}"
         ~&  "can upload, your url is: {up-url}"
         ^-  (quip card _this)
         :_  this
         :~  [%pass /[(scot %uv pass)] %arvo %i %request [%'POST' (crip new-url) ~ ~] *outbound-config:iris]
-            [%pass /whatputherehuh %agent [src.bowl %lfs-provider] %poke %noun !>(up-url)]
+            [%give %fact ~[/uploader/(scot %p src.bowl)] [%got-url !>(up-url)]]
             :: what wire to respond to poke?
         ==
       ==
