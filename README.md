@@ -23,10 +23,11 @@ How to 'respond' to a poke? Give response to file-upload-request
 :goad %force
 :lfs-provider +dbug
 
-:lfs-provider %a
+:lfs-provider %bowl
 :lfs-provider &lfs-action [%connect-server address="localhost:8000"]
 :lfs-provider &lfs-action [%request-upload ~]
 
+:lfs-client %bowl
 :lfs-client &lfs-client-action [%add-provider ~dopzod]
 :lfs-client &lfs-client-action [%remove-provider ~dopzod]
 
