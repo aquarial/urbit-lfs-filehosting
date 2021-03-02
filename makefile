@@ -1,6 +1,6 @@
 # NOTE need to run "|mount %" on old.ship manually
 
-dopzod-deep-clean:
+dopzod-clean-deep:
 	tmux has-session -t dopzod || (echo "\n\nRUN: tmux new -s dopzod"; exit 1)
 	tmux send-keys -t dopzod "C-c"; sleep 0.3
 	tmux send-keys -t dopzod "C-z"; sleep 0.3
