@@ -44,7 +44,7 @@
     %add-provider
       :_  this
       :~
-      [%pass /lfs %agent [ship.action %lfs-provider] %watch /(scot %p our:bowl)]
+      [%pass /lfs %agent [ship.action %lfs-provider] %watch /uploader/(scot %p our:bowl)]
       ==
     %remove-provider
       :_  this

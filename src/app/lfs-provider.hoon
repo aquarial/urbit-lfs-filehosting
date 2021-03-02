@@ -91,8 +91,9 @@
   ?:  ?=([%http-response *] path)
     ~&  "provider on-watch http-response on path: {<path>}"
     `this
-  :: only ~ship can subscribe to /~ship path
-  ?>  =(-.path (scot %p src.bowl))
+  :: only ~ship can subscribe to /uploader/~ship path
+  ?>  ?=([%uploader @ ~] path)
+  ?>  =((slav %p i.t.path) src.bowl)
   ~&  "provider on-watch subscription from {<src.bowl>} on path: {<path>}"
   `this
 ++  on-leave
