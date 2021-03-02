@@ -48,9 +48,7 @@
       ==
     %remove-provider
       :_  this
-      :~
-      [%pass /lfs %agent [ship.action %lfs-provider] %leave ~]
-      ==
+      :~  [%pass /lfs %agent [ship.action %lfs-provider] %leave ~]  ==
     %request-upload
       `this
     ==
