@@ -5,10 +5,10 @@
 +$  versioned-state
     $%  state-0
     ==
-+$  state-0  [%0]
++$  state-0  [%0 pending-requests=(list @uv)]
 --
 %-  agent:dbug
-=/  state=state-0  [%0]
+=/  state=state-0  [%0 pending-requests=[~]]
 ^-  agent:gall
 =<
 |_  =bowl:gall
@@ -50,6 +50,12 @@
       :_  this
       :~  [%pass /lfs %agent [ship.action %lfs-provider] %leave ~]  ==
     %request-upload
+      =/  id  (cut 6 [0 1] eny.bowl)
+      ?:  (~(has by wex.bowl) [wire=/lfs ship=ship.action term=%lfs-provider])
+        :_  this(state state(pending-requests (snoc pending-requests.state id)))
+        :~  [%pass /lfs %agent [ship.action %lfs-provider] %poke %lfs-provider-action !>([%request-upload ~])]  ==
+      ::
+      ~&  "not subscribed to {<ship.action>}!"
       `this
     ==
   ==
@@ -58,7 +64,7 @@
 ++  on-peek   on-peek:default
 ++  on-agent
   |=  [=wire =sign:agent:gall]
-  ~&  "client on-agent got {<-.sign>} from {<dap.bowl>} on wire {<wire>}"
+  ~&  >  "client on-agent got {<-.sign>} from {<dap.bowl>} on wire {<wire>}: {<sign>}"
   `this
 ++  on-arvo
   |=  [=wire =sign-arvo]
