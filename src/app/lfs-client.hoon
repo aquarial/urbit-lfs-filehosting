@@ -64,8 +64,21 @@
 ++  on-peek   on-peek:default
 ++  on-agent
   |=  [=wire =sign:agent:gall]
-  ~&  >  "client on-agent got {<-.sign>} from {<dap.bowl>} on wire {<wire>}: {<sign>}"
-  `this
+  ~&   "client on-agent got {<-.sign>} from {<dap.bowl>} on wire {<wire>}"
+  ?+   wire  (on-agent:default wire sign)
+  [%lfs ~]
+    ?+  -.sign  (on-agent:default wire sign)
+    :: %watch-ack
+    :: %poke-ack
+    %fact
+      ?+  p.cage.sign  (on-agent:default wire sign)
+      %got-url
+         =/  url  !<(tape q.cage.sign)
+         ~&  >  "upload url = {url}"
+         `this
+      ==
+    ==
+  ==
 ++  on-arvo
   |=  [=wire =sign-arvo]
   ^-  (quip card _this)
