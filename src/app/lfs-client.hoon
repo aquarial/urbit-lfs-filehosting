@@ -52,8 +52,9 @@
     %request-upload
       =/  id  (cut 6 [0 1] eny.bowl)
       ?:  (~(has by wex.bowl) [wire=/lfs ship=ship.action term=%lfs-provider])
+        ~&  >  "upload request {<`@uv`id>}"
         :_  this(state state(pending-requests (snoc pending-requests.state id)))
-        :~  [%pass /lfs %agent [ship.action %lfs-provider] %poke %lfs-provider-action !>([%request-upload ~])]  ==
+        :~  [%pass /lfs %agent [ship.action %lfs-provider] %poke %lfs-provider-action !>([%request-upload id=id])]  ==
       ::
       ~&  "not subscribed to {<ship.action>}!"
       `this
@@ -73,8 +74,8 @@
     %fact
       ?+  p.cage.sign  (on-agent:default wire sign)
       %got-url
-         =/  url  !<(tape q.cage.sign)
-         ~&  >  "upload url = {url}"
+         =/  info  !<([url=tape id=@uv] q.cage.sign)
+         ~&  >  "upload url {<`@uv`id.info>} = {url.info}"
          `this
       ==
     ==

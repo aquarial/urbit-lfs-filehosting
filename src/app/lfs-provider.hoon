@@ -80,7 +80,7 @@
         ^-  (quip card _this)
         :_  this
         :~  [%pass /[(scot %uv pass)] %arvo %i %request [%'POST' (crip new-url) ~ ~] *outbound-config:iris]
-            [%give %fact ~[/uploader/(scot %p src.bowl)] [%got-url !>(up-url)]]
+            [%give %fact ~[/uploader/(scot %p src.bowl)] [%got-url !>([url=up-url id=id.action])]]
             :: what wire to respond to poke?
         ==
       ==

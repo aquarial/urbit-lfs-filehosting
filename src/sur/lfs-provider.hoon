@@ -1,7 +1,7 @@
 |%
 +$  action
   $%  [%connect-server address=tape]
-      [%request-upload ~]
+      [%request-upload id=@uv]
       [%request-access fileid=tape]
   ==
 +$  server-status
