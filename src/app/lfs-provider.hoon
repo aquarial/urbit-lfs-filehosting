@@ -70,7 +70,10 @@
       %no-server  ~&  "can't upload, no server!"  `this
       %not-connected  ~&  "can't upload, server offline!"  `this
       %connected
-        ~&  >  "provider poke, check {<src.bowl>} is in {<~(key by sup.bowl)>}"
+        =/  subscribers  ~(val by sup.bowl)
+        =/  src-subscriber  [p=src.bowl q=/uploader/(scot %p src.bowl)]
+        ?<  =(~ (find ~[src-subscriber] subscribers))
+        ::
         =/  up-url  "http://{address.server-status.state}/upload/file/{<pass>}"
         =/  new-url  "http://{address.server-status.state}/upload/new/{<pass>}"
         ~&  "can upload, your url is: {up-url}"
