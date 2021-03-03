@@ -5,7 +5,7 @@ dopzod-clean-deep:
 	tmux send-keys -t dopzod "C-c"; sleep 0.3
 	tmux send-keys -t dopzod "C-z"; sleep 0.3
 	tmux send-keys -t dopzod "C-c"; sleep 0.3
-	tmux send-keys -t dopzod "z lfs" "ENTER"
+	tmux send-keys -t dopzod "cd $$(pwd)" "ENTER"
 	rsync -a --delete ./data/old.dopzod/ ./data/dopzod
 	tmux send-keys -t dopzod "./data/urbit -L ./data/dopzod" "ENTER"
 	sleep 1.5 # startup eats ''enter keys'
