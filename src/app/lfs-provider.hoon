@@ -64,16 +64,16 @@
       :: TODO create personal access url based on groupstatus, btc pay, etc
       `this
     %request-upload
+      =/  subscribers  ~(val by sup.bowl)
+      =/  src-subscriber  [p=src.bowl q=/uploader/(scot %p src.bowl)]
+      ?<  =(~ (find ~[src-subscriber] subscribers))
+      ::
       :: TODO filter by allowlist, groupstatus, btc payment, etc
       =/  pass  `@uv`(cut 8 [0 1] eny.bowl)
       ?-  -.server-status.state
       %no-server  ~&  "can't upload, no server!"  `this
       %not-connected  ~&  "can't upload, server offline!"  `this
       %connected
-        =/  subscribers  ~(val by sup.bowl)
-        =/  src-subscriber  [p=src.bowl q=/uploader/(scot %p src.bowl)]
-        ?<  =(~ (find ~[src-subscriber] subscribers))
-        ::
         =/  up-url  "http://{address.server-status.state}/upload/file/{<pass>}"
         =/  new-url  "http://{address.server-status.state}/upload/new/{<pass>}"
         ~&  "can upload, your url is: {up-url}"
