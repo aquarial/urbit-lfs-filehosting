@@ -3,9 +3,13 @@
 |%
 +$  card  card:agent:gall
 +$  versioned-state
-    $%  state-0
-    ==
-+$  state-0  [%0 pending-requests=(list @uv)]
+  $%  state-0
+  ==
++$  request-src
+  $%  [%local-poke ~]
+  ::  [%http-request =connection] todo
+  ==
++$  state-0  [%0 pending-requests=(list [id=@uv =request-src])]
 --
 %-  agent:dbug
 =/  state=state-0  [%0 pending-requests=[~]]
@@ -52,8 +56,8 @@
     %request-upload
       =/  id  (cut 6 [0 1] eny.bowl)
       ?:  (~(has by wex.bowl) [wire=/lfs ship=ship.action term=%lfs-provider])
-        ~&  >  "upload request {<`@uv`id>}"
-        :_  this(state state(pending-requests (snoc pending-requests.state id)))
+        ~&  >  "client on-poke upload request {<`@uv`id>}"
+        :_  this(state state(pending-requests (snoc pending-requests.state [id=id request-src=[%local-poke ~]])))
         :~  [%pass /lfs %agent [ship.action %lfs-provider] %poke %lfs-provider-action !>([%request-upload id=id])]  ==
       ::
       ~&  "not subscribed to {<ship.action>}!"
