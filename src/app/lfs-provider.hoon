@@ -69,19 +69,22 @@
       ?<  =(~ (find ~[src-subscriber] subscribers))
       ::
       :: TODO filter by allowlist, groupstatus, btc payment, etc
-      =/  pass  `@uv`(cut 8 [0 1] eny.bowl)
       ?-  -.server-status.state
-      %no-server  ~&  "can't upload, no server!"  `this
-      %not-connected  ~&  "can't upload, server offline!"  `this
+      %no-server
+        :_  this
+        :~  [%give %fact ~[/uploader/(scot %p src.bowl)] %request-response !>([%failure reason="no server" id=id.action])]  ==
+      %not-connected
+        :_  this
+        :~  [%give %fact ~[/uploader/(scot %p src.bowl)] %request-response !>([%failure reason="server offline" id=id.action])]  ==
       %connected
+        =/  pass  `@uv`(cut 8 [0 1] eny.bowl)
         =/  up-url  "http://{address.server-status.state}/upload/file/{<pass>}"
         =/  new-url  "http://{address.server-status.state}/upload/new/{<pass>}"
-        ~&  "can upload, your url is: {up-url}"
         ^-  (quip card _this)
         :_  this
         :~  [%pass /[(scot %uv pass)] %arvo %i %request [%'POST' (crip new-url) ~ ~] *outbound-config:iris]
-            [%give %fact ~[/uploader/(scot %p src.bowl)] [%got-url !>([url=up-url id=id.action])]]
-            :: what wire to respond to poke?
+            [%give %fact ~[/uploader/(scot %p src.bowl)] [%request-response !>([%got-url url=up-url id=id.action])]]
+            :: confirm file server is up before giving fact?
         ==
       ==
       :: :~  [%pass /bind %arvo %e %connect [~ /'~upload'] %lfs-provider]

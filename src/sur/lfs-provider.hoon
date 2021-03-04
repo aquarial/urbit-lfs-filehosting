@@ -9,6 +9,10 @@
       [%not-connected address=tape]
       [%connected address=tape]
   ==
++$  request-response
+  $%  [%got-url url=tape id=@uv]
+      [%failure reason=tape id=@uv]
+  ==
 ::  +$  fileid  [=ship time=@da]
 ::  +$  uploaded  (map fileid content-status)
 ::  +$  content-status
