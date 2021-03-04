@@ -1,4 +1,4 @@
-/-  *lfs-client
+/-  *lfs-client, lfs-provider
 /+  srv=server, default-agent, dbug
 |%
 +$  card  card:agent:gall
@@ -77,10 +77,17 @@
     :: %poke-ack
     %fact
       ?+  p.cage.sign  (on-agent:default wire sign)
-      %got-url
-         =/  info  !<([url=tape id=@uv] q.cage.sign)
-         ~&  >  "upload url {<`@uv`id.info>} = {url.info}"
-         `this
+      %request-response
+         =/  resp  !<(request-response:lfs-provider q.cage.sign)
+         =/  split-reqs  (skid pending-requests.state |=(r=[id=@uv =request-src] =(id.r id.resp)))
+         ?:  ?=(~ p.split-reqs)
+           ~|  "unexpected response for request {<id.resp>}"
+           !!
+         ~&  >  "client on-agent got resp = {<resp>}"
+         ?-  request-src.i.p.split-reqs
+         [%local-poke ~]
+           `this(state state(pending-requests q.split-reqs))
+         ==
       ==
     ==
   ==
