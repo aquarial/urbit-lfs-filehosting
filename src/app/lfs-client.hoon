@@ -46,10 +46,11 @@
     ~&  "lfs client does {<action>}"
     ?-  -.action
     %add-provider
+      ?:  (~(has by wex.bowl) [wire=/lfs ship=ship.action term=%lfs-provider])
+        ~&  "lfs client already subscribed to {<ship.action>}"
+        `this
       :_  this
-      :~
-      [%pass /lfs %agent [ship.action %lfs-provider] %watch /uploader/(scot %p our:bowl)]
-      ==
+      :~  [%pass /lfs %agent [ship.action %lfs-provider] %watch /uploader/(scot %p our:bowl)]  ==
     %remove-provider
       :_  this
       :~  [%pass /lfs %agent [ship.action %lfs-provider] %leave ~]  ==
