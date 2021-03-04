@@ -24,8 +24,9 @@ dopzod-clean:
 	tmux send-keys -t dopzod "|commit %home" "ENTER"; sleep 1
 	tmux send-keys -t dopzod "|start %lfs-provider" "ENTER"; sleep 2
 	tmux send-keys -t dopzod "|start %lfs-client" "ENTER"; sleep 2
-	tmux send-keys -t dopzod ":lfs-client &lfs-client-action [%add-provider ~dopzod]" "ENTER"; sleep 1
-	tmux send-keys -t dopzod ":lfs-client &lfs-client-action [%request-upload ~dopzod]" "ENTER"; sleep 1
+
+# tmux send-keys -t dopzod ":lfs-client &lfs-client-action [%add-provider ~dopzod]" "ENTER"; sleep 1
+# tmux send-keys -t dopzod ":lfs-client &lfs-client-action [%request-upload ~dopzod]" "ENTER"; sleep 1
 
 
 
