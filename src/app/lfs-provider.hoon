@@ -11,7 +11,7 @@
    :: active-endpoints=(map ship [password=@p])
 --
 %-  agent:dbug
-=/  state=state-0  [%0 server-status=[%connected address="localhost:8000"]]
+=/  state=state-0  [%0 server-status=[%no-server ~]] :: [%connected address="localhost:8000"]]
 ^-  agent:gall
 =<
 |_  =bowl:gall
