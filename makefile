@@ -25,11 +25,35 @@ dopzod-clean:
 	tmux send-keys -t dopzod "|start %lfs-provider" "ENTER"; sleep 2
 	tmux send-keys -t dopzod "|start %lfs-client" "ENTER"; sleep 2
 
-# tmux send-keys -t dopzod ":lfs-client &lfs-client-action [%add-provider ~dopzod]" "ENTER"; sleep 1
-# tmux send-keys -t dopzod ":lfs-client &lfs-client-action [%request-upload ~dopzod]" "ENTER"; sleep 1
-
-
-
+#tmux send-keys -t dopzod ":lfs-client &lfs-client-action [%add-provider ~dopzod]" "ENTER"; sleep 1
+#tmux send-keys -t dopzod ":lfs-client &lfs-client-action [%request-upload ~dopzod]" "ENTER"; sleep 1
 
 .PHONY: dopzod-deep-clean dopzod-clean
 
+
+
+
+zod-clean-deep:
+	tmux has-session -t zod ||      \
+	    (echo "\n\nRUN: tmux new -s zod in other terminal"; exit 1)
+	tmux send-keys -t zod "C-c"; sleep 0.3
+	tmux send-keys -t zod "C-z"; sleep 0.3
+	tmux send-keys -t zod "C-c"; sleep 0.3
+	tmux send-keys -t zod "cd $$(pwd)" "ENTER"
+	rsync -a --delete ./data/old.zod/ ./data/zod
+	tmux send-keys -t zod "./data/urbit -L ./data/zod" "ENTER"
+	sleep 1.5 # startup eats ''enter keys'
+	make zod-clean
+
+zod-clean:
+	tmux send-keys -t zod "C-l"; sleep 0.4
+	tmux send-keys -t zod "|fade %lfs-provider" "ENTER"; sleep 0.4
+	tmux send-keys -t zod "|fade %lfs-client" "ENTER"; sleep 0.4
+	rsync -a --ignore-times ./src/ ./data/zod/home/
+	tmux send-keys -t zod "|commit %home" "ENTER"; sleep 1
+	tmux send-keys -t zod "|start %lfs-provider" "ENTER"; sleep 2
+	tmux send-keys -t zod "|start %lfs-client" "ENTER"; sleep 2
+#tmux send-keys -t zod ":lfs-client &lfs-client-action [%add-provider ~zod]" "ENTER"; sleep 1
+#tmux send-keys -t zod ":lfs-client &lfs-client-action [%request-upload ~zod]" "ENTER"; sleep 1
+
+.PHONY: zod-deep-clean zod-clean
