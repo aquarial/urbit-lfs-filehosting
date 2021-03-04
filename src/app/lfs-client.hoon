@@ -83,10 +83,16 @@
          ?:  ?=(~ p.split-reqs)
            ~|  "unexpected response for request {<id.resp>}"
            !!
-         ~&  >  "client on-agent got resp = {<resp>}"
          ?-  request-src.i.p.split-reqs
          [%local-poke ~]
-           `this(state state(pending-requests q.split-reqs))
+           ?-  -.resp
+           %failure
+             ~&  >  "client on-agent upload request rejected : {reason.resp}"
+             `this(state state(pending-requests q.split-reqs))
+           %got-url
+             ~&  >  "client on-agent upload request granted : {url.resp}"
+             `this(state state(pending-requests q.split-reqs))
+           ==
          ==
       ==
     ==
