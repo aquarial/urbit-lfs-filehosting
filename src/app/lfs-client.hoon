@@ -56,9 +56,9 @@
     %request-upload
       =/  id  (cut 6 [0 1] eny.bowl)
       ?:  (~(has by wex.bowl) [wire=/lfs ship=ship.action term=%lfs-provider])
-        ~&  >  "client on-poke upload request {<`@uv`id>}"
+        ~&  >  "client on-poke upload request to {<ship.action>} {<`@uv`id>}"
         :_  this(state state(pending-requests (snoc pending-requests.state [id=id request-src=[%local-poke ~]])))
-        :~  [%pass /lfs %agent [ship.action %lfs-provider] %poke %lfs-provider-action !>([%request-upload id=id])]  ==
+        :~  [%pass /(scot %da now.bowl) %agent [ship.action %lfs-provider] %poke %lfs-provider-action !>([%request-upload id=id])]  ==
       ::
       ~&  "not subscribed to {<ship.action>}!"
       `this
@@ -77,7 +77,7 @@
     :: %poke-ack
     %fact
       ?+  p.cage.sign  (on-agent:default wire sign)
-      %request-response
+      %lfs-provider-request-response
          =/  resp  !<(request-response:lfs-provider q.cage.sign)
          =/  split-reqs  (skid pending-requests.state |=(r=[id=@uv =request-src] =(id.r id.resp)))
          ?:  ?=(~ p.split-reqs)

@@ -72,10 +72,10 @@
       ?-  -.server-status.state
       %no-server
         :_  this
-        :~  [%give %fact ~[/uploader/(scot %p src.bowl)] %request-response !>([%failure reason="no server" id=id.action])]  ==
+        :~  [%give %fact ~[/uploader/(scot %p src.bowl)] %lfs-provider-request-response !>([%failure reason="no server" id=id.action])]  ==
       %not-connected
         :_  this
-        :~  [%give %fact ~[/uploader/(scot %p src.bowl)] %request-response !>([%failure reason="server offline" id=id.action])]  ==
+        :~  [%give %fact ~[/uploader/(scot %p src.bowl)] %lfs-provider-request-response !>([%failure reason="server offline" id=id.action])]  ==
       %connected
         =/  pass  `@uv`(cut 8 [0 1] eny.bowl)
         =/  up-url  "http://{address.server-status.state}/upload/file/{<pass>}"
@@ -83,7 +83,7 @@
         ^-  (quip card _this)
         :_  this
         :~  [%pass /[(scot %uv pass)] %arvo %i %request [%'POST' (crip new-url) ~ ~] *outbound-config:iris]
-            [%give %fact ~[/uploader/(scot %p src.bowl)] [%request-response !>([%got-url url=up-url id=id.action])]]
+            [%give %fact ~[/uploader/(scot %p src.bowl)] [%lfs-provider-request-response !>([%got-url url=up-url id=id.action])]]
             :: confirm file server is up before giving fact?
         ==
       ==
