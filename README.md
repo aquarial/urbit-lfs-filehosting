@@ -24,12 +24,13 @@ How to 'respond' to a poke? Give response to file-upload-request
 :lfs-provider +dbug
 
 :lfs-provider %bowl
-:lfs-provider &lfs-action [%connect-server address="localhost:8000"]
-:lfs-provider &lfs-action [%request-upload ~]
+:lfs-provider &lfs-provider-action [%connect-server address="localhost:8000"]
+:lfs-provider &lfs-provider-action [%request-upload ~]
 
 :lfs-client %bowl
 :lfs-client &lfs-client-action [%add-provider ~dopzod]
 :lfs-client &lfs-client-action [%remove-provider ~dopzod]
+:lfs-client &lfs-client-action [%request-upload ~dopzod]
 
 rsync -a --info=progress2 --ignore-times ./src/ ./data/molnut/home/
 rm -rf data/molnut; cp -r ./data/old.molnut ./data/molnut; ./data/urbit -L ./data/molnut
