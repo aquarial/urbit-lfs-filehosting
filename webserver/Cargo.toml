@@ -8,3 +8,4 @@ edition = "2018"
 
 [dependencies]
 rocket = "0.4.7"
+lazy_static = "1.4.0"
