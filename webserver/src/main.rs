@@ -53,7 +53,7 @@ impl Info {
 }
 
 #[post("/upload/new/<key>")]
-fn upload_new(state: State<Info>, key: String) -> &'static str {
+fn upload_new(_tok: AuthToken, state: State<Info>, key: String) -> &'static str {
     let mut ups = state.upload_paths.write().unwrap();
     println!("available upload for {}", key);
     ups.insert(key, ());
