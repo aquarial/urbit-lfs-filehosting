@@ -57,7 +57,7 @@ fn upload_new(_tok: AuthToken, state: State<Info>, key: String) -> &'static str 
     let mut ups = state.upload_paths.write().unwrap();
     println!("available upload for {}", key);
     ups.insert(key, ());
-    "upload path active"
+    "upload path active\n"
 }
 
 #[post("/upload/file/<key>", data = "<data>")]
@@ -75,7 +75,7 @@ fn upload_file(state: State<Info>, key: String, data: Data) -> &'static str {
             println!("no path to upload {}", key);
         }
     }
-    "uploaded"
+    "uploaded\n"
 }
 
 
