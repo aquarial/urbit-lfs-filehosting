@@ -16,7 +16,7 @@
 - [ ] poke to delete uploaded files
 - [ ] gall app stores uploaded-files and pending-requests
 - [ ] gall app restores webserver state on reboot
-- [ ] webserver authenticates lfs-provider
+- [x] webserver authenticates lfs-provider
 - [ ] upload limits
 - [ ] http upload interface
 - [ ] demo html+js UI
@@ -29,6 +29,7 @@ Console 1 : startup http file server
 ```
 shell$ cd ./webserver/
 shell$ cargo run
+Authorized Header is hunter2
 ....
 Rocket has launched from http://localhost:8000
 ```
@@ -42,7 +43,7 @@ shell$ ./data/urbit ./data/zod
 ...
 dojo> |commit %home
 dojo> |start %lfs-provider
-dojo> :lfs-provider &lfs-provider-action [%connect-server address="localhost:8000"]
+dojo> :lfs-provider &lfs-provider-action [%connect-server address="localhost:8000" token="hunter2"]
 ```
 
 Console 3: run client on fake-dopzod
