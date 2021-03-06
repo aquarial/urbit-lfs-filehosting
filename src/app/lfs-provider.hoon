@@ -58,7 +58,7 @@
     %connect-server
       ?>  (team:title [our src]:bowl)
       :: TODO set state to %connecting and test connection
-      `this(state state(server-status [%connected address=+.action]))
+      `this(state state(server-status [%connected address=address.action token=token.action]))
     %request-access
       ~&  "{<src.bowl>} has requested access to {<+.action>}"
       :: TODO create personal access url based on groupstatus, btc pay, etc
@@ -82,7 +82,7 @@
         =/  new-url  "http://{address.server-status.state}/upload/new/{<pass>}"
         ^-  (quip card _this)
         :_  this
-        :~  [%pass /[(scot %uv pass)] %arvo %i %request [%'POST' (crip new-url) ~[['auth_token' 'hunter2']] ~] *outbound-config:iris]
+        :~  [%pass /[(scot %uv pass)] %arvo %i %request [%'POST' (crip new-url) ~[['auth_token' (crip token.server-status.state)]] ~] *outbound-config:iris]
             [%give %fact ~[/uploader/(scot %p src.bowl)] [%lfs-provider-request-response !>([%got-url url=up-url id=id.action])]]
             :: confirm file server is up before giving fact?
         ==
