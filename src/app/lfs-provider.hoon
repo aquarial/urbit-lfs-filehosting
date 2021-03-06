@@ -82,7 +82,7 @@
         =/  new-url  "http://{address.server-status.state}/upload/new/{<pass>}"
         ^-  (quip card _this)
         :_  this
-        :~  [%pass /[(scot %uv pass)] %arvo %i %request [%'POST' (crip new-url) ~ ~] *outbound-config:iris]
+        :~  [%pass /[(scot %uv pass)] %arvo %i %request [%'POST' (crip new-url) ~[['auth_token' 'hunter2']] ~] *outbound-config:iris]
             [%give %fact ~[/uploader/(scot %p src.bowl)] [%lfs-provider-request-response !>([%got-url url=up-url id=id.action])]]
             :: confirm file server is up before giving fact?
         ==
