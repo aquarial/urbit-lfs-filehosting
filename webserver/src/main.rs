@@ -86,12 +86,31 @@ fn download_file(key: String) -> Stream<File> {
     Stream::from(f)
 }
 
+
+/// https://rust-lang-nursery.github.io/rust-cookbook/algorithms/randomness.html
+fn generate_password(len: usize) -> String {
+    use rand::Rng;
+    const CHARSET: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ\
+                             abcdefghijklmnopqrstuvwxyz\
+                             0123456789)(*&^%$#@!~<>?";
+    let mut rng = rand::thread_rng();
+
+    let password: String = (0..len)
+        .map(|_| {
+            let idx = rng.gen_range(0..CHARSET.len());
+            CHARSET[idx] as char
+        })
+        .collect();
+    password
+}
+
 fn main() {
     {
         let mut key = AUTH_KEY.write().unwrap();
-        *key = String::from("hunter2");
+        *key = generate_password(60);
         println!("Authorized Header is {}", *key);
     }
+
     std::fs::create_dir_all("./files/").unwrap();
     rocket::ignite()
         .manage(Info::new())
