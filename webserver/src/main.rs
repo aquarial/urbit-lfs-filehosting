@@ -30,6 +30,7 @@ impl<'a, 'r> FromRequest<'a, 'r> for AuthToken {
         let token = request.headers().get_one("auth_token");
         if let Some(token) = token {
             let key = AUTH_KEY.read().unwrap();
+            // compare each byte to prevent timing attack
             if key.bytes().zip(token.bytes()).filter(|(a,b)| a != b).count() == 0 {
                 return Outcome::Success(AuthToken {})
             }
@@ -62,6 +63,9 @@ fn upload_new(_tok: AuthToken, state: State<Info>, key: String) -> &'static str 
 
 #[post("/upload/file/<key>", data = "<data>")]
 fn upload_file(state: State<Info>, key: String, data: Data) -> &'static str {
+    if key.contains("..") {
+        return "invalid key\n";
+    }
     let mut ups = state.upload_paths.write().unwrap();
     match ups.remove(&key) {
         Some(_v) => {
@@ -81,9 +85,12 @@ fn upload_file(state: State<Info>, key: String, data: Data) -> &'static str {
 
 
 #[get("/download/file/<key>")]
-fn download_file(key: String) -> Stream<File> {
+fn download_file(key: String) -> Option<Stream<File>> {
+    if key.contains("..") {
+        return None;
+    }
     let f = File::open(format!("./files/{}", key)).unwrap();
-    Stream::from(f)
+    Some(Stream::from(f))
 }
 
 
