@@ -114,7 +114,11 @@ fn generate_password(len: usize) -> String {
 fn main() {
     {
         let mut key = AUTH_KEY.write().unwrap();
-        *key = generate_password(60);
+        if std::env::args().any(|arg| arg == "--UNSAFE_DEBUG_AUTH") {
+            *key = "hunter2"
+        } else {
+            *key = generate_password(60);
+        }
         println!("Authorized Header is {}", *key);
     }
 
