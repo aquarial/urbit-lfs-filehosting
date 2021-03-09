@@ -9,10 +9,10 @@
   $%  [%local-poke ~]
   ::  [%http-request =connection] todo
   ==
-+$  state-0  [%0 pending-requests=(list [id=@uv =request-src])]
++$  state-0  [%0 pending-requests=(list [id=@uv =request-src]) debug=?]
 --
 %-  agent:dbug
-=/  state=state-0  [%0 pending-requests=[~]]
+=/  state=state-0  [%0 pending-requests=[~] debug=%.y]
 ^-  agent:gall
 =<
 |_  =bowl:gall
@@ -36,14 +36,14 @@
      ?+  +.vase  `this
      :: add cases as needed
      %bowl
-        ~&  "{<bowl>}"
+        ~?  debug.state  "{<bowl>}"
        `this
      ==
   :: /mar/lfs-client/action.hoon
   %lfs-client-action
     ?>  (team:title [our src]:bowl)
     =/  action  !<(action vase)
-    ~&  "lfs client does {<action>}"
+    ~?  debug.state  "lfs client does {<action>}"
     ?-  -.action
     %add-provider
       ?:  (~(has by wex.bowl) [wire=/lfs ship=ship.action term=%lfs-provider])
@@ -70,7 +70,7 @@
 ++  on-peek   on-peek:default
 ++  on-agent
   |=  [=wire =sign:agent:gall]
-  ~&   "client on-agent got {<-.sign>} from {<dap.bowl>} on wire {<wire>}"
+  ~?  debug.state   "client on-agent got {<-.sign>} from {<dap.bowl>} on wire {<wire>}"
   ?+   wire  (on-agent:default wire sign)
   [%lfs ~]
     ?+  -.sign  (on-agent:default wire sign)
