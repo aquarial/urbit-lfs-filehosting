@@ -5,13 +5,13 @@
 +$  versioned-state
     $%  state-0
     ==
-+$  state-0  [%0 =server-status]
++$  state-0  [%0 =server-status debug=?]
    :: files=(map fileid content-status)
    :: =pending-upload-requests
    :: active-endpoints=(map ship [password=@p])
 --
 %-  agent:dbug
-=/  state=state-0  [%0 server-status=[%no-server ~]] :: [%connected address="localhost:8000"]]
+=/  state=state-0  [%0 server-status=[%no-server ~] debug=%.y]
 ^-  agent:gall
 =<
 |_  =bowl:gall
@@ -35,7 +35,7 @@
   ?+  mark  (on-poke:default mark vase)
   %handle-http-request
     =+  !<([id=@ta =inbound-request:eyre] vase)
-    ~&   "provider handle http : {<url.request.inbound-request>}"
+    ~?  debug.state  "provider handle http : {<url.request.inbound-request>}"
     :_  this
     %+  give-simple-payload:app:srv  id
     %+  require-authorization:app:srv  inbound-request
@@ -43,24 +43,24 @@
   %noun
      ?+  +.vase  `this
      %bowl
-        ~&  "{<bowl>}"
+        ~?  debug.state  "{<bowl>}"
        `this
      %heartbeat
         :: TODO use behn
-        ~&  "provider will send subscribers hearbeat"
+        ~?  debug.state  "provider will send subscribers hearbeat"
        `this
      ==
   :: /mar/lfs-provider/action.hoon
   %lfs-provider-action
     =/  action  !<(action vase)
-    ~&  "provider does {<action>}"
+    ~?  debug.state  "provider does {<action>}"
     ?-  -.action
     %connect-server
       ?>  (team:title [our src]:bowl)
       :: TODO set state to %connecting and test connection
       `this(state state(server-status [%connected address=address.action token=token.action]))
     %request-access
-      ~&  "{<src.bowl>} has requested access to {<+.action>}"
+      ~?  debug.state  "{<src.bowl>} has requested access to {<+.action>}"
       :: TODO create personal access url based on groupstatus, btc pay, etc
       `this
     %request-upload
@@ -95,21 +95,21 @@
   |=  =path
   ^-  (quip card _this)
   ?:  ?=([%http-response *] path)
-    ~&  "provider on-watch http-response on path: {<path>}"
+    ~?  debug.state  "provider on-watch http-response on path: {<path>}"
     `this
   :: only ~ship can subscribe to /uploader/~ship path
   ?>  ?=([%uploader @ ~] path)
   ?>  =((slav %p i.t.path) src.bowl)
-  ~&  "provider on-watch subscription from {<src.bowl>} on path: {<path>}"
+  ~?  debug.state  "provider on-watch subscription from {<src.bowl>} on path: {<path>}"
   `this
 ++  on-leave
   |=  path
-  ~&  "provider on-leave from {<src.bowl>} on {<path>}"
+  ~?  debug.state  "provider on-leave from {<src.bowl>} on {<path>}"
   `this
 ++  on-peek   on-peek:default
 ++  on-agent
   |=  [=wire =sign:agent:gall]
-  ~&  "provider on-agent got {<-.sign>} from {<dap.bowl>} on wire {<wire>}"
+  ~?  debug.state  "provider on-agent got {<-.sign>} from {<dap.bowl>} on wire {<wire>}"
   `this
   :: ^-  (quip card:agent:gall _agent)
   :: ?-    -.sign
@@ -122,12 +122,12 @@
   ^-  (quip card _this)
   |^
   ?:  ?=(%eyre -.sign-arvo)
-    ~&  "provider on-arvo Eyre returned: {<+.sign-arvo>}"
+    ~?  debug.state  "provider on-arvo Eyre returned: {<+.sign-arvo>}"
     `this
   ?:  ?=(%iris -.sign-arvo)
   ?>  ?=(%http-response +<.sign-arvo)
     =^  cards  state
-       ~&  "provider on-arvo got on wire {<wire>} = {<client-response.sign-arvo>}"
+       ~?  debug.state  "provider on-arvo got on wire {<wire>} = {<client-response.sign-arvo>}"
       (handle-response -.wire client-response.sign-arvo)
     [cards this]
   (on-arvo:default wire sign-arvo)
@@ -136,7 +136,7 @@
     |=  [url=@t resp=client-response:iris]
     ^-  (quip card _state)
     ?.  ?=(%finished -.resp)
-      ~&  "provider handle-response got {<-.resp>}"
+      ~?  debug.state  "provider handle-response got {<-.resp>}"
       `state
     ::  =.  files.state  (~(put by files.state) url full-file.resp)
     `state
@@ -147,7 +147,7 @@
 ::  helper core
 |_  =bowl:gall
 ++  can-upload
-  ~&  'assert {<src.bowl>} can upload'
+  ~?  debug.state  'assert {<src.bowl>} can upload'
   %.y
 ++  handle-http-request
   |=  req=inbound-request:eyre
