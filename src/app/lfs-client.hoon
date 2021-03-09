@@ -57,7 +57,7 @@
     %request-upload
       =/  id  (cut 6 [0 1] eny.bowl)
       ?:  (~(has by wex.bowl) [wire=/lfs ship=ship.action term=%lfs-provider])
-        ~&  >  "client on-poke upload request to {<ship.action>} {<`@uv`id>}"
+        ~?  debug.state  >  "client on-poke upload request to {<ship.action>} {<`@uv`id>}"
         :_  this(state state(pending-requests (snoc pending-requests.state [id=id request-src=[%local-poke ~]])))
         :~  [%pass /(scot %da now.bowl) %agent [ship.action %lfs-provider] %poke %lfs-provider-action !>([%request-upload id=id])]  ==
       ::
@@ -88,10 +88,10 @@
          [%local-poke ~]
            ?-  -.resp
            %failure
-             ~&  >  "client on-agent upload request rejected : {reason.resp}"
+             ~&  >  "upload request rejected : {reason.resp}"
              `this(state state(pending-requests q.split-reqs))
            %got-url
-             ~&  >  "client on-agent upload request granted : {url.resp}"
+             ~&  >  "upload request granted : {url.resp}"
              `this(state state(pending-requests q.split-reqs))
            ==
          ==
