@@ -64,9 +64,7 @@
       :: TODO create personal access url based on groupstatus, btc pay, etc
       `this
     %request-upload
-      =/  subscribers  ~(val by sup.bowl)
-      =/  src-subscriber  [p=src.bowl q=/uploader/(scot %p src.bowl)]
-      ?<  =(~ (find ~[src-subscriber] subscribers))
+      ?<  can-upload:hc
       ::
       :: TODO filter by allowlist, groupstatus, btc payment, etc
       ?-  -.server-status.state
@@ -147,8 +145,9 @@
 ::  helper core
 |_  =bowl:gall
 ++  can-upload
-  ~?  debug.state  'assert {<src.bowl>} can upload'
-  %.y
+  =/  subscribers  ~(val by sup.bowl)
+  =/  src-subscriber  [p=src.bowl q=/uploader/(scot %p src.bowl)]
+  =(~ (find ~[src-subscriber] subscribers))
 ++  handle-http-request
   |=  req=inbound-request:eyre
   ^-  simple-payload:http
