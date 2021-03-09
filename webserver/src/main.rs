@@ -115,7 +115,7 @@ fn main() {
     {
         let mut key = AUTH_KEY.write().unwrap();
         if std::env::args().any(|arg| arg == "--UNSAFE_DEBUG_AUTH") {
-            *key = "hunter2"
+            *key = "hunter2".into()
         } else {
             *key = generate_password(60);
         }
