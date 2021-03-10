@@ -1,22 +1,25 @@
 |%
 +$  action
-  $%  [%connect-server address=tape token=tape]
-      [%request-upload id=@uv]
-      [%request-access fileid=tape]
+  $%  [%connect-server address=tape loopback=tape token=tape]
+      [%client-request id=@uv client-request]
   ==
-+$  server-status
-  $%  [%no-server ~]
-      [%not-connected address=tape token=tape]
-      [%connected address=tape token=tape]
++$  client-request
+  $%  [%upload]
   ==
++$  server
++$  fileserver-status
+  $%  %online
+      %offline
+  ==
++$  server-update
+  $%  [%heartbeat fileserver-status]
+      [%request-response id=@uv request-response]
+  ==
++$  storageinfo  [storage=@ud used=@ud upload-url=(unit tape) files=(map @uv fileinfo)]
++$  fileinfo  [size=@ud]
+
 +$  request-response
-  $%  [%got-url url=tape id=@uv]
-      [%failure reason=tape id=@uv]
+  $%  [%got-url url=tape]
+      [%failure reason=tape]
   ==
-::  +$  fileid  [=ship time=@da]
-::  +$  uploaded  (map fileid content-status)
-::  +$  content-status
-::    $%  [%uploading ~]
-::        [%sha256 @]
-::    ==
 --
