@@ -11,7 +11,7 @@
    :: active-endpoints=(map ship [password=@p])
 --
 %-  agent:dbug
-=/  state=state-0  [%0 server-status=[%no-server ~] debug=%.y]
+=/  state=state-0  [%0 server-status=[%no-server ~] debug=%.n]
 ^-  agent:gall
 =<
 |_  =bowl:gall
