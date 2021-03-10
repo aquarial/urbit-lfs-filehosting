@@ -65,6 +65,7 @@ dojo> :lfs-client &lfs-client-action [%request-upload ~zod]
 Some commands  I reference a lot. Also look at the makefile
 
 ```
+cargo run -- --UNSAFE_DEBUG_AUTH
 
 |mount %
 |commit %home
