@@ -12,7 +12,7 @@
 +$  state-0  [%0 pending-requests=(list [id=@uv =request-src]) debug=?]
 --
 %-  agent:dbug
-=/  state=state-0  [%0 pending-requests=[~] debug=%.n]
+=/  state=state-0  [%0 pending-requests=[~] debug=%.y]
 ^-  agent:gall
 =<
 |_  =bowl:gall
