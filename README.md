@@ -76,13 +76,14 @@ Some commands  I reference a lot. Also look at the makefile
 :lfs-provider +dbug
 
 :lfs-provider %bowl
-:lfs-provider &lfs-provider-action [%connect-server address="localhost:8000"]
-:lfs-provider &lfs-provider-action [%request-upload ~]
+:lfs-provider &lfs-provider-action [%connect-server address="localhost:8000" token="hunter2"]
 
 :lfs-client %bowl
 :lfs-client &lfs-client-action [%add-provider ~zod]
 :lfs-client &lfs-client-action [%remove-provider ~zod]
 :lfs-client &lfs-client-action [%request-upload ~zod]
+
+rsync -a --ignore-times ./src/ ./dst/
 
 
 curl -i localhost:8080/~/login -X POST -d "password=hunter2"
