@@ -36,7 +36,7 @@
      ?+  +.vase  `this
      :: add cases as needed
      %bowl
-        ~?  debug.state  "{<bowl>}"
+        ~&  "{<bowl>}"
        `this
      ==
   :: /mar/lfs-client/action.hoon

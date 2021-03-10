@@ -43,7 +43,7 @@
   %noun
      ?+  +.vase  `this
      %bowl
-        ~?  debug.state  "{<bowl>}"
+        ~&  "{<bowl>}"
        `this
      %heartbeat
         :: TODO use behn
