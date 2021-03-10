@@ -78,6 +78,7 @@
         =/  pass  `@uv`(cut 8 [0 1] eny.bowl)
         =/  up-url  "http://{address.server-status.state}/upload/file/{<pass>}"
         =/  new-url  "http://{address.server-status.state}/upload/new/{<pass>}"
+        ~&  >  "authorizing upload to {up-url}"
         ^-  (quip card _this)
         :_  this
         :~  [%pass /[(scot %uv pass)] %arvo %i %request [%'POST' (crip new-url) ~[['auth_token' (crip token.server-status.state)]] ~] *outbound-config:iris]
