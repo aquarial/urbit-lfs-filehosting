@@ -47,7 +47,7 @@
     ?-  -.action
     %add-provider
       ?:  (~(has by wex.bowl) [wire=/lfs ship=ship.action term=%lfs-provider])
-        ~&  "lfs client already subscribed to {<ship.action>}"
+        ~&  >  "lfs client already subscribed to {<ship.action>}"
         `this
       :_  this
       :~  [%pass /lfs %agent [ship.action %lfs-provider] %watch /uploader/(scot %p our:bowl)]  ==
@@ -61,7 +61,7 @@
         :_  this(state state(pending-requests (snoc pending-requests.state [id=id request-src=[%local-poke ~]])))
         :~  [%pass /(scot %da now.bowl) %agent [ship.action %lfs-provider] %poke %lfs-provider-action !>([%request-upload id=id])]  ==
       ::
-      ~&  "not subscribed to {<ship.action>}!"
+      ~&  >  "not subscribed to {<ship.action>}!"
       `this
     ==
   ==
