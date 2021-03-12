@@ -47,7 +47,9 @@ shell$ ./data/urbit ./data/zod
 ...
 dojo> |commit %home
 dojo> |start %lfs-provider
-dojo> :lfs-provider &lfs-provider-action [%connect-server address="localhost:8000" token="hunter2"]
+dojo> :lfs-provider &lfs-provider-action [%connect-server loopback="localhost:8080" fileserver="localhost:8000" token="hunter2"]
+dojo> :lfs-client &lfs-client-action [%add-provider ~zod]
+dojo> :lfs-client &lfs-client-action [%request-upload ~zod]
 ```
 
 Console 3: run client on fake-dopzod
