@@ -96,6 +96,7 @@ fn upload_file(state: State<Info>, key: String, data: Data) -> &'static str {
 
 #[get("/download/file/<key>")]
 fn download_file(key: String) -> Option<Stream<File>> {
+    // TODO: any other security concerns?
     if key.contains("..") {
         return None;
     }
