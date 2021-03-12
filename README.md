@@ -13,14 +13,14 @@
 
 - [x] client subscribes to providers
 - [x] client `[%request-upload ~]` receives url response
-- [ ] poke to delete uploaded files
-- [ ] upload limits
-- [ ] gall app stores uploaded-files and pending-requests
-- [ ] gall app restores webserver state on reboot
 - [x] webserver authenticates lfs-provider
+- [ ] gall app stores uploaded-files and pending-requests
+- [ ] upload limits
 - [ ] eyre endpoint to confirm upload
-- [ ] backup provider map of file ownership
 - [ ] upload permissions based on clients/groups/%kids of provider
+- [ ] gall app restores webserver state on reboot
+- [ ] backup provider map of file ownership
+- [ ] poke to delete uploaded files
 - [ ] http upload interface
 - [ ] demo html+js UI
 
