@@ -71,7 +71,8 @@
     %connect-server
       ?>  (team:title [our src]:bowl)
       :: TODO set state to %connecting and test connection
-      `this(state state(loopback loopback.action, fileserver fileserver.action, fileserverauth token.action))
+      :: TODO don't set status online until we confirm fileserver responds
+      `this(state state(fileserver-status %online, loopback loopback.action, fileserver fileserver.action, fileserverauth token.action))
     %request-upload
       ?<  authorized-upload:hc
       ?.  server-accepting-upload:hc
@@ -84,7 +85,7 @@
       ^-  (quip card _this)
       :_  this
       :~  [%pass /[(scot %uv pass)] %arvo %i %request [%'POST' (crip new-url) ~[['auth_token' (crip fileserverauth.state)]] ~] *outbound-config:iris]
-          [%give %fact ~[/uploader/(scot %p src.bowl)] [%lfs-provider-server-update !>([%request-response id=id.action response=[%got-url url=up-url id=id.action]])]]
+          [%give %fact ~[/uploader/(scot %p src.bowl)] [%lfs-provider-server-update !>([%request-response id=id.action response=[%got-url url=up-url]])]]
           :: confirm file server is up before giving fact?
       ==
       :: :~  [%pass /bind %arvo %e %connect [~ /'~upload'] %lfs-provider]
