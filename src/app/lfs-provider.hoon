@@ -35,7 +35,7 @@
 ++  on-init
   ^-  (quip card _this)
   :_  this
-  :~  [%pass /bind %arvo %e %connect [~ /'~upload'] %lfs-provider]
+  :~  [%pass /bind %arvo %e %connect [~ /'~lfs'] %lfs-provider]
   ==
 ++  on-save
   ^-  vase

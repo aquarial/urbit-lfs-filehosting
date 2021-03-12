@@ -13,6 +13,8 @@ use rocket::http::Status;
 use rocket::response::Stream;
 use rocket::request::{FromRequest, Request, Outcome};
 
+use reqwest::blocking::{Client, Response};
+
 
 lazy_static! {
     static ref AUTH_KEY: RwLock<String> = RwLock::new(String::new());
@@ -43,6 +45,7 @@ struct Info {
     upload_paths: RwLock<HashMap<String, ()>>,
     download_paths: RwLock<HashMap<String, ()>>,
     provider_url: Mutex<Option<String>>,
+    client: Client,
 }
 
 impl Info {
@@ -51,6 +54,7 @@ impl Info {
             upload_paths: RwLock::new(HashMap::new()),
             download_paths: RwLock::new(HashMap::new()),
             provider_url: Mutex::new(None),
+            client: Client::new(),
         }
     }
 }
@@ -79,11 +83,28 @@ fn upload_file(state: State<Info>, key: String, data: Data) -> &'static str {
     let mut ups = state.upload_paths.write().unwrap();
     match ups.remove(&key) {
         Some(_v) => {
-            println!("uploaded file {}", key);
+            std::mem::drop(ups);
             let mut f = File::create(format!("./files/{}", key)).unwrap();
             data.stream_to(&mut f).unwrap();
-            let mut downs = state.download_paths.write().unwrap();
-            downs.insert(key, ());
+
+            let mut url = state.provider_url.lock().unwrap();
+            let key: &str = &*AUTH_KEY.read().unwrap();
+            let url2: String = format!("http://{}/~lfs/completed/{}", (*url).as_ref().unwrap(), key);
+            let res = state.client
+                .post(url2)
+                .header("auth_token", key)
+                .send();
+
+            match res {
+                Ok(res) => {
+                    println!("uploaded file {}", key);
+                    let mut downs = state.download_paths.write().unwrap();
+                    downs.insert(String::from(key), ());
+                },
+                Err(err) => {
+                    println!("Error uploading {}: {:?}", key, err);
+                },
+            }
         }
         None => {
             println!("no path to upload {}", key);
