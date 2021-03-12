@@ -5,13 +5,26 @@
 +$  versioned-state
     $%  state-0
     ==
-+$  state-0  [%0 =server-status debug=?]
-   :: files=(map fileid content-status)
-   :: =pending-upload-requests
-   :: active-endpoints=(map ship [password=@p])
++$  state-0
+  $:  %0
+      =fileserver-status
+      store=(map ship storageinfo)
+      loopback=tape
+      fileserver=tape
+      fileserverauth=tape
+      debug=?
+  ==
 --
 %-  agent:dbug
-=/  state=state-0  [%0 server-status=[%no-server ~] debug=%.y]
+=/  state=state-0
+  :*  %0
+      fileserver-status=%offline
+      store=[~]
+      loopback=""
+      fileserver=""
+      fileserverauth=""
+      debug=%.y
+  ==
 ^-  agent:gall
 =<
 |_  =bowl:gall
@@ -58,33 +71,21 @@
     %connect-server
       ?>  (team:title [our src]:bowl)
       :: TODO set state to %connecting and test connection
-      `this(state state(server-status [%connected address=address.action token=token.action]))
-    %request-access
-      ~?  debug.state  "{<src.bowl>} has requested access to {<+.action>}"
-      :: TODO create personal access url based on groupstatus, btc pay, etc
-      `this
+      `this(state state(loopback loopback.action, fileserver fileserver.action, fileserverauth token.action))
     %request-upload
-      ?<  can-upload:hc
-      ::
-      :: TODO filter by allowlist, groupstatus, btc payment, etc
-      ?-  -.server-status.state
-      %no-server
+      ?<  authorized-upload:hc
+      ?.  server-accepting-upload:hc
         :_  this
-        :~  [%give %fact ~[/uploader/(scot %p src.bowl)] %lfs-provider-request-response !>([%failure reason="no server" id=id.action])]  ==
-      %not-connected
-        :_  this
-        :~  [%give %fact ~[/uploader/(scot %p src.bowl)] %lfs-provider-request-response !>([%failure reason="server offline" id=id.action])]  ==
-      %connected
-        =/  pass  `@uv`(cut 8 [0 1] eny.bowl)
-        =/  up-url  "http://{address.server-status.state}/upload/file/{<pass>}"
-        =/  new-url  "http://{address.server-status.state}/upload/new/{<pass>}"
-        ~&  >  "authorizing upload to {up-url}"
-        ^-  (quip card _this)
-        :_  this
-        :~  [%pass /[(scot %uv pass)] %arvo %i %request [%'POST' (crip new-url) ~[['auth_token' (crip token.server-status.state)]] ~] *outbound-config:iris]
-            [%give %fact ~[/uploader/(scot %p src.bowl)] [%lfs-provider-request-response !>([%got-url url=up-url id=id.action])]]
-            :: confirm file server is up before giving fact?
-        ==
+        :~  [%give %fact ~[/uploader/(scot %p src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="server offline"]])]  ==
+      =/  pass  `@uv`(cut 8 [0 1] eny.bowl)
+      =/  up-url  "http://{fileserver.state}/upload/file/{<pass>}"
+      =/  new-url  "http://{fileserver.state}/upload/new/{<pass>}"
+      ~&  >  "authorizing upload to {up-url}"
+      ^-  (quip card _this)
+      :_  this
+      :~  [%pass /[(scot %uv pass)] %arvo %i %request [%'POST' (crip new-url) ~[['auth_token' (crip fileserverauth.state)]] ~] *outbound-config:iris]
+          [%give %fact ~[/uploader/(scot %p src.bowl)] [%lfs-provider-server-update !>([%request-response id=id.action response=[%got-url url=up-url id=id.action]])]]
+          :: confirm file server is up before giving fact?
       ==
       :: :~  [%pass /bind %arvo %e %connect [~ /'~upload'] %lfs-provider]
       :: ~[[%pass /poke-wire %agent [src.bowl %lfs-provider] %poke %noun !>([%receive-poke 2])]]
@@ -145,10 +146,17 @@
 --
 ::  helper core
 |_  =bowl:gall
-++  can-upload
+++  authorized-upload
+  :: TODO filter by allowlist, groupstatus, btc payment, etc
   =/  subscribers  ~(val by sup.bowl)
   =/  src-subscriber  [p=src.bowl q=/uploader/(scot %p src.bowl)]
   =(~ (find ~[src-subscriber] subscribers))
+++  server-accepting-upload
+  ?&  =(fileserver-status.state %online)
+      ?!  =(fileserver.state "")
+      ?!  =(fileserverauth.state "")
+      ?!  =(loopback.state "")
+  ==
 ++  handle-http-request
   |=  req=inbound-request:eyre
   ^-  simple-payload:http

@@ -78,23 +78,29 @@
     :: %poke-ack
     %fact
       ?+  p.cage.sign  (on-agent:default wire sign)
-      %lfs-provider-request-response
-         =/  resp  !<(request-response:lfs-provider q.cage.sign)
-         =/  split-reqs  (skid pending-requests.state |=(r=[id=@uv =request-src] =(id.r id.resp)))
-         ?:  ?=(~ p.split-reqs)
-           ~|  "unexpected response for request {<id.resp>}"
-           !!
-         ?-  request-src.i.p.split-reqs
-         [%local-poke ~]
-           ?-  -.resp
-           %failure
-             ~&  >  "upload request rejected : {reason.resp}"
-             `this(state state(pending-requests q.split-reqs))
-           %got-url
-             ~&  >  "upload request granted : {url.resp}"
-             `this(state state(pending-requests q.split-reqs))
+      %lfs-provider-server-update
+        =/  resp  !<(server-update:lfs-provider q.cage.sign)
+        ?-  -.resp
+        %heartbeat
+          ~|  "unexpected heartbeat: {<resp>}"
+          !!
+        %request-response
+           =/  split-reqs  (skid pending-requests.state |=(r=[id=@uv =request-src] =(id.r id.resp)))
+           ?:  ?=(~ p.split-reqs)
+             ~|  "unexpected response for request {<id.resp>}"
+             !!
+           ?-  request-src.i.p.split-reqs
+           [%local-poke ~]
+             ?-  -.response.resp
+             %failure
+               ~&  >  "upload request rejected : {reason.response.resp}"
+               `this(state state(pending-requests q.split-reqs))
+             %got-url
+               ~&  >  "upload request granted : {url.response.resp}"
+               `this(state state(pending-requests q.split-reqs))
+             ==
            ==
-         ==
+        ==
       ==
     ==
   ==
