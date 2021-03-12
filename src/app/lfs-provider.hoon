@@ -72,7 +72,9 @@
       ?>  (team:title [our src]:bowl)
       :: TODO set state to %connecting and test connection
       :: TODO don't set status online until we confirm fileserver responds
-      `this(state state(fileserver-status %online, loopback loopback.action, fileserver fileserver.action, fileserverauth token.action))
+      =/  setupt-url  "http://{fileserver.action}/setup/{loopback.action}"
+      :_  this(state state(fileserver-status %online, loopback loopback.action, fileserver fileserver.action, fileserverauth token.action))
+      :~  [%pass /[(scot %uv pass)] %arvo %i %request [%'POST' (crip setupt-url) ~[['auth_token' (crip fileserverauth.state)]] ~] *outbound-config:iris]  ==
     %request-upload
       ?<  authorized-upload:hc
       ?.  server-accepting-upload:hc
