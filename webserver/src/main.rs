@@ -4,7 +4,7 @@
 
 use std::fs::File;
 use std::collections::HashMap;
-use std::sync::RwLock;
+use std::sync::{Mutex, RwLock};
 
 use lazy_static::lazy_static;
 
@@ -42,6 +42,7 @@ impl<'a, 'r> FromRequest<'a, 'r> for AuthToken {
 struct Info {
     upload_paths: RwLock<HashMap<String, ()>>,
     download_paths: RwLock<HashMap<String, ()>>,
+    provider_url: Mutex<Option<String>>,
 }
 
 impl Info {
@@ -49,9 +50,18 @@ impl Info {
         Info {
             upload_paths: RwLock::new(HashMap::new()),
             download_paths: RwLock::new(HashMap::new()),
+            provider_url: Mutex::new(None),
         }
     }
 }
+
+#[post("/setup/<provider>")]
+fn setup_provider(_tok: AuthToken, state: State<Info>, provider: String) -> &'static str {
+    let mut url = state.provider_url.lock().unwrap();
+    *url = Some(provider);
+    "setup provider\n"
+}
+
 
 #[post("/upload/new/<key>")]
 fn upload_new(_tok: AuthToken, state: State<Info>, key: String) -> &'static str {
@@ -125,6 +135,6 @@ fn main() {
     std::fs::create_dir_all("./files/").unwrap();
     rocket::ignite()
         .manage(Info::new())
-        .mount("/", routes![upload_new, upload_file, download_file])
+        .mount("/", routes![upload_new, upload_file, download_file, setup_provider])
         .launch();
 }
