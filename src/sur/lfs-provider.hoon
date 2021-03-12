@@ -1,19 +1,19 @@
 |%
 +$  action
-  $%  [%connect-server address=tape loopback=tape token=tape]
-      [%client-request id=@uv client-request]
+  $%  [%connect-server loopback=tape fileserver=tape token=tape]
+      [%request-upload id=@uv]
+   :: [%test-loopback loopback=tape]
   ==
 +$  client-request
   $%  [%upload]
   ==
-+$  server
 +$  fileserver-status
   $%  %online
       %offline
   ==
 +$  server-update
   $%  [%heartbeat fileserver-status]
-      [%request-response id=@uv request-response]
+      [%request-response id=@uv response=request-response]
   ==
 +$  storageinfo  [storage=@ud used=@ud upload-url=(unit tape) files=(map @uv fileinfo)]
 +$  fileinfo  [size=@ud]

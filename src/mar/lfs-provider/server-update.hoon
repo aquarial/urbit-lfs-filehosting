@@ -1,8 +1,8 @@
 /-  lfs-provider
-|_  resp=request-response:lfs-provider
+|_  resp=server-update:lfs-provider
 ++  grab
   |%
-  ++  noun  request-response:lfs-provider
+  ++  noun  server-update:lfs-provider
   --
 ++  grow
   |%
