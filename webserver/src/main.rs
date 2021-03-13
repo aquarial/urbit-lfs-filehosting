@@ -13,7 +13,7 @@ use rocket::http::Status;
 use rocket::response::Stream;
 use rocket::request::{FromRequest, Request, Outcome};
 
-use reqwest::blocking::{Client, Response};
+use reqwest::blocking::{Client};
 
 
 lazy_static! {
@@ -87,16 +87,18 @@ fn upload_file(state: State<Info>, key: String, data: Data) -> &'static str {
             let mut f = File::create(format!("./files/{}", key)).unwrap();
             data.stream_to(&mut f).unwrap();
 
-            let mut url = state.provider_url.lock().unwrap();
-            let key: &str = &*AUTH_KEY.read().unwrap();
+            let url = state.provider_url.lock().unwrap();
+            let auth: &str = &*AUTH_KEY.read().unwrap();
             let url2: String = format!("http://{}/~lfs/completed/{}", (*url).as_ref().unwrap(), key);
+            println!("Curling to {}", url2);
             let res = state.client
                 .post(url2)
-                .header("auth_token", key)
+                .header("auth_token", auth)
                 .send();
 
             match res {
                 Ok(res) => {
+                    println!("Got resposne: {:?}", res);
                     println!("uploaded file {}", key);
                     let mut downs = state.download_paths.write().unwrap();
                     downs.insert(String::from(key), ());
