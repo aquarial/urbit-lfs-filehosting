@@ -25,7 +25,7 @@ dopzod-clean:
 	tmux send-keys -t dopzod "|start %lfs-provider" "ENTER"; sleep 2
 	tmux send-keys -t dopzod "|start %lfs-client" "ENTER"; sleep 2
   # and
-	tmux send-keys -t dopzod ":lfs-provider &lfs-provider-action [%connect-server loopback=\"localhost:8080\" fileserver=\"localhost:8000\" token=\"hunter2\"]"; sleep 0.5; tmux send-keys -t dopzod "ENTER"
+	tmux send-keys -t dopzod ":lfs-provider &lfs-provider-action [%connect-server loopback=\"localhost:8081\" fileserver=\"localhost:8000\" token=\"hunter2\"]"; sleep 0.5; tmux send-keys -t dopzod "ENTER"
 
 #tmux send-keys -t dopzod ":lfs-client &lfs-client-action [%add-provider ~dopzod]" "ENTER"; sleep 0.5
 #tmux send-keys -t dopzod ":lfs-client &lfs-client-action [%request-upload ~dopzod]" "ENTER"; sleep 0.5
@@ -55,7 +55,7 @@ zod-clean:
 	tmux send-keys -t zod "|commit %home" "ENTER"; sleep 1
 	tmux send-keys -t zod "|start %lfs-provider" "ENTER"; sleep 2
 	tmux send-keys -t zod "|start %lfs-client" "ENTER"; sleep 2
-	tmux send-keys -t zod ":lfs-provider &lfs-provider-action [%connect-server loopback=\"localhost:8080\" fileserver=\"localhost:8000\" token=\"hunter2\"]"; sleep 0.5; tmux send-keys -t zod "ENTER"; sleep 0.5
+	tmux send-keys -t zod ":lfs-provider &lfs-provider-action [%connect-server loopback=\"localhost:8081\" fileserver=\"localhost:8000\" token=\"hunter2\"]"; sleep 0.5; tmux send-keys -t zod "ENTER"; sleep 0.5
 	tmux send-keys -t zod ":lfs-client &lfs-client-action [%add-provider ~zod]" "ENTER"; sleep 1
 	tmux send-keys -t zod ":lfs-client &lfs-client-action [%request-upload ~zod]" "ENTER"; sleep 1
 
