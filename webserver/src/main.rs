@@ -83,7 +83,6 @@ fn upload_file(state: State<Info>, key: String, data: Data) -> &'static str {
     let mut ups = state.upload_paths.write().unwrap();
     match ups.remove(&key) {
         Some(_v) => {
-            std::mem::drop(ups);
             let mut f = File::create(format!("./files/{}", key)).unwrap();
             data.stream_to(&mut f).unwrap();
 
@@ -105,7 +104,8 @@ fn upload_file(state: State<Info>, key: String, data: Data) -> &'static str {
                 },
                 Err(err) => {
                     println!("Error uploading {}: {:?}", key, err);
-                },
+                    ups.insert(key, ());
+                }
             }
         }
         None => {
