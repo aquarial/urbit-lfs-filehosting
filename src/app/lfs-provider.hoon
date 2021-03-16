@@ -58,8 +58,7 @@
     =/  auth  (skim headers |=([key=cord value=cord] =(key 'auth_token')))
     ?>  =(value.i.-.auth (crip fileserverauth.state))
     :_  this
-    %+  give-simple-payload:app:srv  id
-    (handle-http-request:hc inbound-request)
+    (snoc (give-simple-payload:app:srv id (handle-http-request:hc inbound-request)) [%give %fact ~[/uploader/(scot %p src.bowl)] %lfs-provider-server-update !>([%file-uploaded ~])])
   %noun
      ?+  +.vase  `this
      %bowl
