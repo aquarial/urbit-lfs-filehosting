@@ -82,8 +82,11 @@
         =/  resp  !<(server-update:lfs-provider q.cage.sign)
         ?-  -.resp
         %heartbeat
-          ~|  "unexpected heartbeat: {<resp>}"
-          !!
+          ~&  >>  "unexpected heartbeat: {<resp>}"
+          `this
+        %file-uploaded
+          ~&  >  "client knows the file uploaded!"
+          `this
         %request-response
            =/  split-reqs  (skid pending-requests.state |=(r=[id=@uv =request-src] =(id.r id.resp)))
            ?:  ?=(~ p.split-reqs)

@@ -13,6 +13,7 @@
   ==
 +$  server-update
   $%  [%heartbeat fileserver-status]
+      [%file-uploaded ~] :: storage-update
       [%request-response id=@uv response=request-response]
   ==
 +$  storageinfo  [storage=@ud used=@ud upload-url=(unit tape) files=(map @uv fileinfo)]
