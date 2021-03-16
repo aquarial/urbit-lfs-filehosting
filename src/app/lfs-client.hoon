@@ -99,7 +99,7 @@
                ~&  >  "upload request rejected : {reason.response.resp}"
                `this(state state(pending-requests q.split-reqs))
              %got-url
-               ~&  >  "upload request granted : {url.response.resp}"
+               ~&  >  "client received upload url {url.response.resp}"
                `this(state state(pending-requests q.split-reqs))
              ==
            ==

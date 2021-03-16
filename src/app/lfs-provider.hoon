@@ -86,10 +86,10 @@
       ?.  server-accepting-upload:hc
         :_  this
         :~  [%give %fact ~[/uploader/(scot %p src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="server offline"]])]  ==
-      =/  pass  `@uv`(cut 8 [0 1] eny.bowl)
+      =/  pass  ?:  debug.state  0vbeef  (cut 8 [0 1] eny.bowl)
       =/  up-url  "http://{fileserver.state}/upload/file/{<pass>}"
       =/  new-url  "http://{fileserver.state}/upload/new/{<pass>}"
-      ~&  >  "authorizing upload to {up-url}"
+      ~&  >  "provider authorizing upload {up-url}"
       ^-  (quip card _this)
       :_  this
       :~  [%pass /upload/[(scot %uv pass)] %arvo %i %request [%'POST' (crip new-url) ~[['auth_token' (crip fileserverauth.state)]] ~] *outbound-config:iris]
