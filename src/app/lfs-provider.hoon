@@ -48,11 +48,19 @@
   ?+  mark  (on-poke:default mark vase)
   %handle-http-request
     =+  !<([id=@ta =inbound-request:eyre] vase)
-    ~?  debug.state  "provider handle http : {<url.request.inbound-request>}"
+    ::  [authenticated=%.n secure=%.n address=[%ipv4 .127.0.0.1]
+    ::   request=[method=%'POST' url='/~lfs/completed/0v1a.42hat'
+    ::       header-list=~[[key='host' value='localhost:8081'] [key='auth_token' value='hunter2']
+    ::                 [key='accept' value='*/*']]
+    ::       body=~ ]
+    ::  ]
+    :: ?>  ?=(%finished request.inbound-request)
+    =/  headers  header-list.request.inbound-request
+    =/  auth  (skim headers |=([key=cord value=cord] =(key 'auth_token')))
+    ~?  debug.state  "make sure auth_token is present in headers : {<auth>}"
     :_  this
     %+  give-simple-payload:app:srv  id
-    %+  require-authorization:app:srv  inbound-request
-    handle-http-request:hc
+    (handle-http-request:hc inbound-request)
   %noun
      ?+  +.vase  `this
      %bowl
