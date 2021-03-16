@@ -54,10 +54,9 @@
     ::                 [key='accept' value='*/*']]
     ::       body=~ ]
     ::  ]
-    :: ?>  ?=(%finished request.inbound-request)
     =/  headers  header-list.request.inbound-request
     =/  auth  (skim headers |=([key=cord value=cord] =(key 'auth_token')))
-    ~?  debug.state  "make sure auth_token is present in headers : {<auth>}"
+    ?>  =(value.i.-.auth (crip fileserverauth.state))
     :_  this
     %+  give-simple-payload:app:srv  id
     (handle-http-request:hc inbound-request)
