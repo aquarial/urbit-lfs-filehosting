@@ -129,10 +129,24 @@
     `this
   ?:  ?=(%iris -.sign-arvo)
   ?>  ?=(%http-response +<.sign-arvo)
-    =^  cards  state
-       ~?  debug.state  "provider on-arvo got on wire {<wire>} = {<client-response.sign-arvo>}"
-      (handle-response -.wire client-response.sign-arvo)
-    [cards this]
+  ?+  wire  (on-arvo:default wire sign-arvo)
+    :: client-response = [%finished response-header=[status-code=200
+    ::   headers=~[[key='content-type' value='text/plain; charset=utf-8'] [key='server' value='Rocket']
+    ::   [key='content-length' value='19'] [key='date' value='Tue, 16 Mar 2021 01:23:34 GMT']]]
+    ::   full-file=[~ [type='text/plain; charset=utf-8' data=[p=19 q=231.846.086.356.972.333.783.885.125.050.632.381.030.756.469]]]]
+  [%setup ~]
+     ?>  ?=(%finished -.client-response.sign-arvo)
+     ~?  debug.state  "provider on-arvo setup response code {<status-code.response-header.client-response.sign-arvo>}"
+    `this
+  [%upload * ~]
+    ?>  ?=(%finished -.client-response.sign-arvo)
+    ~?  debug.state  "provider on-arvo upload response code {<status-code.response-header.client-response.sign-arvo>}"
+    `this
+  ==
+  ::   =^  cards  state
+  ::      ~?  debug.state  "provider on-arvo got on wire {<wire>} = {<client-response.sign-arvo>}"
+  ::     (handle-response -.wire client-response.sign-arvo)
+  ::   [cards this]
   (on-arvo:default wire sign-arvo)
   ::
   ++  handle-response
