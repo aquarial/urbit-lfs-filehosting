@@ -107,12 +107,13 @@ fn upload_file(state: State<Info>, key: String, data: Data) -> &'static str {
                     ups.insert(key, ());
                 }
             }
+            "uploaded\n"
         }
         None => {
             println!("no path to upload {}", key);
+            "no such path\n"
         }
     }
-    "uploaded\n"
 }
 
 
