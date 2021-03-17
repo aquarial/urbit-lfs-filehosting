@@ -73,7 +73,8 @@
      [%add-rule *]
        =+  !<([%add-rule [=justification size=@ud]] vase)
        =/  new-rules  (snoc upload-rules.state [justification size])
-       `this(state state(upload-rules new-rules))
+       :: rut is fmap, update-store recompute storageinfo
+       `this(state state(upload-rules new-rules, store (~(rut by store.state) (update-store:hc new-rules))))
      ==
   :: /mar/lfs-provider/action.hoon
   %lfs-provider-action
@@ -116,7 +117,9 @@
   ?>  ?=([%uploader @ ~] path)
   ?>  =((slav %p i.t.path) src.bowl)
   ~?  debug.state  "provider on-watch subscription from {<src.bowl>} on path: {<path>}"
-  `this
+  =/  updated  ((update-store upload-rules.state) [src.bowl [storage=0 used=0 upload-url=~ files=[~]]])
+  :: TODO if storage is 0, then kick?
+  `this(state state(store (~(gas by store.state) ~[[src.bowl updated]])))
 ++  on-leave
   |=  path
   ~?  debug.state  "provider on-leave from {<src.bowl>} on {<path>}"
@@ -186,6 +189,10 @@
       ?!  =(fileserverauth.state "")
       ?!  =(loopback.state "")
   ==
+++  update-store
+  |=  new-rules=(list [=justification size=@ud])
+  |=  [=ship =storageinfo]
+  storageinfo(storage 30) :: TODO compute
 ++  handle-http-request
   |=  req=inbound-request:eyre
   ^-  simple-payload:http
