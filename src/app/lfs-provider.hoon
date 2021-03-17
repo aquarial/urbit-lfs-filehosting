@@ -9,6 +9,7 @@
   $:  %0
       =fileserver-status
       store=(map ship storageinfo)
+      =upload-rules
       loopback=tape
       fileserver=tape
       fileserverauth=tape
@@ -20,6 +21,7 @@
   :*  %0
       fileserver-status=%offline
       store=[~]
+      upload-rules=[~]
       loopback=""
       fileserver=""
       fileserverauth=""
@@ -68,6 +70,10 @@
         :: TODO use behn
         ~?  debug.state  "provider will send subscribers hearbeat"
        `this
+     [%add-rule *]
+       =+  !<([%add-rule [=justification size=@ud]] vase)
+       =/  new-rules  (snoc upload-rules.state [justification size])
+       `this(state state(upload-rules new-rules))
      ==
   :: /mar/lfs-provider/action.hoon
   %lfs-provider-action

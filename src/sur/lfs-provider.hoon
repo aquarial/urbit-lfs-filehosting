@@ -16,6 +16,12 @@
       [%file-uploaded ~] :: storage-update
       [%request-response id=@uv response=request-response]
   ==
++$  upload-rules  (list [=justification size=@ud])
++$  justification
+  $%  [%group groups=(list [=ship group=%tas])]
+      [%ship ships=(list ship)]
+  ::  [%kids ~]
+  ==
 +$  storageinfo  [storage=@ud used=@ud upload-url=(unit tape) files=(map @uv fileinfo)]
 +$  fileinfo  [size=@ud]
 
