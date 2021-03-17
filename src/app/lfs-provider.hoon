@@ -118,7 +118,8 @@
   ?>  =((slav %p i.t.path) src.bowl)
   ~?  debug.state  "provider on-watch subscription from {<src.bowl>} on path: {<path>}"
   =/  updated  ((update-store upload-rules.state) [src.bowl [storage=0 used=0 upload-url=~ files=[~]]])
-  :: TODO if storage is 0, then kick?
+  ?:  =(storage.updated 0)  ~&  "{<src.bowl>} did not meet any upload requirements"  [~[[%give %kick ~ ~]] this]
+  ::
   `this(state state(store (~(gas by store.state) ~[[src.bowl updated]])))
 ++  on-leave
   |=  path
