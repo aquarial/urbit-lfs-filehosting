@@ -9,10 +9,10 @@
   $%  [%local-poke ~]
   ::  [%http-request =connection] todo
   ==
-+$  state-0  [%0 pending-requests=(list [id=@uv =request-src]) debug=?]
++$  state-0  [%0 pending-requests=(list [id=@uv =request-src])]
 --
 %-  agent:dbug
-=/  state=state-0  [%0 pending-requests=[~] debug=%.y]
+=/  state=state-0  [%0 pending-requests=[~]]
 ^-  agent:gall
 =<
 |_  =bowl:gall
@@ -43,7 +43,7 @@
   %lfs-client-action
     ?>  (team:title [our src]:bowl)
     =/  action  !<(action vase)
-    ~?  debug.state  "lfs client does {<action>}"
+    ~&  "lfs client does {<action>}"
     ?-  -.action
     %add-provider
       ?:  (~(has by wex.bowl) [wire=/lfs ship=ship.action term=%lfs-provider])
@@ -57,7 +57,7 @@
     %request-upload
       =/  id  (cut 6 [0 1] eny.bowl)
       ?:  (~(has by wex.bowl) [wire=/lfs ship=ship.action term=%lfs-provider])
-        ~?  debug.state  "client on-poke upload request to {<ship.action>} {<`@uv`id>}"
+        ~&  "client on-poke upload request to {<ship.action>} {<`@uv`id>}"
         :_  this(state state(pending-requests (snoc pending-requests.state [id=id request-src=[%local-poke ~]])))
         :~  [%pass /(scot %da now.bowl) %agent [ship.action %lfs-provider] %poke %lfs-provider-action !>([%request-upload id=id])]  ==
       ::
@@ -70,7 +70,7 @@
 ++  on-peek   on-peek:default
 ++  on-agent
   |=  [=wire =sign:agent:gall]
-  ~?  debug.state   "client on-agent got {<-.sign>} from {<dap.bowl>} on wire {<wire>}"
+  ~&  "client on-agent got {<-.sign>} from {<dap.bowl>} on wire {<wire>}"
   ?+   wire  (on-agent:default wire sign)
   [%lfs ~]
     ?+  -.sign  (on-agent:default wire sign)

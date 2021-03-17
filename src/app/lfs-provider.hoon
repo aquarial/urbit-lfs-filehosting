@@ -13,7 +13,7 @@
       loopback=tape
       fileserver=tape
       fileserverauth=tape
-      debug=?
+      unsafe-demo=?
   ==
 --
 %-  agent:dbug
@@ -25,7 +25,7 @@
       loopback=""
       fileserver=""
       fileserverauth=""
-      debug=%.y
+      unsafe-demo=%.y
   ==
 ^-  agent:gall
 =<
@@ -68,7 +68,7 @@
        `this
      %heartbeat
         :: TODO use behn
-        ~?  debug.state  "provider will send subscribers hearbeat"
+        ~&  "provider will send subscribers hearbeat"
        `this
      [%add-rule *]
        =+  !<([%add-rule [=justification size=@ud]] vase)
@@ -79,7 +79,6 @@
   :: /mar/lfs-provider/action.hoon
   %lfs-provider-action
     =/  action  !<(action vase)
-    ~?  debug.state  "provider does {<action>}"
     ?-  -.action
     %connect-server
       ?>  (team:title [our src]:bowl)
@@ -93,7 +92,7 @@
       ?.  server-accepting-upload:hc
         :_  this
         :~  [%give %fact ~[/uploader/(scot %p src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="server offline"]])]  ==
-      =/  pass  ?:  debug.state  0vbeef  (cut 8 [0 1] eny.bowl)
+      =/  pass  ?:  unsafe-demo.state  0vbeef  (cut 8 [0 1] eny.bowl)
       =/  up-url  "{protocol:hc}://{fileserver.state}/upload/file/{<pass>}"
       =/  new-url  "{protocol:hc}://{fileserver.state}/upload/new/{<pass>}"
       ~&  >  "provider authorizing upload {up-url}"
@@ -111,24 +110,26 @@
   |=  =path
   ^-  (quip card _this)
   ?:  ?=([%http-response *] path)
-    ~?  debug.state  "provider on-watch http-response on path: {<path>}"
+    ~&  "provider on-watch http-response on path: {<path>}"
     `this
   :: only ~ship can subscribe to /uploader/~ship path
   ?>  ?=([%uploader @ ~] path)
   ?>  =((slav %p i.t.path) src.bowl)
-  ~?  debug.state  "provider on-watch subscription from {<src.bowl>} on path: {<path>}"
   =/  updated  ((update-store upload-rules.state) [src.bowl [storage=0 used=0 upload-url=~ files=[~]]])
-  ?:  =(storage.updated 0)  ~&  "{<src.bowl>} did not meet any upload requirements"  [~[[%give %kick ~ ~]] this]
+  ?:  =(storage.updated 0)
+     ~&  "provider on-watch subscription from {<src.bowl>} failed!"
+    [~[[%give %kick ~ ~]] this]
   ::
+  ~&  "provider on-watch subscription from {<src.bowl>} on path: {<path>}"
   `this(state state(store (~(gas by store.state) ~[[src.bowl updated]])))
 ++  on-leave
   |=  path
-  ~?  debug.state  "provider on-leave from {<src.bowl>} on {<path>}"
+  ~&  "provider on-leave from {<src.bowl>} on {<path>}"
   `this
 ++  on-peek   on-peek:default
 ++  on-agent
   |=  [=wire =sign:agent:gall]
-  ~?  debug.state  "provider on-agent got {<-.sign>} from {<dap.bowl>} on wire {<wire>}"
+  ~&  >>  "provider on-agent got {<-.sign>} from {<dap.bowl>} on wire {<wire>}"
   `this
   :: ^-  (quip card:agent:gall _agent)
   :: ?-    -.sign
@@ -141,7 +142,7 @@
   ^-  (quip card _this)
   |^
   ?:  ?=(%eyre -.sign-arvo)
-    ~?  debug.state  "provider on-arvo Eyre returned: {<+.sign-arvo>}"
+    ~&  "provider on-arvo Eyre returned: {<+.sign-arvo>}"
     `this
   ?:  ?=(%iris -.sign-arvo)
   ?>  ?=(%http-response +<.sign-arvo)
@@ -152,15 +153,15 @@
     ::   full-file=[~ [type='text/plain; charset=utf-8' data=[p=19 q=231.846.086.356.972.333.783.885.125.050.632.381.030.756.469]]]]
   [%setup ~]
      ?>  ?=(%finished -.client-response.sign-arvo)
-     ~?  debug.state  "provider on-arvo setup response code {<status-code.response-header.client-response.sign-arvo>}"
+     ~&  "provider on-arvo setup response code {<status-code.response-header.client-response.sign-arvo>}"
     `this
   [%upload * ~]
     ?>  ?=(%finished -.client-response.sign-arvo)
-    ~?  debug.state  "provider on-arvo upload response code {<status-code.response-header.client-response.sign-arvo>}"
+    ~&  "provider on-arvo upload response code {<status-code.response-header.client-response.sign-arvo>}"
     `this
   ==
   ::   =^  cards  state
-  ::      ~?  debug.state  "provider on-arvo got on wire {<wire>} = {<client-response.sign-arvo>}"
+  ::      ~&  "provider on-arvo got on wire {<wire>} = {<client-response.sign-arvo>}"
   ::     (handle-response -.wire client-response.sign-arvo)
   ::   [cards this]
   (on-arvo:default wire sign-arvo)
@@ -169,7 +170,7 @@
     |=  [url=@t resp=client-response:iris]
     ^-  (quip card _state)
     ?.  ?=(%finished -.resp)
-      ~?  debug.state  "provider handle-response got {<-.resp>}"
+      ~&  "provider handle-response got {<-.resp>}"
       `state
     ::  =.  files.state  (~(put by files.state) url full-file.resp)
     `state
@@ -191,7 +192,7 @@
       ?!  =(loopback.state "")
   ==
 ++  protocol
-  ?:  debug.state  "http"
+  ?:  unsafe-demo.state  "http"
   "https"
 ++  update-store
   |=  new-rules=(list [=justification size=@ud])
