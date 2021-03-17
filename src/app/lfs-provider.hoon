@@ -85,7 +85,7 @@
       ?>  (team:title [our src]:bowl)
       :: TODO set state to %connecting and test connection
       ::      don't set status online until we confirm fileserver responds
-      =/  setup-url  "http://{fileserver.action}/setup/{loopback.action}"
+      =/  setup-url  "{protocol:hc}://{fileserver.action}/setup/{loopback.action}"
       :_  this(state state(fileserver-status %online, loopback loopback.action, fileserver fileserver.action, fileserverauth token.action))
       :~  [%pass /setup %arvo %i %request [%'POST' (crip setup-url) ~[['auth_token' (crip token.action)]] ~] *outbound-config:iris]  ==
     %request-upload
@@ -94,8 +94,8 @@
         :_  this
         :~  [%give %fact ~[/uploader/(scot %p src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="server offline"]])]  ==
       =/  pass  ?:  debug.state  0vbeef  (cut 8 [0 1] eny.bowl)
-      =/  up-url  "http://{fileserver.state}/upload/file/{<pass>}"
-      =/  new-url  "http://{fileserver.state}/upload/new/{<pass>}"
+      =/  up-url  "{protocol:hc}://{fileserver.state}/upload/file/{<pass>}"
+      =/  new-url  "{protocol:hc}://{fileserver.state}/upload/new/{<pass>}"
       ~&  >  "provider authorizing upload {up-url}"
       ^-  (quip card _this)
       :_  this
@@ -190,6 +190,9 @@
       ?!  =(fileserverauth.state "")
       ?!  =(loopback.state "")
   ==
+++  protocol
+  ?:  debug.state  "http"
+  "https"
 ++  update-store
   |=  new-rules=(list [=justification size=@ud])
   |=  [=ship =storageinfo]
