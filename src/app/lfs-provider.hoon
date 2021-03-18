@@ -1,5 +1,5 @@
 /-  *lfs-provider
-/+  srv=server, default-agent, dbug
+/+  srv=server, default-agent, dbug, group-store, group
 |%
 +$  card  card:agent:gall
 +$  versioned-state
@@ -38,6 +38,7 @@
   ^-  (quip card _this)
   :_  this
   :~  [%pass /bind %arvo %e %connect [~ /'~lfs'] %lfs-provider]
+      [%pass /groups %agent [our.bowl %group-store] %watch /groups]
   ==
 ++  on-save
   ^-  vase
@@ -134,14 +135,32 @@
 ++  on-peek   on-peek:default
 ++  on-agent
   |=  [=wire =sign:agent:gall]
-  ~&  >>  "provider on-agent got {<-.sign>} from {<dap.bowl>} on wire {<wire>}"
-  `this
-  :: ^-  (quip card:agent:gall _agent)
-  :: ?-    -.sign
-  ::     %poke-ack
-  ::   ?~  p.sign
-  ::     `agent
-  ::   %-  (slog leaf+"poke failed from {<dap.bowl>} on wire {<wire>}" u.p.sign)
+  ~&  "provider on-agent got {<-.sign>} from {<dap.bowl>} on wire {<wire>}"
+  ?+   wire  (on-agent:default wire sign)
+  [%groups ~]
+    ?+  -.sign  (on-agent:default wire sign)
+    :: %watch-ack
+    :: %poke-ack
+    %fact
+      ?+  p.cage.sign  (on-agent:default wire sign)
+      %group-update
+        =/  resp  !<(update:group-store q.cage.sign)
+        ~&  "provider received group-update {<resp>}"
+        ?+  -.resp  `this
+        %initial
+          :: TODO filter to only look at groups referenced in upload rules
+          =/  groups  ~(val by groups.resp)
+          =/  ship-sets  (turn groups |=(g=group:group members.g))
+          =/  ships  (roll ship-sets |=([s1=(set ship) s2=(set ship)] (~(uni in s1) s2)))
+          `this(state state(store (compute-store:hc ships)))
+        %add-members
+          `this(state state(store (compute-store:hc ships.resp)))
+        %remove-members
+          `this(state state(store (compute-store:hc ships.resp)))
+        ==
+      ==
+    ==
+  ==
 ++  on-arvo
   |=  [=wire =sign-arvo]
   ^-  (quip card _this)
@@ -221,4 +240,8 @@
   |=  n=@ud
   :: 1.234 -> "1234"
   (tape (skim ((list @tD) "{<n>}") |=(c=@tD ?!(=(c '.')))))
+++  compute-store
+  |=  ships=(set ship)
+  ~&  "updating store with {<ships>}"
+  store.state
 --
