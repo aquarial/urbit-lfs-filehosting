@@ -88,10 +88,15 @@
       :_  this(state state(fileserver-status %online, loopback loopback.action, fileserver fileserver.action, fileserverauth token.action))
       :~  [%pass /setup %arvo %i %request [%'POST' (crip setup-url) ~[['auth_token' (crip token.action)]] ~] *outbound-config:iris]  ==
     %request-upload
-      ?<  authorized-upload:hc
+      ?>  src-is-subscriber:hc
       ?.  server-accepting-upload:hc
         :_  this
         :~  [%give %fact ~[/uploader/(scot %p src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="server offline"]])]  ==
+      ::
+      =/  space  upload-space:hc
+      ?:  =(space 0)
+        :_  this
+        :~  [%give %fact ~[/uploader/(scot %p src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="no space left"]])]  ==
       =/  pass  ?:  unsafe-demo.state  0vbeef  (cut 8 [0 1] eny.bowl)
       =/  up-url  "{protocol:hc}://{fileserver.state}/upload/file/{<pass>}"
       =/  new-url  "{protocol:hc}://{fileserver.state}/upload/new/{<pass>}"
@@ -180,11 +185,14 @@
 --
 ::  helper core
 |_  =bowl:gall
-++  authorized-upload
-  :: TODO filter by allowlist, groupstatus, btc payment, etc
+++  src-is-subscriber
   =/  subscribers  ~(val by sup.bowl)
   =/  src-subscriber  [p=src.bowl q=/uploader/(scot %p src.bowl)]
-  =(~ (find ~[src-subscriber] subscribers))
+  ?!  =(~ (find ~[src-subscriber] subscribers))
+++  upload-space
+  =/  m  (~(get by store.state) src.bowl)
+  ?:  =(m ~)  0
+  (sub storage:(need m) used:(need m))
 ++  server-accepting-upload
   ?&  =(fileserver-status.state %online)
       ?!  =(fileserver.state "")
