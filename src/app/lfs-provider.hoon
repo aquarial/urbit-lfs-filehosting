@@ -99,7 +99,7 @@
         :~  [%give %fact ~[/uploader/(scot %p src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="no space left"]])]  ==
       =/  pass  ?:  unsafe-demo.state  0vbeef  (cut 8 [0 1] eny.bowl)
       =/  up-url  "{protocol:hc}://{fileserver.state}/upload/file/{<pass>}"
-      =/  new-url  "{protocol:hc}://{fileserver.state}/upload/new/{<pass>}"
+      =/  new-url  "{protocol:hc}://{fileserver.state}/upload/new/{<pass>}/{(format-number space)}"
       ~&  >  "provider authorizing upload {up-url}"
       ^-  (quip card _this)
       :_  this
@@ -217,4 +217,8 @@
     [%intent [%s 'peaceful']]
     [%ship [%s (scot %p our.bowl)]]
   ==
+++  format-number
+  |=  n=@ud
+  :: 1.234 -> "1234"
+  (tape (skim ((list @tD) "{<n>}") |=(c=@tD ?!(=(c '.')))))
 --

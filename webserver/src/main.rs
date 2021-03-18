@@ -2,6 +2,7 @@
 
 #[macro_use] extern crate rocket;
 
+use std::io::Read;
 use std::fs::File;
 use std::collections::HashMap;
 use std::sync::{Mutex, RwLock};
@@ -42,7 +43,7 @@ impl<'a, 'r> FromRequest<'a, 'r> for AuthToken {
 }
 
 struct Info {
-    upload_paths: RwLock<HashMap<String, ()>>,
+    upload_paths: RwLock<HashMap<String, u64>>,
     download_paths: RwLock<HashMap<String, ()>>,
     provider_url: Mutex<Option<String>>,
     client: Client,
@@ -67,11 +68,11 @@ fn setup_provider(_tok: AuthToken, state: State<Info>, provider: String) -> &'st
 }
 
 
-#[post("/upload/new/<key>")]
-fn upload_new(_tok: AuthToken, state: State<Info>, key: String) -> &'static str {
+#[post("/upload/new/<key>/<space>")]
+fn upload_new(_tok: AuthToken, state: State<Info>, key: String, space: u64) -> &'static str {
     let mut ups = state.upload_paths.write().unwrap();
-    println!("available upload for {}", key);
-    ups.insert(key, ());
+    println!("available for uploading {} bytes with {}", space, key);
+    ups.insert(key, space);
     "upload path active\n"
 }
 
@@ -82,9 +83,11 @@ fn upload_file(state: State<Info>, key: String, data: Data) -> &'static str {
     }
     let mut ups = state.upload_paths.write().unwrap();
     match ups.remove(&key) {
-        Some(_v) => {
+        Some(size) => {
+            // TODO handle file-system errors
             let mut f = File::create(format!("./files/{}", key)).unwrap();
-            data.stream_to(&mut f).unwrap();
+            std::io::copy(&mut data.open().take(size), &mut f).unwrap();
+            f.sync_all().unwrap();
 
             let url = state.provider_url.lock().unwrap();
             let auth: &str = &*AUTH_KEY.read().unwrap();
@@ -104,7 +107,7 @@ fn upload_file(state: State<Info>, key: String, data: Data) -> &'static str {
                 },
                 Err(err) => {
                     println!("Error uploading {}: {:?}", key, err);
-                    ups.insert(key, ());
+                    ups.insert(key, size);
                 }
             }
             "uploaded\n"
