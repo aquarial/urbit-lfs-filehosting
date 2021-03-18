@@ -221,10 +221,6 @@
 ++  protocol
   ?:  unsafe-demo.state  "http"
   "https"
-++  update-store
-  |=  new-rules=(list [=justification size=@ud])
-  |=  [=ship =storageinfo]
-  storageinfo(storage 30) :: TODO compute
 ++  handle-http-request
   |=  req=inbound-request:eyre
   ^-  simple-payload:http
@@ -244,4 +240,10 @@
   |=  ships=(set ship)
   ~&  "updating store with {<ships>}"
   store.state
+  :: TODO
+++  update-store
+  |=  new-rules=(list [=justification size=@ud])
+  |=  [=ship =storageinfo]
+  :: TODO compute
+  storageinfo(storage 30)
 --
