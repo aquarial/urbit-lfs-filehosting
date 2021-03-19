@@ -74,7 +74,7 @@
      [%add-rule *]
        =+  !<([%add-rule [=justification size=@ud]] vase)
        =/  new-rules  (snoc upload-rules.state [justification size])
-       =/  new-store  (~(gas by store.state) (turn ~(tap by store.state) (update-store:hc new-rules)))
+       =/  new-store  (~(gas by store.state) (turn ~(tap by store.state) (compute-ship-storage:hc new-rules)))
        `this(state state(upload-rules new-rules, store new-store))
      ==
   :: /mar/lfs-provider/action.hoon
@@ -121,7 +121,7 @@
   :: only ~ship can subscribe to /uploader/~ship path
   ?>  ?=([%uploader @ ~] path)
   ?>  =((slav %p i.t.path) src.bowl)
-  =/  updated  ((update-store upload-rules.state) [src.bowl [storage=0 used=0 upload-url=~ files=[~]]])
+  =/  updated  ((compute-ship-storage upload-rules.state) [src.bowl [storage=0 used=0 upload-url=~ files=[~]]])
   ?:  =(storage.storageinfo.updated 0)
      ~&  "provider on-watch subscription from {<src.bowl>} failed!"
     [~[[%give %kick ~ ~]] this]
@@ -152,11 +152,11 @@
           =/  groups  ~(val by groups.resp)
           =/  ship-sets  (turn groups |=(g=group:group members.g))
           =/  ships  (roll ship-sets |=([s1=(set ship) s2=(set ship)] (~(uni in s1) s2)))
-          `this(state state(store (compute-store:hc ships)))
+          `this(state state(store (compute-ships-to-store:hc ships)))
         %add-members
-          `this(state state(store (compute-store:hc ships.resp)))
+          `this(state state(store (compute-ships-to-store:hc ships.resp)))
         %remove-members
-          `this(state state(store (compute-store:hc ships.resp)))
+          `this(state state(store (compute-ships-to-store:hc ships.resp)))
         ==
       ==
     ==
@@ -236,21 +236,21 @@
   |=  n=@ud
   :: 1.234 -> "1234"
   (tape (skim ((list @tD) "{<n>}") |=(c=@tD ?!(=(c '.')))))
-++  compute-store
+++  compute-ships-to-store
   |=  ships=(set ship)
   :: called when groups update, ships might not be subscribers
   =/  pair-with-storageinfo
       |=  =ship
       ((lift |=(=storageinfo [ship storageinfo])) (~(get by store.state) ship))
-  =/  updated  (turn (murn ~(tap in ships) pair-with-storageinfo) (update-store upload-rules.state))
+  =/  updated  (turn (murn ~(tap in ships) pair-with-storageinfo) (compute-ship-storage upload-rules.state))
   =/  store  (~(gas by store.state) updated)
   ~&  "compte-store with {<ships>}"
   ~&  "initial store is {<store.state>}"
   ~&  "    new store is {<store>}"
   store.state
-++  update-store
+++  compute-ship-storage
   |=  new-rules=(list [=justification size=@ud])
   |=  [=ship =storageinfo]
-  ~&  "update-store {<ship>} of {<storageinfo>} with rules {<new-rules>}"
+  ~&  "compue-ship-storage {<ship>} of {<storageinfo>} with rules {<new-rules>}"
   [ship=ship storageinfo=storageinfo(storage 30)]
 --
