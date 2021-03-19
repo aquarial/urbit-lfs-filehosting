@@ -18,9 +18,9 @@
   ==
 +$  upload-rules  (list [=justification size=@ud])
 +$  justification
-  $%  [%group groups=[=ship group=%tas]]
+  $%  [%group group=@tas]
       [%ship ships=(list ship)]
-  ::  [%kids ~]
+      [%kids ~]
   ==
 +$  storageinfo  [storage=@ud used=@ud upload-url=(unit tape) files=(map @uv fileinfo)]
 +$  fileinfo  [size=@ud]

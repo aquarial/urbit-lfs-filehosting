@@ -249,8 +249,32 @@
   ~&  "    new store is {<store>}"
   store.state
 ++  compute-ship-storage
-  |=  new-rules=(list [=justification size=@ud])
+  |=  rules=(list [=justification size=@ud])
   |=  [=ship =storageinfo]
-  ~&  "compue-ship-storage {<ship>} of {<storageinfo>} with rules {<new-rules>}"
-  [ship=ship storageinfo=storageinfo(storage 30)]
+  :: TODO fix inefficiency. re-asks for group object for each ship
+  ::      add custom methods for adding ships vs changing rules
+  ~&  >  "compute-ship-storage {<ship>} of {<storageinfo>} with rules {<rules>}"
+  :: =/  space  (roll (turn (skim rules (match-rule ship)) |*(rule size:rule)) max)
+  =/  space  10
+  ~&  >  "compute-ship-storage {<ship>} has {<space>} bytes"
+  [ship=ship storageinfo=storageinfo(storage space)]
+++  match-rule
+  |=  =ship
+  |=  [=justification size=@ud]
+  ?-  -.justification
+  %group
+    ~&  "got group {<group.justification>}"
+    =/  x  group:justification
+    =/  ginfo  .^((unit group:group) %gx /(scot %p our.bowl)/group-store/(scot %da now.bowl)/groups/ship/(scot %p our.bowl)/[x]/noun)
+    =/  mems  ~(tap in members:+<:ginfo)
+    ~&  >  "  match-rule group checking {<ship>} in {<group.justification>} from {<mems>}"
+    :: (~(has in mems) ship)
+    %.y
+  %ship
+    ~&  >  "  match-rule ship  checking {<ship>} in {<ships.justification>}"
+    =(~ (find ~[ship] ships.justification))
+  %kids
+    :: TODO how?
+    %.n
+  ==
 --
