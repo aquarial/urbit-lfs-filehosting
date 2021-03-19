@@ -4,6 +4,8 @@
 # on ship run  "|mount %"
 # mv ./dopzod ./data/old.dopzod
 
+
+# dopzod is only the client. run zod for provider&client
 dopzod-clean-deep:
 	tmux has-session -t dopzod ||      \
 	    (echo "\n\nRUN: tmux new -s dopzod in other terminal"; exit 1)
@@ -18,22 +20,18 @@ dopzod-clean-deep:
 
 dopzod-clean:
 	tmux send-keys -t dopzod "C-l"; sleep 0.4
-	tmux send-keys -t dopzod "|fade %lfs-provider" "ENTER"; sleep 0.4
 	tmux send-keys -t dopzod "|fade %lfs-client" "ENTER"; sleep 0.4
 	rsync -a --ignore-times ./src/ ./data/dopzod/home/
 	tmux send-keys -t dopzod "|commit %home" "ENTER"; sleep 1
-	tmux send-keys -t dopzod "|start %lfs-provider" "ENTER"; sleep 2
 	tmux send-keys -t dopzod "|start %lfs-client" "ENTER"; sleep 2
-  # and
-	tmux send-keys -t dopzod ":lfs-provider &lfs-provider-action [%connect-server loopback=\"localhost:8081\" fileserver=\"localhost:8000\" token=\"hunter2\"]"; sleep 0.5; tmux send-keys -t dopzod "ENTER"
-
-#tmux send-keys -t dopzod ":lfs-client &lfs-client-action [%add-provider ~dopzod]" "ENTER"; sleep 0.5
-#tmux send-keys -t dopzod ":lfs-client &lfs-client-action [%request-upload ~dopzod]" "ENTER"; sleep 0.5
+	tmux send-keys -t dopzod ":lfs-client &lfs-client-action [%add-provider ~zod]" "ENTER"; sleep 0.5
+	#tmux send-keys -t dopzod ":lfs-client &lfs-client-action [%request-upload ~dopzod]" "ENTER"; sleep 0.5
 
 .PHONY: dopzod-deep-clean dopzod-clean
 
 
 
+# zod is both provider and client
 
 zod-clean-deep:
 	tmux has-session -t zod ||      \
