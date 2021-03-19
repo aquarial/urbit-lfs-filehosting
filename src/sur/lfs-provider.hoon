@@ -18,7 +18,7 @@
   ==
 +$  upload-rules  (list [=justification size=@ud])
 +$  justification
-  $%  [%group groups=(list [=ship group=%tas])]
+  $%  [%group groups=[=ship group=%tas]]
       [%ship ships=(list ship)]
   ::  [%kids ~]
   ==
