@@ -74,8 +74,8 @@
      [%add-rule *]
        =+  !<([%add-rule [=justification size=@ud]] vase)
        =/  new-rules  (snoc upload-rules.state [justification size])
-       :: rut is fmap, update-store recompute storageinfo
-       `this(state state(upload-rules new-rules, store (~(rut by store.state) (update-store:hc new-rules))))
+       =/  new-store  (~(gas by store.state) (turn ~(tap by store.state) (update-store:hc new-rules)))
+       `this(state state(upload-rules new-rules, store new-store))
      ==
   :: /mar/lfs-provider/action.hoon
   %lfs-provider-action
@@ -122,12 +122,12 @@
   ?>  ?=([%uploader @ ~] path)
   ?>  =((slav %p i.t.path) src.bowl)
   =/  updated  ((update-store upload-rules.state) [src.bowl [storage=0 used=0 upload-url=~ files=[~]]])
-  ?:  =(storage.updated 0)
+  ?:  =(storage.storageinfo.updated 0)
      ~&  "provider on-watch subscription from {<src.bowl>} failed!"
     [~[[%give %kick ~ ~]] this]
   ::
   ~&  "provider on-watch subscription from {<src.bowl>} on path: {<path>}"
-  `this(state state(store (~(gas by store.state) ~[[src.bowl updated]])))
+  `this(state state(store (~(gas by store.state) ~[updated])))
 ++  on-leave
   |=  path
   ~&  "provider on-leave from {<src.bowl>} on {<path>}"
@@ -238,12 +238,19 @@
   (tape (skim ((list @tD) "{<n>}") |=(c=@tD ?!(=(c '.')))))
 ++  compute-store
   |=  ships=(set ship)
-  ~&  "updating store with {<ships>}"
+  :: called when groups update, ships might not be subscribers
+  =/  pair-with-storageinfo
+      |=  =ship
+      ((lift |=(=storageinfo [ship storageinfo])) (~(get by store.state) ship))
+  =/  updated  (turn (murn ~(tap in ships) pair-with-storageinfo) (update-store upload-rules.state))
+  =/  store  (~(gas by store.state) updated)
+  ~&  "compte-store with {<ships>}"
+  ~&  "initial store is {<store.state>}"
+  ~&  "    new store is {<store>}"
   store.state
-  :: TODO
 ++  update-store
   |=  new-rules=(list [=justification size=@ud])
   |=  [=ship =storageinfo]
-  :: TODO compute
-  storageinfo(storage 30)
+  ~&  "update-store {<ship>} of {<storageinfo>} with rules {<new-rules>}"
+  [ship=ship storageinfo=storageinfo(storage 30)]
 --
