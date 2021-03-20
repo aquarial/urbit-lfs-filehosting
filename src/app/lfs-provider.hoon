@@ -101,7 +101,7 @@
       =/  pass  ?:  unsafe-demo.state  0vbeef  (cut 8 [0 1] eny.bowl)
       =/  up-url  "{protocol:hc}://{fileserver.state}/upload/file/{<pass>}"
       =/  new-url  "{protocol:hc}://{fileserver.state}/upload/new/{<pass>}/{(format-number space)}"
-      ~&  >  "provider authorizing upload {up-url}"
+      ~&  >  "provider sends authorizing url to {new-url}"
       ^-  (quip card _this)
       :_  this
       :~  [%pass /upload/[(scot %uv pass)] %arvo %i %request [%'POST' (crip new-url) ~[['auth_token' (crip fileserverauth.state)]] ~] *outbound-config:iris]
@@ -244,9 +244,9 @@
       ((lift |=(=storageinfo [ship storageinfo])) (~(get by store.state) ship))
   =/  updated  (turn (murn ~(tap in ships) pair-with-storageinfo) (compute-ship-storage upload-rules.state))
   =/  store  (~(gas by store.state) updated)
-  ~&  "compte-store with {<ships>}"
-  ~&  "initial store is {<store.state>}"
-  ~&  "    new store is {<store>}"
+  ~&  >>  "new ships are {<ships>}"
+  ~&  >>  "initial store was {<store.state>}"
+  ~&  >>  "    new store is  {<store>}"
   store.state
 ++  compute-ship-storage
   |=  rules=(list [=justification size=@ud])
@@ -263,7 +263,7 @@
   |=  [=justification size=@ud]
   ?-  -.justification
   %group
-    ~&  "got group {<group.justification>}"
+    ~&  >  "  match-rule group checking {<ship>} in {<group.justification>} at time {<now.bowl>}"
     =/  x  group:justification
     =/  ginfo  .^((unit group:group) %gx /(scot %p our.bowl)/group-store/(scot %da now.bowl)/groups/ship/(scot %p our.bowl)/[x]/noun)
     =/  mems  ~(tap in members:+<:ginfo)
