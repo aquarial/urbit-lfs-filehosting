@@ -262,13 +262,14 @@
     ~&  >  "  match-rule group checking {<ship>} in {<group.justification>} at time {<now.bowl>}"
     =/  x  group:justification
     =/  ginfo  .^((unit group:group) %gx /(scot %p our.bowl)/group-store/(scot %da now.bowl)/groups/ship/(scot %p our.bowl)/[x]/noun)
-    =/  mems  ~(tap in members:+<:ginfo)
-    ~&  >  "  match-rule group checking {<ship>} in {<group.justification>} from {<mems>}"
-    :: (~(has in mems) ship)
-    %.y
+    =/  ppp  ?~  ginfo  "~"  "{<members:+<:ginfo>}"
+    ~&  >  "               group members are {ppp}"
+    ?&  ?!  =(ginfo ~)
+        (~(has in members:+<:ginfo) ship)
+    ==
   %ship
     ~&  >  "  match-rule ship  checking {<ship>} in {<ships.justification>}"
-    =(~ (find ~[ship] ships.justification))
+    ?!  =(~ (find ~[ship] ships.justification))
   %kids
     :: TODO how?
     %.n
