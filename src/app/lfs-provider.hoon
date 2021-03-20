@@ -249,9 +249,9 @@
   |=  [=ship =storageinfo]
   :: TODO fix inefficiency. re-asks for group object for each ship
   ::      add custom methods for adding ships vs changing rules
-  ~&  >  "compute-ship-storage {<ship>} of {<storageinfo>} with rules {<rules>}"
-  :: =/  space  (roll (turn (skim rules (match-rule ship)) |*(rule size:rule)) max)
-  =/  space  10
+  ~&  >  "compute-ship-storage {<ship>} of {<storageinfo>}"
+  =/  izes  (turn (skim rules (match-rule ship)) |=([=justification size=@ud] size))
+  =/  space  (roll (snoc izes 0) max)
   ~&  >  "compute-ship-storage {<ship>} has {<space>} bytes"
   [ship=ship storageinfo=storageinfo(storage space)]
 ++  match-rule
