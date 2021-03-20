@@ -74,7 +74,7 @@
      [%add-rule *]
        =+  !<([%add-rule [=justification size=@ud]] vase)
        =/  new-rules  (snoc upload-rules.state [justification size])
-       =/  new-store  (~(gas by store.state) (turn ~(tap by store.state) (compute-ship-storage:hc now.bowl new-rules)))
+       =/  new-store  (~(gas by store.state) (turn ~(tap by store.state) (compute-ship-storage:hc new-rules)))
        `this(state state(upload-rules new-rules, store new-store))
      ==
   :: /mar/lfs-provider/action.hoon
@@ -122,7 +122,7 @@
   ?>  ?=([%uploader @ ~] path)
   ?>  =((slav %p i.t.path) src.bowl)
   ~&  "provider on-watch subscription from {<src.bowl>} on path: {<path>}"
-  =/  updated  ((compute-ship-storage:hc now.bowl upload-rules.state) [src.bowl (~(gut by store.state) src.bowl [storage=0 used=0 upload-url=~ files=[~]])])
+  =/  updated  ((compute-ship-storage upload-rules.state) [src.bowl (~(gut by store.state) src.bowl [storage=0 used=0 upload-url=~ files=[~]])])
   `this(state state(store (~(gas by store.state) ~[updated])))
 ++  on-leave
   |=  path
@@ -148,11 +148,11 @@
           =/  groups  ~(val by groups.resp)
           =/  ship-sets  (turn groups |=(g=group:group members.g))
           =/  ships  (roll ship-sets |=([s1=(set ship) s2=(set ship)] (~(uni in s1) s2)))
-          `this(state state(store (compute-ships-to-store:hc now.bowl ships)))
+          `this(state state(store (compute-ships-to-store:hc ships)))
         %add-members
-          `this(state state(store (compute-ships-to-store:hc now.bowl ships.resp)))
+          `this(state state(store (compute-ships-to-store:hc ships.resp)))
         %remove-members
-          `this(state state(store (compute-ships-to-store:hc now.bowl ships.resp)))
+          `this(state state(store (compute-ships-to-store:hc ships.resp)))
         ==
       ==
     ==
@@ -233,35 +233,35 @@
   :: 1.234 -> "1234"
   (tape (skim ((list @tD) "{<n>}") |=(c=@tD ?!(=(c '.')))))
 ++  compute-ships-to-store
-  |=  [now=@da ships=(set ship)]
+  |=  ships=(set ship)
   :: called when groups update, ships might not be subscribers
   =/  pair-with-storageinfo
       |=  =ship
       ((lift |=(=storageinfo [ship storageinfo])) (~(get by store.state) ship))
-  =/  updated  (turn (murn ~(tap in ships) pair-with-storageinfo) (compute-ship-storage now upload-rules.state))
+  =/  updated  (turn (murn ~(tap in ships) pair-with-storageinfo) (compute-ship-storage upload-rules.state))
   =/  store  (~(gas by store.state) updated)
   ~&  >>  "new ships are {<ships>}"
   ~&  >>  "initial store was {<store.state>}"
   ~&  >>  "    new store is  {<store>}"
   store.state
 ++  compute-ship-storage
-  |=  [now=@da rules=(list [=justification size=@ud])]
+  |=  rules=(list [=justification size=@ud])
   |=  [=ship =storageinfo]
   :: TODO fix inefficiency. re-asks for group object for each ship
   ::      add custom methods for adding ships vs changing rules
   ~&  >  "compute-ship-storage {<ship>} of {<storageinfo>}"
-  =/  izes  (turn (skim rules (match-rule now ship)) |=([=justification size=@ud] size))
+  =/  izes  (turn (skim rules (match-rule ship)) |=([=justification size=@ud] size))
   =/  space  (roll (snoc izes 0) max)
   ~&  >  "compute-ship-storage {<ship>} has {<space>} bytes"
   [ship=ship storageinfo=storageinfo(storage space)]
 ++  match-rule
-  |=  [now=@da =ship]
+  |=  =ship
   |=  [=justification size=@ud]
   ?-  -.justification
   %group
-    ~&  >  "  match-rule group checking {<ship>} in {<group.justification>} at time {<now>} vs {<now.bowl>}"
+    ~&  >  "  match-rule group checking {<ship>} in {<group.justification>} at time {<now.bowl>}"
     =/  x  group:justification
-    =/  ginfo  .^((unit group:group) %gx /(scot %p our.bowl)/group-store/(scot %da now)/groups/ship/(scot %p our.bowl)/[x]/noun)
+    =/  ginfo  .^((unit group:group) %gx /(scot %p our.bowl)/group-store/(scot %da now.bowl)/groups/ship/(scot %p our.bowl)/[x]/noun)
     =/  ppp  ?~  ginfo  "~"  "{<members:+<:ginfo>}"
     ~&  >  "               group members are {ppp}"
     ?&  ?!  =(ginfo ~)
