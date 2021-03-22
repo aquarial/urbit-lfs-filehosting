@@ -141,7 +141,7 @@
       ?+  p.cage.sign  (on-agent:default wire sign)
       %group-update
         =/  resp  !<(update:group-store q.cage.sign)
-        ~&  >>  "provider received group-update {<resp>}"
+        ~&  "provider received group-update {<resp>}"
         ?+  -.resp  `this
         %initial
           :: TODO filter to only look at groups referenced in upload rules
@@ -240,35 +240,28 @@
       ((lift |=(=storageinfo [ship storageinfo])) (~(get by store.state) ship))
   =/  updated  (turn (murn ~(tap in ships) pair-with-storageinfo) (compute-ship-storage upload-rules.state))
   =/  store  (~(gas by store.state) updated)
-  ~&  >>  "new ships are {<ships>}"
-  ~&  >>  "initial store was {<store.state>}"
-  ~&  >>  "    new store is  {<store>}"
   store.state
 ++  compute-ship-storage
   |=  rules=(list [=justification size=@ud])
   |=  [=ship =storageinfo]
   :: TODO fix inefficiency. re-asks for group object for each ship
   ::      add custom methods for adding ships vs changing rules
-  ~&  >  "compute-ship-storage {<ship>} of {<storageinfo>}"
   =/  izes  (turn (skim rules (match-rule ship)) |=([=justification size=@ud] size))
   =/  space  (roll (snoc izes 0) max)
-  ~&  >  "compute-ship-storage {<ship>} has {<space>} bytes"
+  ~&  "  compute-ship-storage gave {<ship>} {<space>} bytes"
   [ship=ship storageinfo=storageinfo(storage space)]
 ++  match-rule
   |=  =ship
   |=  [=justification size=@ud]
   ?-  -.justification
   %group
-    ~&  >  "  match-rule group checking {<ship>} in {<group.justification>} at time {<now.bowl>}"
     =/  x  group:justification
     =/  ginfo  .^((unit group:group) %gx /(scot %p our.bowl)/group-store/(scot %da now.bowl)/groups/ship/(scot %p our.bowl)/[x]/noun)
     =/  ppp  ?~  ginfo  "~"  "{<members:+<:ginfo>}"
-    ~&  >  "               group members are {ppp}"
     ?&  ?!  =(ginfo ~)
         (~(has in members:+<:ginfo) ship)
     ==
   %ship
-    ~&  >  "  match-rule ship  checking {<ship>} in {<ships.justification>}"
     ?!  =(~ (find ~[ship] ships.justification))
   %kids
     :: TODO how?
