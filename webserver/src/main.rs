@@ -86,12 +86,12 @@ fn upload_file(state: State<Info>, key: String, data: Data) -> &'static str {
         Some(size) => {
             // TODO handle file-system errors
             let mut f = File::create(format!("./files/{}", key)).unwrap();
-            std::io::copy(&mut data.open().take(size), &mut f).unwrap();
+            let written = std::io::copy(&mut data.open().take(size), &mut f).unwrap();
             f.sync_all().unwrap();
 
             let url = state.provider_url.lock().unwrap();
             let auth: &str = &*AUTH_KEY.read().unwrap();
-            let url2: String = format!("http://{}/~lfs/completed/{}", (*url).as_ref().unwrap(), key);
+            let url2: String = format!("http://{}/~lfs/completed/{}/{}", (*url).as_ref().unwrap(), key, written);
             println!("Curling to {}", url2);
             let res = state.client
                 .post(url2)
