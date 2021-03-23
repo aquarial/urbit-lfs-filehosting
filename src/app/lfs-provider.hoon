@@ -75,6 +75,7 @@
        =+  !<([%add-rule [=justification size=@ud]] vase)
        =/  new-rules  (snoc upload-rules.state [justification size])
        =/  new-store  (~(gas by store.state) (turn ~(tap by store.state) (compute-ship-storage:hc new-rules)))
+       :: TODO give out new upload rules (changed storage)
        `this(state state(upload-rules new-rules, store new-store))
      ==
   :: /mar/lfs-provider/action.hoon
@@ -145,6 +146,7 @@
         ?+  -.resp  `this
         %initial
           :: TODO filter to only look at groups referenced in upload rules
+          :: TODO give out new upload rules (changed storage)
           =/  groups  ~(val by groups.resp)
           =/  ship-sets  (turn groups |=(g=group:group members.g))
           =/  ships  (roll ship-sets |=([s1=(set ship) s2=(set ship)] (~(uni in s1) s2)))
