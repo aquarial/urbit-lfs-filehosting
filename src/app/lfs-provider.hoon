@@ -207,6 +207,7 @@
 ++  upload-space
   =/  m  (~(get by store.state) src.bowl)
   ?:  =(m ~)  0
+  ?:  (lte storage:(need m) used:(need m))  0
   (sub storage:(need m) used:(need m))
 ++  server-accepting-upload
   ?&  =(fileserver-status.state %online)
