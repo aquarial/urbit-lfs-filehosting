@@ -265,7 +265,6 @@
   %ship
     ?!  =(~ (find ~[ship] ships.justification))
   %kids
-    :: TODO how?
-    %.n
+    =(our.bowl (sein:title our.bowl now.bowl ship))
   ==
 --
