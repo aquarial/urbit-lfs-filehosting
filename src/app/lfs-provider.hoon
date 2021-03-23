@@ -60,8 +60,24 @@
     =/  headers  header-list.request.inbound-request
     =/  auth  (skim headers |=([key=cord value=cord] =(key 'auth_token')))
     ?>  =(value.i.-.auth (crip fileserverauth.state))
-    :_  this
-    (snoc (give-simple-payload:app:srv id (handle-http-request:hc inbound-request)) [%give %fact ~[/uploader/(scot %p src.bowl)] %lfs-provider-server-update !>([%file-uploaded ~])])
+    ~&  "inobund url = {<url.request.inbound-request>}"
+    =/  url  (parse-request-line:srv url.request.inbound-request)
+    ~&  "getting {<site:url>}"
+    ?+  site.url  `this
+    :: TODO update store
+    :: TODO src.bowl is ~zod, actually lookup url key
+    :: TODO need to parse output
+    ::  "getting <|~lfs completed 0vbeef 1000|>"
+    ::  >>  "find out who uploaded 808.464.433 bytes of 0v36cli.m4thg. who is src ~zod"
+    ::  "client on-agent got %fact from %lfs-client on wire /lfs"
+    ::  >   "client knows the file uploaded!"
+    [%'~lfs' %completed @uv @ud ~]
+      =/  fileid  `@uv`&3:site.url
+      =/  filesize  `@ud`&4:site.url
+      ~&  >>  "find out who uploaded {<filesize>} bytes of {<fileid>}. who is src {<src.bowl>}"
+      :_  this
+      (snoc (give-simple-payload:app:srv id (handle-http-request:hc inbound-request)) [%give %fact ~[/uploader/(scot %p src.bowl)] %lfs-provider-server-update !>([%file-uploaded ~])])
+    ==
   %noun
      ?+  +.vase  `this
      %bowl
