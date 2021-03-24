@@ -82,9 +82,9 @@
       ?~  match
         ~&  "received update for unknown fileid {<fileid>}"
         :_  this
-        :~  (give-simple-payload:app:srv id (handle-http-request:hc inbound-request %failure))  ==
-      =/  ship=ship  (snag (need match) storelist)
-      =/  old=storageinfo  (~(got by store.state) ship)
+        (give-simple-payload:app:srv id (handle-http-request:hc inbound-request 'failure'))
+      =/  ship=ship  p.i.match
+      =/  old=storageinfo  q.i.match
       =/  new=storageinfo  old(used (add used.old filesize), upload-key ~, files (~(put by files.old) fileid filesize))
       :_  this(state state(store (~(put by store.state) ship new)))
       (snoc (give-simple-payload:app:srv id (handle-http-request:hc inbound-request %success)) [%give %fact ~[/uploader/(scot %p ship)] %lfs-provider-server-update !>([%file-uploaded ~])])
