@@ -75,8 +75,17 @@
       =/  fileid  `@uv`&3:site.url
       =/  filesize  `@ud`&4:site.url
       ~&  >>  "find out who uploaded {<filesize>} bytes of {<fileid>}. who is src {<src.bowl>}"
-      :_  this
-      (snoc (give-simple-payload:app:srv id (handle-http-request:hc inbound-request)) [%give %fact ~[/uploader/(scot %p src.bowl)] %lfs-provider-server-update !>([%file-uploaded ~])])
+      =/  storelist  ~(tap by store.state)
+      =/  match  (skim storelist |=([=ship =storageinfo] =(upload-key (some fileid))))
+      ?~  match
+        ~&  "received update for unknown fileid {<fileid>}"
+        :_  this
+        :~  (give-simple-payload:app:srv id (handle-http-request:hc inbound-request %failure))  ==
+      =/  ship=ship  (snag (need match) storelist)
+      =/  old=storageinfo  (~(got by store.state) ship)
+      =/  new=storageinfo  old(used (add used.old filesize), upload-key ~, files (~(put by files.old) fileid filesize))
+      :_  this(state state(store (~(put by store.state) ship new)))
+      (snoc (give-simple-payload:app:srv id (handle-http-request:hc inbound-request %success)) [%give %fact ~[/uploader/(scot %p ship)] %lfs-provider-server-update !>([%file-uploaded ~])])
     ==
   %noun
      ?+  +.vase  `this
@@ -237,16 +246,12 @@
   ?:  unsafe-demo.state  "http"
   "https"
 ++  handle-http-request
-  |=  req=inbound-request:eyre
+  |=  [req=inbound-request:eyre status=@t]
   ^-  simple-payload:http
   =,  enjs:format
   %-  json-response:gen:srv
   %-  pairs
-  :~
-    [%msg [%s 'hello my friends']]
-    [%intent [%s 'peaceful']]
-    [%ship [%s (scot %p our.bowl)]]
-  ==
+  :~  [%status [%s status]]  ==
 ++  format-number
   |=  n=@ud
   :: 1.234 -> "1234"
