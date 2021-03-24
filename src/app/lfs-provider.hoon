@@ -64,13 +64,6 @@
     =/  url  (parse-request-line:srv url.request.inbound-request)
     ~&  "getting {<site:url>}"
     ?+  site.url  `this
-    :: TODO update store
-    :: TODO src.bowl is ~zod, actually lookup url key
-    :: TODO need to parse output
-    ::  "getting <|~lfs completed 0vbeef 1000|>"
-    ::  >>  "find out who uploaded 808.464.433 bytes of 0v36cli.m4thg. who is src ~zod"
-    ::  "client on-agent got %fact from %lfs-client on wire /lfs"
-    ::  >   "client knows the file uploaded!"
     [%'~lfs' %completed @t @t ~]
       =/  fileid=@uv  (slav %uv &3:site.url)
       =/  filesize=@ud  (slav %ud &4:site.url)
