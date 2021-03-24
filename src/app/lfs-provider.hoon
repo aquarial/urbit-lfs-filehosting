@@ -76,7 +76,9 @@
       =/  filesize=@ud  (slav %ud &4:site.url)
       ~&  "find out who uploaded {<filesize>} bytes of {<fileid>}"
       =/  storelist  ~(tap by store.state)
-      =/  match  (skim storelist |=([=ship =storageinfo] =(upload-key (some fileid))))
+      =/  match  (skim storelist |=([=ship =storageinfo] =(upload-key.storageinfo (some fileid))))
+      ~&  "match is {<match>}"
+      ~&  "working with {<storelist>}"
       ?~  match
         ~&  "received update for unknown fileid {<fileid>}"
         :_  this
