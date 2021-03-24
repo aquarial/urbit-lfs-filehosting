@@ -126,12 +126,13 @@
       ?:  =(space 0)
         :_  this
         :~  [%give %fact ~[/uploader/(scot %p src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="no space left"]])]  ==
-      =/  pass  ?:  unsafe-demo.state  0vbeef  (cut 8 [0 1] eny.bowl)
+      =/  storageinfo=storageinfo  (need (~(get by store.state) src.bowl))
+      =/  pass  (fall upload-key.storageinfo ?:(unsafe-demo.state 0vbeef (cut 8 [0 1] eny.bowl)))
       =/  up-url  "{protocol:hc}://{fileserver.state}/upload/file/{<pass>}"
       =/  new-url  "{protocol:hc}://{fileserver.state}/upload/new/{<pass>}/{(format-number space)}"
       ~&  >  "provider sends authorizing url to {new-url}"
       ^-  (quip card _this)
-      :_  this
+      :_  this(state state(store (~(put by store.state) src.bowl storageinfo(upload-key (some pass)))))
       :~  [%pass /upload/[(scot %uv pass)] %arvo %i %request [%'POST' (crip new-url) ~[['auth_token' (crip fileserverauth.state)]] ~] *outbound-config:iris]
           [%give %fact ~[/uploader/(scot %p src.bowl)] [%lfs-provider-server-update !>([%request-response id=id.action response=[%got-url url=up-url]])]]
           :: confirm file server is up before giving fact?
