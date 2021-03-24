@@ -71,10 +71,10 @@
     ::  >>  "find out who uploaded 808.464.433 bytes of 0v36cli.m4thg. who is src ~zod"
     ::  "client on-agent got %fact from %lfs-client on wire /lfs"
     ::  >   "client knows the file uploaded!"
-    [%'~lfs' %completed @uv @ud ~]
-      =/  fileid  `@uv`&3:site.url
-      =/  filesize  `@ud`&4:site.url
-      ~&  >>  "find out who uploaded {<filesize>} bytes of {<fileid>}. who is src {<src.bowl>}"
+    [%'~lfs' %completed @t @t ~]
+      =/  fileid=@uv  (slav %uv &3:site.url)
+      =/  filesize=@ud  (slav %ud &4:site.url)
+      ~&  "find out who uploaded {<filesize>} bytes of {<fileid>}"
       =/  storelist  ~(tap by store.state)
       =/  match  (skim storelist |=([=ship =storageinfo] =(upload-key (some fileid))))
       ?~  match
