@@ -80,7 +80,7 @@
       =/  old=storageinfo  q.i.match
       =/  new=storageinfo  old(used (add used.old filesize), upload-key ~, files (~(put by files.old) fileid filesize))
       :_  this(state state(store (~(put by store.state) ship new)))
-      (snoc (give-simple-payload:app:srv id (handle-http-request:hc inbound-request %success)) [%give %fact ~[/uploader/(scot %p ship)] %lfs-provider-server-update !>([%file-uploaded ~])])
+      (snoc (give-simple-payload:app:srv id (handle-http-request:hc inbound-request %success)) [%give %fact ~[/uploader/(scot %p ship)] %lfs-provider-server-update !>([%file-uploaded fileid=fileid])])
     ==
   %noun
      ?+  +.vase  `this
