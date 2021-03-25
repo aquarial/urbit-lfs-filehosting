@@ -13,7 +13,7 @@
   ==
 +$  server-update
   $%  [%heartbeat fileserver-status]
-      [%file-uploaded fileid=@uv] :: storage-update
+      [%file-uploaded fileid=@uv filesize=@ud]
       [%request-response id=@uv response=request-response]
   ==
 +$  upload-rules  (list [=justification size=@ud])
