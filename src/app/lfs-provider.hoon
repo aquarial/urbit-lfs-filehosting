@@ -60,20 +60,16 @@
     =/  headers  header-list.request.inbound-request
     =/  auth  (skim headers |=([key=cord value=cord] =(key 'auth_token')))
     ?>  =(value.i.-.auth (crip fileserverauth.state))
-    ~&  "inobund url = {<url.request.inbound-request>}"
     =/  url  (parse-request-line:srv url.request.inbound-request)
-    ~&  "getting {<site:url>}"
     ?+  site.url  `this
     [%'~lfs' %completed @t @t ~]
       =/  fileid=@uv  (slav %uv &3:site.url)
       =/  filesize=@ud  (slav %ud &4:site.url)
-      ~&  "find out who uploaded {<filesize>} bytes of {<fileid>}"
+      ~&  >  "provider knows someone uploaded {<filesize>} bytes of {<fileid>}, notifying them"
       =/  storelist  ~(tap by store.state)
       =/  match  (skim storelist |=([=ship =storageinfo] =(upload-key.storageinfo (some fileid))))
-      ~&  "match is {<match>}"
-      ~&  "working with {<storelist>}"
       ?~  match
-        ~&  "received update for unknown fileid {<fileid>}"
+        ~&  >>  "provider could not identify who uploaded fileid {<fileid>}"
         :_  this
         (give-simple-payload:app:srv id (handle-http-request:hc inbound-request 'failure'))
       =/  ship=ship  p.i.match
