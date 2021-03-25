@@ -72,8 +72,8 @@
 ++  on-peek   on-peek:default
 ++  on-agent
   |=  [=wire =sign:agent:gall]
-  ~&  "client on-agent got {<-.sign>} from {<dap.bowl>} on wire {<wire>}"
-  ?+   wire  (on-agent:default wire sign)
+  ?+   wire  ~&  "client on-agent got un-handled {<-.sign>} from {<dap.bowl>} on wire {<wire>}"
+             (on-agent:default wire sign)
   [%lfs ~]
     ?+  -.sign  (on-agent:default wire sign)
     :: %watch-ack
@@ -84,7 +84,7 @@
         =/  resp  !<(server-update:lfs-provider q.cage.sign)
         ?-  -.resp
         %heartbeat
-          ~&  >>  "unexpected heartbeat: {<resp>}"
+          ~&  >>  "client received unexpected heartbeat : {<resp>}"
           `this
         %file-uploaded
           ~&  >  "client knows file upload {<fileid.resp>} succeeded!"
@@ -95,13 +95,13 @@
         %request-response
            =/  split-reqs  (skid pending-requests.state |=(r=[id=@uv =request-src] =(id.r id.resp)))
            ?:  ?=(~ p.split-reqs)
-             ~|  "unexpected response for request {<id.resp>}"
+             ~|  "client received unexpected response for request {<id.resp>}"
              !!
            ?-  request-src.i.p.split-reqs
            [%local-poke ~]
              ?-  -.response.resp
              %failure
-               ~&  >  "upload request rejected : {reason.response.resp}"
+               ~&  >  "client tells {<request-src.i.p.split-reqs>} that the upload request failed : {reason.response.resp}"
                `this(state state(pending-requests q.split-reqs))
              %got-url
                ~&  >  "client tells {<request-src.i.p.split-reqs>} to upload with : {url.response.resp}"
