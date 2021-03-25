@@ -9,10 +9,10 @@
   $%  [%local-poke ~]
   ::  [%http-request =connection] todo
   ==
-+$  state-0  [%0 pending-requests=(list [id=@uv =request-src])]
++$  state-0  [%0 pending-requests=(list [id=@uv =request-src]) store=(map ship storageinfo:lfs-provider)]
 --
 %-  agent:dbug
-=/  state=state-0  [%0 pending-requests=[~]]
+=/  state=state-0  [%0 pending-requests=[~] store=[~]]
 ^-  agent:gall
 =<
 |_  =bowl:gall
@@ -52,7 +52,9 @@
       :_  this
       :~  [%pass /lfs %agent [ship.action %lfs-provider] %watch /uploader/(scot %p our:bowl)]  ==
     %remove-provider
-      :_  this
+      :: unsubscribe and remove unused providers
+      =/  used  (skip ~(tap by store.state) |=([=ship =storageinfo:lfs-provider] =(used.storageinfo 0)))
+      :_  this(state state(store (~(gas by *(map ship storageinfo:lfs-provider)) used)))
       :~  [%pass /lfs %agent [ship.action %lfs-provider] %leave ~]  ==
     %request-upload
       =/  id  (cut 6 [0 1] eny.bowl)
@@ -85,8 +87,11 @@
           ~&  >>  "unexpected heartbeat: {<resp>}"
           `this
         %file-uploaded
-          ~&  >  "client knows the file uploaded!"
-          `this
+          ~&  >  "client knows file upload {<fileid.resp>} succeeded!"
+          =/  old=storageinfo:lfs-provider  (~(gut by store.state) src.bowl [storage=0 used=0 upload-url=~ files=[~]])
+          =/  key  ?:  =(upload-key.old (some fileid.resp))  ~  upload-key.old
+          =/  new=storageinfo:lfs-provider  old(used (add used.old filesize.resp), upload-key key, files (~(put by files.old) fileid.resp filesize.resp))
+          `this(state state(store (~(put by store.state) src.bowl new)))
         %request-response
            =/  split-reqs  (skid pending-requests.state |=(r=[id=@uv =request-src] =(id.r id.resp)))
            ?:  ?=(~ p.split-reqs)
@@ -99,8 +104,10 @@
                ~&  >  "upload request rejected : {reason.response.resp}"
                `this(state state(pending-requests q.split-reqs))
              %got-url
-               ~&  >  "client received upload url {url.response.resp}"
-               `this(state state(pending-requests q.split-reqs))
+               ~&  >  "client tells {<request-src.i.p.split-reqs>} to upload with : {url.response.resp}"
+               =/  old=storageinfo:lfs-provider  (~(gut by store.state) src.bowl [storage=0 used=0 upload-url=~ files=[~]])
+               =/  new=storageinfo:lfs-provider  old(upload-key (some key.response.resp))
+               `this(state state(pending-requests q.split-reqs, store (~(put by store.state) src.bowl new)))
              ==
            ==
         ==
