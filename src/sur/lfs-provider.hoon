@@ -15,6 +15,7 @@
   $%  [%heartbeat fileserver-status]
       [%file-uploaded fileid=@uv filesize=@ud]
       [%request-response id=@uv response=request-response]
+      [%storageinfo =storageinfo]
   ==
 +$  upload-rules  (list [=justification size=@ud])
 +$  justification

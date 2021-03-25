@@ -86,6 +86,9 @@
         %heartbeat
           ~&  >>  "client received unexpected heartbeat : {<resp>}"
           `this
+        %storageinfo
+          ~&  "client received provider's cache : {<storageinfo.resp>}"
+          `this(state state(store (~(put by store.state) src.bowl storageinfo.resp)))
         %file-uploaded
           ~&  >  "client knows file upload {<fileid.resp>} succeeded!"
           =/  old=storageinfo:lfs-provider  (~(gut by store.state) src.bowl [storage=0 used=0 upload-url=~ files=[~]])
