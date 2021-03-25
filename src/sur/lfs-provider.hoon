@@ -26,7 +26,7 @@
 +$  fileinfo  [size=@ud]
 
 +$  request-response
-  $%  [%got-url url=tape]
+  $%  [%got-url url=tape key=@uv] :: redundant bc url includes key. key tracks fileid
       [%failure reason=tape]
   ==
 --
