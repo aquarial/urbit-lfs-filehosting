@@ -45,6 +45,10 @@
     =/  action  !<(action vase)
     ~&  "lfs client does {<action>}"
     ?-  -.action
+    %list-files
+      =/  files=(list [ship @uv])  (zing (turn ~(tap by store.state) |=([=ship =storageinfo:lfs-provider] (turn ~(tap by files.storageinfo) |=([fid=@uv =fileinfo:lfs-provider] [ship fid])))))
+      ~&  >  "client has the following files: {<files>}"
+      `this
     %add-provider
       ?:  (~(has by wex.bowl) [wire=/lfs ship=ship.action term=%lfs-provider])
         ~&  >  "lfs client already subscribed to {<ship.action>}"
