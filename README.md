@@ -15,9 +15,9 @@
 - [x] client `[%request-upload ~]` receives url response
 - [x] webserver authenticates lfs-provider
 - [ ] gall app stores uploaded-files and pending-requests
-- [ ] upload limits
-- [ ] eyre endpoint to confirm upload
-- [ ] upload permissions based on clients/groups/%kids of provider
+- [x] upload limits
+- [x] eyre endpoint to confirm upload
+- [x] upload permissions based on clients/groups/%kids of provider
 - [ ] gall app restores webserver state on reboot
 - [ ] backup provider map of file ownership
 - [ ] poke to delete uploaded files
