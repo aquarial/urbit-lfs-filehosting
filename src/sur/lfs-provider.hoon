@@ -2,6 +2,7 @@
 +$  action
   $%  [%connect-server loopback=tape fileserver=tape token=tape]
       [%request-upload id=@uv]
+      [%request-delete fileid=@uv id=@uv]
    :: [%test-loopback loopback=tape]
   ==
 +$  client-request

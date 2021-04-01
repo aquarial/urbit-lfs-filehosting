@@ -9,6 +9,7 @@
   $%  [%local-poke ~]
   ::  [%http-request =connection] todo
   ==
+:: TODO only allow one reqeust, don't send id
 +$  state-0  [%0 pending-requests=(list [id=@uv =request-src]) store=(map ship storageinfo:lfs-provider)]
 --
 %-  agent:dbug
@@ -66,6 +67,15 @@
         ~&  "client on-poke upload request to {<ship.action>} {<`@uv`id>}"
         :_  this(state state(pending-requests (snoc pending-requests.state [id=id request-src=[%local-poke ~]])))
         :~  [%pass /(scot %da now.bowl) %agent [ship.action %lfs-provider] %poke %lfs-provider-action !>([%request-upload id=id])]  ==
+      ::
+      ~&  >  "not subscribed to {<ship.action>}!"
+      `this
+    %request-delete
+      =/  id  (cut 6 [0 1] eny.bowl)
+      ?:  (~(has by wex.bowl) [wire=/lfs ship=ship.action term=%lfs-provider])
+        ~&  "client on-poke delete request to {<ship.action>} {<`@uv`id>}"
+        :_  this(state state(pending-requests (snoc pending-requests.state [id=id request-src=[%local-poke ~]])))
+        :~  [%pass /(scot %da now.bowl) %agent [ship.action %lfs-provider] %poke %lfs-provider-action !>([%request-delete fileid=fileid.action id=id])]  ==
       ::
       ~&  >  "not subscribed to {<ship.action>}!"
       `this

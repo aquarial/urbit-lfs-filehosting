@@ -105,6 +105,13 @@
       =/  setup-url  "{protocol:hc}://{fileserver.action}/setup/{loopback.action}"
       :_  this(state state(fileserver-status %online, loopback loopback.action, fileserver fileserver.action, fileserverauth token.action))
       :~  [%pass /setup %arvo %i %request [%'POST' (crip setup-url) ~[['auth_token' (crip token.action)]] ~] *outbound-config:iris]  ==
+    %request-delete
+      ?>  src-is-subscriber:hc
+      :: TODO remove file from map
+      ::      update fileserver
+      ::      send space update to client
+      ~&  "provider knows {<src.bowl>} wants to delete {<fileid.action>}"
+      `this
     %request-upload
       ?>  src-is-subscriber:hc
       ?.  server-accepting-upload:hc
