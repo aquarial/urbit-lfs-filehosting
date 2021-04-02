@@ -102,6 +102,7 @@ fn upload_file(state: State<Info>, key: String, data: Data) -> &'static str {
                 Ok(res) => {
                     println!("Got resposne: {:?}", res);
                     println!("uploaded file {}", key);
+                    std::mem::drop(ups);
                     let mut downs = state.download_paths.write().unwrap();
                     downs.insert(String::from(key), ());
                 },
