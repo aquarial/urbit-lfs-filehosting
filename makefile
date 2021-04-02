@@ -55,4 +55,11 @@ zod-clean:
 	tmux send-keys -t zod ":lfs-client &lfs-client-action [%add-provider ~zod]" "ENTER"; sleep 1
 	tmux send-keys -t zod ":lfs-client &lfs-client-action [%request-upload ~zod]" "ENTER"; sleep 1
 
-.PHONY: zod-deep-clean zod-clean
+reload-zod:
+	tmux send-keys -t zod "C-l";
+	rsync -a --ignore-times ./src/ ./data/zod/home/; sleep 0.3
+	tmux send-keys -t zod "|commit %home" "ENTER"; sleep 1
+	tmux send-keys -t zod "KP-"
+	tmux send-keys -t zod "testthread" "ENTER"
+
+.PHONY: zod-deep-clean zod-clean reload-zod
