@@ -23,8 +23,8 @@ dopzod-clean:
 	rsync -a --ignore-times ./src/ ./data/dopzod/home/
 	tmux send-keys -t dopzod "|commit %home" "ENTER"; sleep 1
 	tmux send-keys -t dopzod "|start %lfs-client" "ENTER"; sleep 2
-	tmux send-keys -t dopzod ":lfs-client &lfs-client-action [%add-provider ~zod]" "ENTER"; sleep 0.5
-	#tmux send-keys -t dopzod ":lfs-client &lfs-client-action [%request-upload ~dopzod]" "ENTER"; sleep 0.5
+	tmux send-keys -t dopzod ":lfs-client &lfs-client-action [threadid=~ [%add-provider ~zod]]" "ENTER"; sleep 0.5
+	#tmux send-keys -t dopzod ":lfs-client &lfs-client-action [threadid=~ [%request-upload ~dopzod]]" "ENTER"; sleep 0.5
 
 .PHONY: dopzod-deep-clean dopzod-clean
 
@@ -52,14 +52,14 @@ zod-clean:
 	tmux send-keys -t zod "|start %lfs-client" "ENTER"; sleep 2
 	tmux send-keys -t zod ":lfs-provider &lfs-provider-action [%connect-server loopback=\"localhost:8081\" fileserver=\"localhost:8000\" token=\"hunter2\"]"; sleep 0.5; tmux send-keys -t zod "ENTER"; sleep 0.5
 	tmux send-keys -t zod ":lfs-provider [%add-rule [justification=[%group group='asdf'] size=30]]"; sleep 0.5; tmux send-keys -t zod "ENTER"; sleep 0.5
-	tmux send-keys -t zod ":lfs-client &lfs-client-action [%add-provider ~zod]" "ENTER"; sleep 1
-	tmux send-keys -t zod ":lfs-client &lfs-client-action [%request-upload ~zod]" "ENTER"; sleep 1
+	tmux send-keys -t zod ":lfs-client &lfs-client-action [threadid=~ [%add-provider ~zod]]" "ENTER"; sleep 1
+	tmux send-keys -t zod ":lfs-client &lfs-client-action [threadid=~ [%request-upload ~zod]]" "ENTER"; sleep 1
 
 reload-zod:
 	tmux send-keys -t zod "C-l";
 	rsync -a --ignore-times ./src/ ./data/zod/home/; sleep 0.3
 	tmux send-keys -t zod "|commit %home" "ENTER"; sleep 1
 	tmux send-keys -t zod "KP-"
-	tmux send-keys -t zod "testthread" "ENTER"
+	tmux send-keys -t zod "lfs-upload-url" "ENTER"
 
 .PHONY: zod-deep-clean zod-clean reload-zod
