@@ -7,6 +7,7 @@
   ==
 +$  request-src
   $%  [%local-poke ~]
+      [%thread id=@ta]
   ::  [%http-request =connection] todo
   ==
 :: TODO only allow one reqeust, don't send id
@@ -32,6 +33,7 @@
 ++  on-poke
   |=  [=mark =vase]
   :: ^-  (quip card _this)
+  ~&  "client on-poke from {<src.bowl>} with {<vase>}"
   ?+  mark  (on-poke:default mark vase)
   %noun
      ?+  +.vase  `this
@@ -45,7 +47,9 @@
     ?>  (team:title [our src]:bowl)
     =/  action  !<(action vase)
     ~&  "lfs client does {<action>}"
-    ?-  -.action
+    =/  request-src=request-src  ?:  =(threadid.action ~)  [%local-poke ~]  [%thread id=(need threadid.action)]
+    :: =/  request-src=request-src  [%local-poke ~]
+    ?-  +<.action
     %list-files
       =/  files=(list [ship @uv])  (zing (turn ~(tap by store.state) |=([=ship =storageinfo:lfs-provider] (turn ~(tap by files.storageinfo) |=([fid=@uv =fileinfo:lfs-provider] [ship fid])))))
       ~&  >  "client has the following files: {<files>}"
@@ -65,16 +69,16 @@
       =/  id  (cut 6 [0 1] eny.bowl)
       ?:  (~(has by wex.bowl) [wire=/lfs ship=ship.action term=%lfs-provider])
         ~&  "client on-poke upload request to {<ship.action>} {<`@uv`id>}"
-        :_  this(state state(pending-requests (snoc pending-requests.state [id=id request-src=[%local-poke ~]])))
+        :_  this(state state(pending-requests (snoc pending-requests.state [id=id request-src=request-src])))
         :~  [%pass /(scot %da now.bowl) %agent [ship.action %lfs-provider] %poke %lfs-provider-action !>([%request-upload id=id])]  ==
       ::
-      ~&  >  "not subscribed to {<ship.action>}!"
+      ~&  >  "client won't request upload to {<ship.action>} because we are not subscribed to them"
       `this
     %request-delete
       =/  id  (cut 6 [0 1] eny.bowl)
       ?:  (~(has by wex.bowl) [wire=/lfs ship=ship.action term=%lfs-provider])
         ~&  "client on-poke delete request to {<ship.action>} {<`@uv`id>}"
-        :_  this(state state(pending-requests (snoc pending-requests.state [id=id request-src=[%local-poke ~]])))
+        :_  this(state state(pending-requests (snoc pending-requests.state [id=id request-src=request-src])))
         :~  [%pass /(scot %da now.bowl) %agent [ship.action %lfs-provider] %poke %lfs-provider-action !>([%request-delete fileid=fileid.action id=id])]  ==
       ::
       ~&  >  "not subscribed to {<ship.action>}!"
@@ -114,8 +118,13 @@
            ?:  ?=(~ p.split-reqs)
              ~|  "client received unexpected response for request {<id.resp>}"
              !!
-           ?-  request-src.i.p.split-reqs
-           [%local-poke ~]
+           ?-  -.request-src.i.p.split-reqs
+           %thread
+             =/  tid  id.request-src.i.p.split-reqs
+             :_  this
+             :~  [%pass /thread/[tid] %agent [our.bowl %spider] %poke %spider-input !>([tid %request-response !>(response.resp)])]
+             ==
+           %local-poke
              ?-  -.response.resp
              %failure
                ~&  >  "client tells {<request-src.i.p.split-reqs>} that the upload request failed : {reason.response.resp}"
