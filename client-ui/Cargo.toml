@@ -1,0 +1,18 @@
+[package]
+name = "urbit-lfs-client-ui"
+version = "0.1.0"
+authors = ["Karl <37496339+aquarial@users.noreply.github.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rocket = "0.4.7"
+rand = "0.8.3"
+reqwest = { version = "0.11", features = ["blocking", "json"] }
+
+
+[dependencies.rocket_contrib]
+version = "0.4.7"
+default-features = false
+features = ["tera_templates"]

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>File Manager</title>
+  </head>
+  <body>
+    Authentication Token (<code>+code</code>) </br>
+    <input type="text" id="auth" name="auth" value="{{ token }}">
+    <input type="submit" id="submit" value="Submit">
+
+    <script>
+     // https://stackoverflow.com/questions/247483/http-get-request-in-javascript
+     function httpPostAsync(theUrl, body, callback) {
+       var xmlHttp = new XMLHttpRequest();
+       xmlHttp.onreadystatechange = function() {
+         console.log("full response is", xmlHttp)
+         if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+           callback(xmlHttp.responseText);
+       }
+       xmlHttp.onload = function() { console.log('request complete'); };
+       xmlHttp.open("POST", theUrl, true); // true for asynchronous
+       xmlHttp.send(body);
+     }
+
+     let input = document.getElementById("auth");
+     let submit = document.getElementById("submit");
+
+     let token = ""
+     let hasvalid = false
+
+     function fun(ev) {
+       submit.disabled = true;
+       httpPostAsync("http://localhost:8081/~/login", "password="+input.value, function(resp) {
+         hasvalid = true;
+         token = input.value;
+         console.log("got respones", resp);
+         submit.disabled = false;
+       });
+       console.log("got event", ev);
+     }
+     submit.addEventListener("click", fun);
+    </script>
+  </body>
+</html>
