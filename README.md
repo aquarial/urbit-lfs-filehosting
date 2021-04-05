@@ -2,7 +2,7 @@
 
 ## Overview
 
-`./webserver/` is a HTTP REST fileserver 
+`./webserver/` is a HTTP REST fileserver
 
 `./src/app/lfs-provider.hoon` manages access to the webserver through pokes and subscriptions
 
@@ -19,51 +19,25 @@
 - [x] eyre endpoint to confirm upload
 - [x] upload permissions based on clients/groups/%kids of provider
 - [ ] gall app restores webserver state on reboot
-- [ ] backup provider map of file ownership
 - [ ] poke to delete uploaded files
+- [ ] client uses scrys+threads instead of pokes
 - [ ] http upload interface
 - [ ] demo html+js UI
+- [ ] provider uses threads to connect IO
+- [ ] backup provider map of file ownership
+- [ ] behn fileserver status check
+- [ ] transactions either succeed or can be safely retried
+
+Considerations 
+
+- [ ] how to ratelimit threads
+- [ ] match client/provider versioning
+- [ ] ensure provider is safe even if clients are modified 
+- [ ] stats on fileserver
+- [ ] deny comets. moon storage is based on parent
+- [ ] handle deleting a group
 
 
-## Demo
-
-
-Console 1 : startup http file server
-
-```
-shell$ cd ./webserver/
-shell$ cargo run
-Authorized Header is hunter2
-....
-Rocket has launched from http://localhost:8000
-```
-
-Console 2: run provider on fake-zod
-
-```
-shell$ # setup fake-zod with "|mount %"
-shell$ rsync -a --info=progress2 --ignore-times ./src/ ./data/zod/home/
-shell$ ./data/urbit ./data/zod
-...
-dojo> |commit %home
-dojo> |start %lfs-provider
-dojo> :lfs-provider &lfs-provider-action [%connect-server loopback="localhost:8080" fileserver="localhost:8000" token="hunter2"]
-dojo> :lfs-client &lfs-client-action [%add-provider ~zod]
-dojo> :lfs-client &lfs-client-action [%request-upload ~zod]
-```
-
-Console 3: run client on fake-dopzod
-
-```
-shell$ # setup fake-dopzod with "|mount %"
-shell$ rsync -a --info=progress2 --ignore-times ./src/ ./data/dopzod/home/
-shell$ ./data/urbit ./data/dopzod
-...
-dojo> |commit %home
-dojo> |start %lfs-client
-dojo> :lfs-client &lfs-client-action [%add-provider ~zod]
-dojo> :lfs-client &lfs-client-action [%request-upload ~zod]
-```
 
 
 ## Useful commands
@@ -83,28 +57,59 @@ cargo run -- --UNSAFE_DEBUG_AUTH
 :lfs-provider +dbug
 
 :lfs-provider %bowl
+:lfs-provider [%add-rule [justification=[%ship ships=~[~zod]] size=1.000]]
+:lfs-provider [%add-rule [justification=[%group group=`@tas`'asdf'] size=30]]
 :lfs-provider &lfs-provider-action [%connect-server address="localhost:8000" token="hunter2"]
 
 :lfs-client %bowl
+:lfs-client &lfs-client-action [%list-files ~]
 :lfs-client &lfs-client-action [%add-provider ~zod]
 :lfs-client &lfs-client-action [%remove-provider ~zod]
-:lfs-client &lfs-client-action [%request-upload ~zod]
+:lfs-client &lfs-client-action [threadid=~ %request-upload ~zod]]
+:lfs-client &lfs-client-action [%request-delete ~zod 0vbeef]
 
 rsync -a --ignore-times ./src/ ./dst/
 
+=m (my [["a" 1] ["b" 2] ~])
+(~(rut by m) |=([name=tape age=@ud] 1))
+(~(get by m) "a")
 
-curl -i localhost:8080/~/login -X POST -d "password=hunter2"
+(de-json:html '{"threadid": 123}')
+(en-json:html [%n 42])
+(en-json:html [%s 'asdf'])
+
+(de-json:html (crip (en-json:html [%n '13'])))
+
+=srv -build-file %/lib/server/hoon
+=group -build-file %/sur/group/hoon
+.^((unit group:group) %gx /(scot %p our)/group-store/(scot %da now)/groups/ship/(scot %p our)/[%asdf]/noun)
+.^((unit group:group) %gx /=group-store=/groups/ship/~zod/bbbbbbbbb/noun)
+.^(* %gx /=group-store=/groups/ship/~zod/bbbbbbbbb/join/~zod/noun)
+
+
+
+curl -i localhost:8081/~/login -X POST -d "password=hunter2"
 
 curl --header "Content-Type: application/json" \
      --cookie "COOKIE_FROM_PREVIOUS_COMMMAND" \
      --request PUT \
      --data '[{"id":1,"action":"poke","ship":"your-ship-name-here","app":"hood","mark":"helm-hi","json":"Opening airlock"}]' \
-     http://localhost:8080/\~/channel/1601844290-ae45b
-     
+     http://localhost:8081/\~/channel/1601844290-ae45b
+
 curl --header "Content-Type: application/json" \
      --cookie "COOKIE_FROM_PREVIOUS_COMMMAND" \
      --request PUT \
      --data @'hooncard.pdf' \
-     http://localhost:8080/~upload
+     http://localhost:8081/~upload
 
+
+curl --header "Content-Type: application/json" \
+     --cookie "$(curl -i localhost:8081/~/login -X POST -d "password=lidlut-tabwed-pillex-ridrup" | rg set-cookie | sed 's/set-cookie..//' | sed 's/;.*//')" \
+     --request POST \
+     --data '2' \
+     http://localhost:8081/spider/noun/lfs-upload-url/json.json
 ```
+
+## Thoughts
+
+how to ratelimit threads?
