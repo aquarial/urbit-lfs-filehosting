@@ -19,4 +19,4 @@
   %failure
     (crip "no:  {reason.resp}")
   ==
-  (pure:m !>(([%s msg])))
+  (pure:m !>([%s msg]))
