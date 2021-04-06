@@ -60,6 +60,11 @@ impl Info {
     }
 }
 
+#[get("/")]
+fn default() -> &'static str {
+    "fileserver online\n"
+}
+
 #[post("/setup/<provider>")]
 fn setup_provider(_tok: AuthToken, state: State<Info>, provider: String) -> &'static str {
     let mut url = state.provider_url.lock().unwrap();
@@ -150,6 +155,18 @@ fn generate_password(len: usize) -> String {
     password
 }
 
+#[delete("/upload/remove/<key>")]
+fn upload_remove(_tok: AuthToken, state: State<Info>, key: String) -> &'static str {
+    if key.contains("..") {
+        return "invalid key\n";
+    }
+    let mut ups = state.upload_paths.write().unwrap();
+    println!("removing upload path to {}", key);
+    ups.remove(&key);
+    std::fs::remove_file(format!("./files/{}", key)).unwrap();
+    "upload path removed\n"
+}
+
 fn main() {
     {
         let mut key = AUTH_KEY.write().unwrap();
@@ -164,6 +181,6 @@ fn main() {
     std::fs::create_dir_all("./files/").unwrap();
     rocket::ignite()
         .manage(Info::new())
-        .mount("/", routes![upload_new, upload_file, download_file, setup_provider])
+        .mount("/", routes![default, upload_new, upload_file, upload_remove, download_file, setup_provider])
         .launch();
 }
