@@ -15,8 +15,8 @@
 =/  msg
   ?-  -.resp
   %got-url
-    (crip "yes: {url.resp}")
+    (my ~[['success' [%b %.y]] ['url' [%s (crip url.resp)]]])
   %failure
-    (crip "no:  {reason.resp}")
+    (my ~[['success' [%b %.n]] ['reason' [%s (crip reason.resp)]]])
   ==
-  (pure:m !>([%s msg]))
+(pure:m !>([%o msg]))
