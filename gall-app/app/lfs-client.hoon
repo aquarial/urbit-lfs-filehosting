@@ -93,7 +93,7 @@
   ?+    pax  (on-peek:default pax)
   [%x %list-files ~]
       =/  files=(list [ship @uv])  (zing (turn ~(tap by store.state) |=([=ship =storageinfo:lfs-provider] (turn ~(tap by files.storageinfo) |=([fid=@uv =fileinfo:lfs-provider] [ship fid])))))
-      =/  jsonfiles  (turn files |=(x=[ship @uv] [%s (crip "{<x>}")]))
+      =/  jsonfiles  (turn files |=([=ship id=@uv] [%o (my ~[['provider' [%s (crip "{<ship>}")]] ['fileid' [%s (crip "{<id>}")]]])]))
       ``json+!>([%a jsonfiles])
   ==
 ++  on-agent
