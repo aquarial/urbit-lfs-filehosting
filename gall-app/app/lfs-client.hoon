@@ -87,7 +87,15 @@
   ==
 ++  on-watch  on-watch:default
 ++  on-leave  on-leave:default
-++  on-peek   on-peek:default
+++  on-peek
+  |=  pax=path
+  ^-  (unit (unit cage))
+  ?+    pax  (on-peek:default pax)
+  [%x %list-files ~]
+      =/  files=(list [ship @uv])  (zing (turn ~(tap by store.state) |=([=ship =storageinfo:lfs-provider] (turn ~(tap by files.storageinfo) |=([fid=@uv =fileinfo:lfs-provider] [ship fid])))))
+      =/  jsonfiles  (turn files |=(x=[ship @uv] [%s (crip "{<x>}")]))
+      ``json+!>([%a jsonfiles])
+  ==
 ++  on-agent
   |=  [=wire =sign:agent:gall]
   ?+   wire  ~&  "client on-agent got un-handled {<-.sign>} from {<dap.bowl>} on wire {<wire>}"
