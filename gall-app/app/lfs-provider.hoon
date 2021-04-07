@@ -214,6 +214,10 @@
     ?>  ?=(%finished -.client-response.sign-arvo)
     ~&  "provider on-arvo upload response code {<status-code.response-header.client-response.sign-arvo>}"
     `this
+  [%upload %remove * ~]
+    ?>  ?=(%finished -.client-response.sign-arvo)
+    ~&  "provider on-arvo file deleted code {<status-code.response-header.client-response.sign-arvo>}"
+    `this
   ==
   ::   =^  cards  state
   ::      ~&  "provider on-arvo got on wire {<wire>} = {<client-response.sign-arvo>}"
