@@ -62,13 +62,14 @@ cargo run -- --UNSAFE_DEBUG_AUTH
 :lfs-provider &lfs-provider-action [%connect-server address="localhost:8000" token="hunter2"]
 
 :lfs-client %bowl
-:lfs-client &lfs-client-action [%list-files ~]
-:lfs-client &lfs-client-action [%add-provider ~zod]
-:lfs-client &lfs-client-action [%remove-provider ~zod]
+:lfs-client &lfs-client-action [threadid=~ %list-files ~]
+:lfs-client &lfs-client-action [threadid=~ %add-provider ~zod]
+:lfs-client &lfs-client-action [threadid=~ %remove-provider ~zod]
 :lfs-client &lfs-client-action [threadid=~ %request-upload ~zod]]
-:lfs-client &lfs-client-action [%request-delete ~zod 0vbeef]
+:lfs-client &lfs-client-action [threadid=~ %request-delete ~zod 0vbeef]
 
 rsync -a --ignore-times ./src/ ./dst/
+
 
 =m (my [["a" 1] ["b" 2] ~])
 (~(rut by m) |=([name=tape age=@ud] 1))
@@ -77,8 +78,12 @@ rsync -a --ignore-times ./src/ ./dst/
 (de-json:html '{"threadid": 123}')
 (en-json:html [%n 42])
 (en-json:html [%s 'asdf'])
-
 (de-json:html (crip (en-json:html [%n '13'])))
+
+((se:dejs:format %uv) [%s '0vabcd'])
+((se:dejs:format %uv) [%s '0vabcd'])
+
+=x (of:dejs:format ~[[%add-provider (su:dejs:format ;~(pfix sig fed:ag))] [%remove-provider (su:dejs:format ;~(pfix sig fed:ag))] [%request-upload (su:dejs:format ;~(pfix sig fed:ag))] [%list-files ul:dejs:format] [%request-delete (su:dejs:format ;~(pfix sig fed:ag)) (se:dejs:format %uv)]])
 
 =srv -build-file %/lib/server/hoon
 =group -build-file %/sur/group/hoon
@@ -86,6 +91,7 @@ rsync -a --ignore-times ./src/ ./dst/
 .^((unit group:group) %gx /=group-store=/groups/ship/~zod/bbbbbbbbb/noun)
 .^(* %gx /=group-store=/groups/ship/~zod/bbbbbbbbb/join/~zod/noun)
 
+.^((unit group:group) %gx /=lfs-client=/groups/ship/~zod/bbbbbbbbb/noun)
 
 
 curl -i localhost:8081/~/login -X POST -d "password=hunter2"
@@ -108,6 +114,11 @@ curl --header "Content-Type: application/json" \
      --request POST \
      --data '2' \
      http://localhost:8081/spider/noun/lfs-upload-url/json.json
+
+curl --header "Content-Type: application/json" \
+     --cookie "$(curl -i localhost:8081/~/login -X POST -d "password=lidlut-tabwed-pillex-ridrup" | rg set-cookie | sed 's/set-cookie..//' | sed 's/;.*//')" \
+     --request GET \
+     http://localhost:8081/~/scry/lfs-client/list-files.json
 ```
 
 ## Thoughts
