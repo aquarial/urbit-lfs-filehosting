@@ -69,6 +69,21 @@ fn login(state: State<Info>, url: String, token: String) -> Redirect {
 #[get("/manage")]
 fn manage(state: State<Info>) -> Template {
     let mut context = HashMap::<String,String>::new();
+
+    let res = state.client
+        .post(url2)
+        .body(format!("password={}", token))
+        .send();
+
+    println!("Got response {:?}", res);
+    match res {
+        Ok(res) => {
+        }
+        Err(er) => {
+        }
+    }
+
+
     let key = state.auth_key.lock().unwrap();
     println!("using key = {:?}", key);
     Template::render("manage", &context)
