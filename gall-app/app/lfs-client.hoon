@@ -95,9 +95,10 @@
   ^-  (unit (unit cage))
   ?+    pax  (on-peek:default pax)
   [%x %all-storage-info ~]
-      =/  json-storage  |=  =storageinfo:lfs-provider  [%o (my ~[['storage' [%n (crip "{<storage.storageinfo>}")]] ['used' [%n (crip "{<used.storageinfo>}")]]])]
-      =/  info  (turn ~(tap by store.state) |=([=ship =storageinfo:lfs-provider] [(crip "{<ship>}") (json-storage storageinfo)]))
-      ``json+!>([%o (~(gas by *(map @ta json)) info)])
+      =/  json-fileinfo  |=  [fileid=@uv size=@ud]  [(crip "{<fileid>}") [%o (my ~[['size' [%n (crip "{<size>}")]]])]]
+      =/  json-storage  |=  =storageinfo:lfs-provider  [%o (my ~[['storage' [%n (crip "{<storage.storageinfo>}")]] ['used' [%n (crip "{<used.storageinfo>}")]] ['files' [%o ((map @ta json) (transform-map:hc files.storageinfo json-fileinfo))]]])]
+      =/  json-storage-map  |=  [=ship =storageinfo:lfs-provider]  [(crip "{<ship>}") (json-storage storageinfo)]
+      ``json+!>([%o ((map @ta json) (transform-map:hc store.state json-storage-map))])
   [%x %list-files ~]
       =/  files=(list [ship @uv])  (zing (turn ~(tap by store.state) |=([=ship =storageinfo:lfs-provider] (turn ~(tap by files.storageinfo) |=([fid=@uv =fileinfo:lfs-provider] [ship fid])))))
       =/  jsonfiles  (turn files |=([=ship id=@uv] [%o (my ~[['provider' [%s (crip "{<ship>}")]] ['fileid' [%s (crip "{<id>}")]]])]))
@@ -164,4 +165,7 @@
 ::
 ::  helper core
 |_  =bowl:gall
+++  transform-map
+  |*  [m=(map * *) f=gate]
+  (~(gas by *(map * *)) (turn ~(tap by m) f))
 --
