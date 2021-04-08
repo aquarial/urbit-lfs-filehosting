@@ -143,7 +143,7 @@
            %thread
              =/  tid  id.request-src.i.p.split-reqs
              :_  this
-             :~  [%pass /thread/[tid] %agent [our.bowl %spider] %poke %spider-input !>([tid %request-response !>(response.resp)])]
+             :~  [%pass /thread/[tid] %agent [our.bowl %spider] %poke %spider-input !>([tid %client-action-response !>(response.resp)])]
              ==
            %local-poke
              ?-  -.response.resp
