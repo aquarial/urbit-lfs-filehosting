@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>File Manager</title>
+  </head>
+  <body>
+    <div id="gettoken">
+      Authentication Token (<code>+code</code>) </br>
+      <input type="text" id="auth" name="auth" value="lidlut-tabwed-pillex-ridrup">
+      <input type="submit" id="submit" value="Submit">
+    </div>
+
+    <div id="usetoken">
+      <p> how to use token</p>
+    </div>
+
+    <script>
+     // https://stackoverflow.com/questions/247483/http-get-request-in-javascript
+     function httpGetAsync(theUrl, callback, errHandle) {
+       var xmlHttp = new XMLHttpRequest();
+       xmlHttp.onreadystatechange = function() {
+         if (xmlHttp.readyState == 4 && (xmlHttp.status == 200 || xmlHttp.status == 204))
+           callback(xmlHttp);
+         if (xmlHttp.readyState == 4 && (xmlHttp.status != 200 && xmlHttp.status != 204))
+           errHandle();
+       }
+       xmlHttp.open("GET", theUrl, true); // true for asynchronous
+       xmlHttp.withCredentials = true;
+       xmlHttp.send(null);
+     }
+     function httpPostAsync(theUrl, body, callback, errHandle) {
+       var xmlHttp = new XMLHttpRequest();
+       xmlHttp.onreadystatechange = function() {
+         if (xmlHttp.readyState == 4 && (xmlHttp.status == 200 || xmlHttp.status == 204))
+           callback(xmlHttp);
+         if (xmlHttp.readyState == 4 && (xmlHttp.status != 200 && xmlHttp.status != 204))
+           errHandle(xmlHttp);
+       }
+       xmlHttp.open("POST", theUrl, true); // true for asynchronous
+       xmlHttp.send(body);
+     }
+
+     let input = document.getElementById("auth");
+     let submit = document.getElementById("submit");
+     let gettoken = document.getElementById("gettoken");
+     let usetoken = document.getElementById("usetoken");
+     usetoken.style.display = 'none'
+
+     function displayresults() {
+       httpGetAsync("http://localhost:8081/~/scry/lfs-client/list-files.json",
+         function(xmlhttp) {
+           console.log("Got response:", xmlhttp.response)
+           gettoken.style.display = 'none'
+           usetoken.style.display = ''
+         },
+         function() {
+           gettoken.style.display = ''
+           usetoken.style.display = 'none'
+           console.log("Got no resposne");
+         }
+       );
+
+     }
+
+     displayresults();
+     // function fun(ev) {
+     //   submit.disabled = true;
+     //   httpPostAsync("http://localhost:8081/~/login", "password="+input.value,
+     //     function(xmlhttp) {
+     //       submit.disabled = false;
+     //     },
+     //     function(xmlhttp) {
+     //       submit.disabled = false;
+     //       console.log("fun failure", xmlhttp);
+     //     }
+     //   );
+     //   console.log("got event", ev);
+     // }
+     // submit.addEventListener("click", fun);
+    </script>
+  </body>
+</html>
