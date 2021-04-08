@@ -1,4 +1,4 @@
-/-  spider, lfs-provider
+/-  spider, lfs-provider, lfs-client
 /+  strandio
 =,  strand=strand:spider
 |%
@@ -33,15 +33,17 @@
 ?~  action  (pure:m !>([%o (my ~[['failure' [%b %.n]] ['reason' [%s (crip "unexpected input: {<arg>}")]]])]))
 ::
 ;<  ~             bind:m  (poke:strandio [our.bowl %lfs-client] %lfs-client-action !>(u.action))
-;<  vmsg=vase     bind:m  (take-poke:strandio %request-response)
-=/  resp  !<(request-response:lfs-provider vmsg)
+;<  vmsg=vase     bind:m  (take-poke:strandio %client-action-response)
+=/  resp  !<(client-action-response:lfs-client vmsg)
 =/  msg
   ?-  -.resp
-  %file-deleted
-    (my ~[['success' [%b %.y]]])
   %got-url
     (my ~[['success' [%b %.y]] ['url' [%s (crip url.resp)]]])
+  %file-deleted
+    (my ~[['success' [%b %.y]]])
+  %updated-providers
+    (my ~[['success' [%b %.y]]])
   %failure
-    (my ~[['failure' [%b %.n]] ['reason' [%s (crip reason.resp)]]])
+    (my ~[['success' [%b %.n]] ['reason' [%s (crip reason.resp)]]])
   ==
 (pure:m !>([%o msg]))
