@@ -56,18 +56,22 @@
     =/  action  !<(action vase)
     ~&  "lfs client does {<action>}"
     =/  request-src=request-src  ?:  =(threadid.action ~)  [%local-poke ~]  [%thread id=(need threadid.action)]
-    :: =/  request-src=request-src  [%local-poke ~]
     ?-  +<.action
     %list-files
       =/  files=(list [ship @uv])  (zing (turn ~(tap by store.state) |=([=ship =storageinfo:lfs-provider] (turn ~(tap by files.storageinfo) |=([fid=@uv =fileinfo:lfs-provider] [ship fid])))))
       ~&  >  "client has the following files: {<files>}"
       `this
     %add-provider
+      =/  tid  (need threadid.action)
       ?:  (~(has by wex.bowl) [wire=/lfs ship=ship.action term=%lfs-provider])
         ~&  >  "lfs client already subscribed to {<ship.action>}"
-        `this
+        :_  this
+        :~  [%pass /thread/[tid] %agent [our.bowl %spider] %poke %spider-input !>([tid %client-action-response !>([%updated-providers ~])])]
+        ==
       :_  this
-      :~  [%pass /lfs %agent [ship.action %lfs-provider] %watch /uploader/(scot %p our:bowl)]  ==
+      :~  [%pass /lfs %agent [ship.action %lfs-provider] %watch /uploader/(scot %p our:bowl)]
+          [%pass /thread/[tid] %agent [our.bowl %spider] %poke %spider-input !>([tid %client-action-response !>([%updated-providers ~])])]
+      ==
     %remove-provider
       :: unsubscribe and remove unused providers
       =/  used  (skip ~(tap by store.state) |=([=ship =storageinfo:lfs-provider] =(used.storageinfo 0)))
