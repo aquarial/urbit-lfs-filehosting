@@ -24,7 +24,10 @@
 ::
 ++  on-init
   ^-  (quip card _this)
-  `this
+  =/  private-filea  [%file-server-action !>([%serve-dir /'~filemanager' /app/filemanager %.y %.n])]
+  :_  this
+  :~  [%pass /srv %agent [our.bowl %file-server] %poke private-filea]
+  ==
 ++  on-save
   ^-  vase
   !>(state)
