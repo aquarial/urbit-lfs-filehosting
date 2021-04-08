@@ -16,15 +16,22 @@
 ::  (pure:m !>([arg ?=([* [~ %test]] arg)]))
 
 ?+  arg  (pure:m !>([%s (crip "unexpected input {<arg>}")]))
+[* [~ [%a [%s %request-upload] [%s @ud] %.0]]]
+   =/  target  `@p`(slav %p `@t`+>+>->:arg)
+   (pure:m !>([%s (crip "requesting upload to {<target>}")]))
+::
 [* [~ [%a [%s %add-provider] [%s @ud] %.0]]]
    =/  target  `@p`(slav %p `@t`+>+>->:arg)
    (pure:m !>([%s (crip "adding provider {<target>}")]))
+::
 [* [~ [%a [%s %remove-provider] [%s @ud] %.0]]]
    =/  target  `@p`(slav %p `@t`+>+>->:arg)
    (pure:m !>([%s (crip "removing provider {<target>}")]))
-:: [* [~ [%a [%s %request-delete] [%s @ud] %.0]]]
-::    =/  target  `@p`(slav %p `@t`+>+>->:arg)
-::    (pure:m !>([%s (crip "uploading to {<target>}")]))
+::
+[* [~ [%a [%s %request-delete] [%s @ud] [%s @ud] %.0]]]
+    =/  target  `@p`(slav %p `@t`+>+>->:arg)
+    =/  fileid  `@uv`(slav %uv `@t`+>+>+<+:arg)
+    (pure:m !>([%s (crip "uploading to {<target>} and fileid is {<fileid>}")]))
 ==
 
 ::
