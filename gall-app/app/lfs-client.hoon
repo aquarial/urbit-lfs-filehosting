@@ -41,8 +41,8 @@
 ++  on-poke
   |=  [=mark =vase]
   :: ^-  (quip card _this)
-  ~&  "client on-poke from {<src.bowl>} with {<vase>}"
-  ?+  mark  (on-poke:default mark vase)
+  ?+  mark  ~&  "client unexpected on-poke from {<src.bowl>} with {<vase>}"
+            (on-poke:default mark vase)
   %noun
      ?+  +.vase  `this
      :: add cases as needed
@@ -54,7 +54,7 @@
   %lfs-client-action
     ?>  (team:title [our src]:bowl)
     =/  action  !<(action vase)
-    ~&  "lfs client does {<action>}"
+    ~&  "client does {<action>}"
     =/  request-src=request-src  ?:  =(threadid.action ~)  [%local-poke ~]  [%thread id=(need threadid.action)]
     ?-  +<.action
     %list-files
@@ -63,7 +63,7 @@
       `this
     %add-provider
       ?:  (~(has by wex.bowl) [wire=/lfs ship=ship.action term=%lfs-provider])
-        ~&  >  "lfs client already subscribed to {<ship.action>}"
+        ~&  >  "client already subscribed to {<ship.action>}"
         ?~  threadid.action  `this
         =/  tid  (need threadid.action)
         :_  this
