@@ -60,7 +60,7 @@ reload-zod:
 	rsync -a --ignore-times ./gall-app/ ./data/zod/home/; sleep 0.3
 	tmux send-keys -t zod "|commit %home" "ENTER"; sleep 1
 	tmux send-keys -t zod "KP-"
-	tmux send-keys -t zod "lfs-upload-url" "ENTER"
+	tmux send-keys -t zod "lfs-client-action" "ENTER"
 
 .PHONY: zod-deep-clean zod-clean reload-zod
 
