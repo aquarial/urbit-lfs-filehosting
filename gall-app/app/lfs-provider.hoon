@@ -116,8 +116,7 @@
       =/  newstorage  storageinfo(used (sub used.storageinfo size.u.ufile), files (~(del by files.storageinfo) fileid.action))
       :_  this(state state(store (~(put by store.state) src.bowl newstorage)))
       :~  [%pass /upload/remove/[(scot %uv fileid.action)] %arvo %i %request [%'DELETE' (crip del-url) ~[['auth_token' (crip fileserverauth.state)]] ~] *outbound-config:iris]
-          [%give %fact ~[/uploader/(scot %p src.bowl)] [%lfs-provider-server-update !>([%storageinfo storageinfo=newstorage])]]
-          :: client will check to see the file is no longer in the storageinfo to know request succeeded
+          [%give %fact ~[/uploader/(scot %p src.bowl)] [%lfs-provider-server-update !>([%request-response id=id.action response=[%file-deleted key=fileid.action]])]]
       ==
     %request-upload
       ?>  src-is-subscriber:hc

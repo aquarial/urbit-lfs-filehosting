@@ -29,6 +29,7 @@
 
 +$  request-response
   $%  [%got-url url=tape key=@uv] :: url includes key, key tracks fileid
+      [%file-deleted key=@uv]
       [%failure reason=tape]
   ==
 --

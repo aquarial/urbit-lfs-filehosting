@@ -143,8 +143,13 @@
            %local-poke
              ?-  -.response.resp
              %failure
-               ~&  >  "client tells {<request-src.i.p.split-reqs>} that the upload request failed : {reason.response.resp}"
+               ~&  >  "client tells {<request-src.i.p.split-reqs>} that request failed : {reason.response.resp}"
                `this(state state(pending-requests q.split-reqs))
+             %file-deleted
+               ~&  >  "client tells {<request-src.i.p.split-reqs>} that we deleted : {<key.response.resp>}"
+               =/  old=storageinfo:lfs-provider  (~(gut by store.state) src.bowl [storage=0 used=0 upload-url=~ files=[~]])
+               =/  new=storageinfo:lfs-provider  old(files (~(del by files.old) key.response.resp))
+               `this(state state(pending-requests q.split-reqs, store (~(put by store.state) src.bowl new)))
              %got-url
                ~&  >  "client tells {<request-src.i.p.split-reqs>} to upload with : {url.response.resp}"
                =/  old=storageinfo:lfs-provider  (~(gut by store.state) src.bowl [storage=0 used=0 upload-url=~ files=[~]])
