@@ -62,21 +62,31 @@
       ~&  >  "client has the following files: {<files>}"
       `this
     %add-provider
-      =/  tid  (need threadid.action)
       ?:  (~(has by wex.bowl) [wire=/lfs ship=ship.action term=%lfs-provider])
         ~&  >  "lfs client already subscribed to {<ship.action>}"
+        ?~  threadid.action  `this
+        =/  tid  (need threadid.action)
         :_  this
         :~  [%pass /thread/[tid] %agent [our.bowl %spider] %poke %spider-input !>([tid %client-action-response !>([%updated-providers ~])])]
         ==
       :_  this
+      ?~  threadid.action
+      :~  [%pass /lfs %agent [ship.action %lfs-provider] %watch /uploader/(scot %p our:bowl)]  ==
+      ::
+      =/  tid  (need threadid.action)
       :~  [%pass /lfs %agent [ship.action %lfs-provider] %watch /uploader/(scot %p our:bowl)]
           [%pass /thread/[tid] %agent [our.bowl %spider] %poke %spider-input !>([tid %client-action-response !>([%updated-providers ~])])]
       ==
     %remove-provider
-      :: unsubscribe and remove unused providers
+      :: TODO clean this up!
       =/  used  (skip ~(tap by store.state) |=([=ship =storageinfo:lfs-provider] =(used.storageinfo 0)))
       :_  this(state state(store (~(gas by *(map ship storageinfo:lfs-provider)) used)))
-      :~  [%pass /lfs %agent [ship.action %lfs-provider] %leave ~]  ==
+      ?~  threadid.action
+        :~  [%pass /lfs %agent [ship.action %lfs-provider] %leave ~]  ==
+        =/  tid  (need threadid.action)
+        :~  [%pass /lfs %agent [ship.action %lfs-provider] %leave ~]
+            [%pass /thread/[tid] %agent [our.bowl %spider] %poke %spider-input !>([tid %client-action-response !>([%updated-providers ~])])]
+        ==
     %request-upload
       =/  id  (cut 6 [0 1] eny.bowl)
       ?:  (~(has by wex.bowl) [wire=/lfs ship=ship.action term=%lfs-provider])
