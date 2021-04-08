@@ -90,6 +90,7 @@ rsync -a --ignore-times ./src/ ./dst/
 .^((unit group:group) %gx /(scot %p our)/group-store/(scot %da now)/groups/ship/(scot %p our)/[%asdf]/noun)
 .^((unit group:group) %gx /=group-store=/groups/ship/~zod/bbbbbbbbb/noun)
 .^(* %gx /=group-store=/groups/ship/~zod/bbbbbbbbb/join/~zod/noun)
+.^(* %gx /=lfs-client=/all-storage-info/json)
 
 .^((unit group:group) %gx /=lfs-client=/groups/ship/~zod/bbbbbbbbb/noun)
 
