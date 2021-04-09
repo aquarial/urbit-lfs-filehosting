@@ -79,7 +79,8 @@
       ==
     %remove-provider
       :: TODO clean this up!
-      =/  used  (skip ~(tap by store.state) |=([=ship =storageinfo:lfs-provider] =(used.storageinfo 0)))
+      =/  subs=(set ship)  (~(run in ~(key by wex.bowl)) |=([wire=* =ship term=*] ship))
+      =/  used  (skip ~(tap by store.state) |=([=ship =storageinfo:lfs-provider] &(=(used.storageinfo 0) !(~(has in subs) ship))))
       :_  this(state state(store (~(gas by *(map ship storageinfo:lfs-provider)) used)))
       ?~  threadid.action
         :~  [%pass /lfs %agent [ship.action %lfs-provider] %leave ~]  ==
