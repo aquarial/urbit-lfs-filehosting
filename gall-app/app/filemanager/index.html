@@ -5,15 +5,37 @@
     <title>File Manager</title>
   </head>
   <body>
-    <div id="gettoken">
-      Authentication Token (<code>+code</code>) </br>
-      <input type="text" id="auth" name="auth" value="lidlut-tabwed-pillex-ridrup">
-      <input type="submit" id="submit" value="Submit">
-    </div>
+    <p>Errors are printed to the console</p>
 
-    <div id="usetoken">
-      <p> how to use token</p>
+    <div id="providers">
+      <input type="text" id="provider-new" name="auth" value="~zod">
+      <input type="submit" id="provider-submit" value="add provider">
     </div>
+    <br/>
+
+    <div id="uploads">
+      <input type="submit" id="upload-submit" value="request upload to">
+      <select name="provider" id="upload-provider"></select>
+      <input type="file" id="upload-file" name="myfile">
+      <br/>
+      <label for="">(available providers: </label>
+      <label id="upload-provider-list" for="">[]</label>
+      <label for="">)</label>
+    </div>
+    <br/>
+    <br/>
+
+    <div id="files">
+
+      <div>
+        <input type="submit" id="submit" value="X">
+        <label for="submit"><a target="_blank" href="http://localhost:8000/download/file/0vbeef">~zod / 0vbeef</a></label>
+      </div>
+      <br/>
+
+    </div>
+    <br/>
+
 
     <script>
      // https://stackoverflow.com/questions/247483/http-get-request-in-javascript
@@ -41,29 +63,41 @@
        xmlHttp.send(body);
      }
 
-     let input = document.getElementById("auth");
-     let submit = document.getElementById("submit");
-     let gettoken = document.getElementById("gettoken");
-     let usetoken = document.getElementById("usetoken");
-     usetoken.style.display = 'none'
+     let providerNew = document.getElementById("provider-new");
+     let providerSubmit = document.getElementById("provider-submit");
 
-     function displayresults() {
-       httpGetAsync("http://localhost:8081/~/scry/lfs-client/list-files.json",
+     let uploadSubmit = document.getElementById("upload-submit");
+     let uploadProvider = document.getElementById("upload-provider");
+     let uploadProviderList = document.getElementById("upload-provider-list");
+
+     providerSubmit.addEventListener("click", function() {
+       console.log(providerNew.value);
+       httpPostAsync("http://localhost:8081/spider/noun/lfs-client-action/json.json",
+         JSON.stringify(["add-provider", providerNew.value]),
          function(xmlhttp) {
-           console.log("Got response:", xmlhttp.response)
-           gettoken.style.display = 'none'
-           usetoken.style.display = ''
+           console.log("Add Provder response is:", xmlhttp.response);
+           window.location.reload();
          },
          function() {
-           gettoken.style.display = ''
-           usetoken.style.display = 'none'
-           console.log("Got no resposne");
-         }
-       );
+           console.error("Add provider failed?");
+         });
+     });
 
-     }
+     httpGetAsync("http://localhost:8081/~/scry/lfs-client/all-storage-info.json",
+       function(xmlhttp) {
+         let resp = JSON.parse(xmlhttp.response)
+         uploadProviderList.textContent = "[" + Object.keys(resp).join(", ") + "]"
+         Object.keys(resp).forEach(key => {
+           let opt = document.createElement("option");
+           opt.text = key;
+           uploadProvider.add(opt);
+         });
+       },
+       function() {
+         console.error("Getting storageinfo ran into some kind of error?");
+       }
+     );
 
-     displayresults();
      // function fun(ev) {
      //   submit.disabled = true;
      //   httpPostAsync("http://localhost:8081/~/login", "password="+input.value,
