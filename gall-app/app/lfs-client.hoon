@@ -95,7 +95,10 @@
         :~  [%pass /(scot %da now.bowl) %agent [ship.action %lfs-provider] %poke %lfs-provider-action !>([%request-upload id=id])]  ==
       ::
       ~&  >  "client won't request upload to {<ship.action>} because we are not subscribed to them"
-      `this
+      ?~  threadid.action  `this
+      =/  tid  (need threadid.action)
+      :_  this
+      :~  [%pass /thread/[tid] %agent [our.bowl %spider] %poke %spider-input !>([tid %client-action-response !>([%failure reason="not subscribed to {<ship.action>}"])])]  ==
     %request-delete
       =/  id  (cut 6 [0 1] eny.bowl)
       ?:  (~(has by wex.bowl) [wire=/lfs ship=ship.action term=%lfs-provider])
@@ -104,7 +107,10 @@
         :~  [%pass /(scot %da now.bowl) %agent [ship.action %lfs-provider] %poke %lfs-provider-action !>([%request-delete fileid=fileid.action id=id])]  ==
       ::
       ~&  >  "not subscribed to {<ship.action>}!"
-      `this
+      ?~  threadid.action  `this
+      =/  tid  (need threadid.action)
+      :_  this
+      :~  [%pass /thread/[tid] %agent [our.bowl %spider] %poke %spider-input !>([tid %client-action-response !>([%failure reason="not subscribed to {<ship.action>}"])])]  ==
     ==
   ==
 ++  on-watch  on-watch:default
