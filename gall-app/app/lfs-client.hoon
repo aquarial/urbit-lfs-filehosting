@@ -177,7 +177,8 @@
            %file-deleted
              ~&  >  "client tells {<request-src.i.p.split-reqs>} that we deleted : {<key.response.resp>}"
              =/  old=storageinfo:lfs-provider  (~(gut by store.state) src.bowl [storage=0 used=0 upload-url=~ files=[~]])
-             =/  new=storageinfo:lfs-provider  old(files (~(del by files.old) key.response.resp))
+             =/  size  size:(~(got by files.old) key.response.resp)
+             =/  new=storageinfo:lfs-provider  old(used (sub used.old size), files (~(del by files.old) key.response.resp))
              :_  this(state state(pending-requests q.split-reqs, store (~(put by store.state) src.bowl new)))
              cards
            %got-url
