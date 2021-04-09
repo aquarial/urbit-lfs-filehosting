@@ -20,7 +20,7 @@
   [* [~ [%a [%s %request-delete] [%s @ud] [%s @ud] %.0]]]
       =/  target  `@p`(slav %p `@t`+>+>->:arg)
       =/  fileid  `@uv`(slav %uv `@t`+>+>+<+:arg)
-     (some [threadid=tid %request-delete target fileid])
+     (some [threadid=tid %request-delete ship=target fileid=fileid])
   ==
 --
 ::
