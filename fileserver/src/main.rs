@@ -13,7 +13,7 @@ use lazy_static::lazy_static;
 
 use rocket::{State, Data};
 use rocket::http::Status;
-use rocket::response::NamedFile;
+use rocket::response::{Response, NamedFile};
 use rocket::response::status::NotFound;
 use rocket::request::{FromRequest, Request, Outcome};
 
@@ -83,6 +83,18 @@ fn upload_new(_tok: AuthToken, state: State<Info>, key: String, space: u64) -> &
     ups.insert(key, space);
     "upload path active\n"
 }
+
+
+//#[route(OPTIONS, "/upload/file")]
+#[options("/upload/file/<_key>")]
+fn options_handler<'a>(_key: String) -> Response<'a> {
+    Response::build()
+        .raw_header("Access-Control-Allow-Origin", "*")
+        .raw_header("Access-Control-Allow-Methods", "OPTIONS, POST")
+        .raw_header("Access-Control-Allow-Headers", "Content-Type")
+        .finalize()
+}
+
 
 #[post("/upload/file/<key>", data = "<data>")]
 fn upload_file(state: State<Info>, key: String, data: Data) -> &'static str {
@@ -183,7 +195,7 @@ fn main() {
     std::fs::create_dir_all("./files/").unwrap();
     rocket::ignite()
         .manage(Info::new())
-        .mount("/", routes![default, upload_new, upload_file, upload_remove, download_file, setup_provider])
+        .mount("/", routes![default, upload_new, upload_file, upload_remove, download_file, setup_provider, options_handler])
         .attach(cors::CORS())
         .launch();
 }
