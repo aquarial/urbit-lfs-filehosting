@@ -5,11 +5,12 @@
     <title>File Manager</title>
   </head>
   <body>
-    <p>Errors are printed to the console</p>
+    <p>Wait for a reload after clicking any buttons. Errors are printed to the console</p>
 
     <div id="providers">
       <input type="text" id="provider-new" name="auth" value="~zod">
-      <input type="submit" id="provider-submit" value="add provider">
+      <input type="submit" id="provider-submit-add" value="add provider">
+      <input type="submit" id="provider-submit-remove" value="remove provider">
     </div>
     <br/>
 
@@ -64,14 +65,14 @@
      }
 
      let providerNew = document.getElementById("provider-new");
-     let providerSubmit = document.getElementById("provider-submit");
+     let providerSubmit = document.getElementById("provider-submit-add");
+     let providerSubmitRemove = document.getElementById("provider-submit-remove");
 
      let uploadSubmit = document.getElementById("upload-submit");
      let uploadProvider = document.getElementById("upload-provider");
      let uploadProviderList = document.getElementById("upload-provider-list");
 
      providerSubmit.addEventListener("click", function() {
-       console.log(providerNew.value);
        httpPostAsync("http://localhost:8081/spider/noun/lfs-client-action/json.json",
          JSON.stringify(["add-provider", providerNew.value]),
          function(xmlhttp) {
@@ -80,6 +81,17 @@
          },
          function() {
            console.error("Add provider failed?");
+       });
+     });
+     providerSubmitRemove.addEventListener("click", function() {
+       httpPostAsync("http://localhost:8081/spider/noun/lfs-client-action/json.json",
+         JSON.stringify(["remove-provider", providerNew.value]),
+         function(xmlhttp) {
+           console.log("Remove Provder response is:", xmlhttp.response);
+           window.location.reload();
+         },
+         function() {
+           console.error("RFemove provider failed?");
          });
      });
 
