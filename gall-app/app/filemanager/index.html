@@ -105,9 +105,10 @@
            let resp = JSON.parse(xmlhttp.response)
            let file = uploadFile.files[0];
            // TODO test if just sending the file works!
-           file.arrayBuffer().then(content => {
-             console.log(resp)
-             httpPostAsync(resp.url, content,
+           //file.arrayBuffer().then(content => {
+             console.log("reqeust resp", resp)
+             //console.log("uploading ", content);
+             httpPostAsync(resp.url, file,
                function(xmlhttp) {
                  console.log("uplaidndgn file got:", xmlhttp.response);
                  window.location.reload();
@@ -116,7 +117,7 @@
                  console.error("uplaidndgn file an error?");
                }
              );
-           });
+           //});
          },
          function() {
            console.error("Request upload failed?");
