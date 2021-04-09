@@ -104,20 +104,16 @@
          function(xmlhttp) {
            let resp = JSON.parse(xmlhttp.response)
            let file = uploadFile.files[0];
-           // TODO test if just sending the file works!
-           //file.arrayBuffer().then(content => {
-             console.log("reqeust resp", resp)
-             //console.log("uploading ", content);
-             httpPostAsync(resp.url, file,
-               function(xmlhttp) {
-                 console.log("uplaidndgn file got:", xmlhttp.response);
-                 window.location.reload();
-               },
-               function() {
-                 console.error("uplaidndgn file an error?");
-               }
-             );
-           //});
+           console.log("reqeust resp", resp)
+           httpPostAsync(resp.url, file,
+             function(xmlhttp) {
+               console.log("uplaidndgn file got:", xmlhttp.response);
+               window.location.reload();
+             },
+             function() {
+               console.error("uplaidndgn file an error?");
+             }
+           );
          },
          function() {
            console.error("Request upload failed?");
@@ -177,20 +173,6 @@
        }
      );
 
-     // function fun(ev) {
-     //   submit.disabled = true;
-     //   httpPostAsync("http://localhost:8081/~/login", "password="+input.value,
-     //     function(xmlhttp) {
-     //       submit.disabled = false;
-     //     },
-     //     function(xmlhttp) {
-     //       submit.disabled = false;
-     //       console.log("fun failure", xmlhttp);
-     //     }
-     //   );
-     //   console.log("got event", ev);
-     // }
-     // submit.addEventListener("click", fun);
     </script>
   </body>
 </html>
