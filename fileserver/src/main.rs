@@ -2,6 +2,8 @@
 
 #[macro_use] extern crate rocket;
 
+pub mod cors;
+
 use std::io::Read;
 use std::fs::File;
 use std::collections::HashMap;
@@ -182,5 +184,6 @@ fn main() {
     rocket::ignite()
         .manage(Info::new())
         .mount("/", routes![default, upload_new, upload_file, upload_remove, download_file, setup_provider])
+        .attach(cors::CORS())
         .launch();
 }
