@@ -120,8 +120,8 @@
   ^-  (unit (unit cage))
   ?+    pax  (on-peek:default pax)
   [%x %all-storage-info ~]
-      =/  json-fileinfo  |=  [fileid=@uv size=@ud]  [(crip "{<fileid>}") [%o (my ~[['size' [%n (crip "{<size>}")]]])]]
-      =/  json-storage  |=  =storageinfo:lfs-provider  [%o (my ~[['storage' [%n (crip "{<storage.storageinfo>}")]] ['used' [%n (crip "{<used.storageinfo>}")]] ['upload-key' (fall ((lift |=(key=@uv [%s (crip "{<key>}")])) upload-key.storageinfo) ~)] ['files' [%o ((map @ta json) (transform-map:hc files.storageinfo json-fileinfo))]]])]
+      =/  json-fileinfo  |=  [fileid=@uv size=@ud]  [(crip "{<fileid>}") [%o (my ~[['size' [%n (crip (format-number:hc size))]]])]]
+      =/  json-storage  |=  =storageinfo:lfs-provider  [%o (my ~[['storage' [%n (crip (format-number:hc storage.storageinfo))]] ['used' [%n (crip (format-number:hc used.storageinfo))]] ['upload-key' (fall ((lift |=(key=@uv [%s (crip "{<key>}")])) upload-key.storageinfo) ~)] ['files' [%o ((map @ta json) (transform-map:hc files.storageinfo json-fileinfo))]]])]
       =/  json-storage-map  |=  [=ship =storageinfo:lfs-provider]  [(crip "{<ship>}") (json-storage storageinfo)]
       ``json+!>([%o ((map @ta json) (transform-map:hc store.state json-storage-map))])
   [%x %list-files ~]
@@ -195,6 +195,10 @@
 ::
 ::  helper core
 |_  =bowl:gall
+++  format-number
+  |=  n=@ud
+  :: 1.234 -> "1234"
+  (tape (skim ((list @tD) "{<n>}") |=(c=@tD ?!(=(c '.')))))
 ++  transform-map
   |*  [m=(map * *) f=gate]
   (~(gas by *(map * *)) (turn ~(tap by m) f))
