@@ -83,15 +83,24 @@
          });
      });
 
-     httpGetAsync("http://localhost:8081/~/scry/lfs-client/all-storage-info.json",
+     httpGetAsync("http://localhost:8081/~/scry/lfs-client/providers.json",
        function(xmlhttp) {
          let resp = JSON.parse(xmlhttp.response)
-         uploadProviderList.textContent = "[" + Object.keys(resp).join(", ") + "]"
-         Object.keys(resp).forEach(key => {
+         uploadProviderList.textContent = "[" + resp.join(", ") + "]"
+         resp.forEach(key => {
            let opt = document.createElement("option");
            opt.text = key;
            uploadProvider.add(opt);
          });
+       },
+       function() {
+         console.error("Getting providers ran into some kind of error?");
+       }
+     );
+     httpGetAsync("http://localhost:8081/~/scry/lfs-client/all-storage-info.json",
+       function(xmlhttp) {
+         let resp = JSON.parse(xmlhttp.response)
+         console.log("add info:", resp);
        },
        function() {
          console.error("Getting storageinfo ran into some kind of error?");
