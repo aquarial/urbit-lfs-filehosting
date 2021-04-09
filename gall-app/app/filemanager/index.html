@@ -72,6 +72,7 @@
      let uploadSubmit = document.getElementById("upload-submit");
      let uploadProvider = document.getElementById("upload-provider");
      let uploadProviderList = document.getElementById("upload-provider-list");
+     let uploadFile = document.getElementById("upload-file");
 
      let storageDiv = document.getElementById("files");
 
@@ -95,6 +96,30 @@
          },
          function() {
            console.error("RFemove provider failed?");
+         });
+     });
+     uploadSubmit.addEventListener("click", function() {
+       httpPostAsync("http://localhost:8081/spider/noun/lfs-client-action/json.json",
+         JSON.stringify(["request-upload", uploadProvider.value]),
+         function(xmlhttp) {
+           let resp = JSON.parse(xmlhttp.response)
+           let file = uploadFile.files[0];
+           // TODO test if just sending the file works!
+           file.arrayBuffer().then(content => {
+             console.log(resp)
+             httpPostAsync(resp.url, content,
+               function(xmlhttp) {
+                 console.log("uplaidndgn file got:", xmlhttp.response);
+                 window.location.reload();
+               },
+               function() {
+                 console.error("uplaidndgn file an error?");
+               }
+             );
+           });
+         },
+         function() {
+           console.error("Request upload failed?");
          });
      });
 
