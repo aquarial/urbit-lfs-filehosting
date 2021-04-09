@@ -119,6 +119,11 @@
   |=  pax=path
   ^-  (unit (unit cage))
   ?+    pax  (on-peek:default pax)
+  [%x %providers ~]
+      =/  subs  ~(tap in ~(key by wex.bowl))
+      :: (~(has by wex.bowl) [wire=/lfs ship=ship.action term=%lfs-provider])
+      ``json+!>([%a (turn subs |=([wire=* =ship term=*] [%s (crip "{<ship>}")]))])
+  ::
   [%x %all-storage-info ~]
       =/  json-fileinfo  |=  [fileid=@uv download-url=tape size=@ud]  [(crip "{<fileid>}") [%o (my ~[['download-url' [%s (crip download-url)]] ['size' [%n (crip (format-number:hc size))]]])]]
       =/  json-storage  |=  =storageinfo:lfs-provider  [%o (my ~[['storage' [%n (crip (format-number:hc storage.storageinfo))]] ['used' [%n (crip (format-number:hc used.storageinfo))]] ['upload-key' (fall ((lift |=(key=@uv [%s (crip "{<key>}")])) upload-key.storageinfo) ~)] ['files' [%o ((map @ta json) (transform-map:hc files.storageinfo json-fileinfo))]]])]
