@@ -138,7 +138,7 @@
 ++  on-agent
   |=  [=wire =sign:agent:gall]
   ?+   wire  ~&  "client on-agent got un-handled {<-.sign>} from {<dap.bowl>} on wire {<wire>}"
-             (on-agent:default wire sign)
+             `this
   [%lfs ~]
     ?+  -.sign  (on-agent:default wire sign)
     :: %watch-ack
