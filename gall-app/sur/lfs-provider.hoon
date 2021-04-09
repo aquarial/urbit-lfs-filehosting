@@ -14,7 +14,7 @@
   ==
 +$  server-update
   $%  [%heartbeat fileserver-status]
-      [%file-uploaded fileid=@uv filesize=@ud]
+      [%file-uploaded fileid=@uv filesize=@ud download-url=tape]
       [%request-response id=@uv response=request-response]
       [%storageinfo =storageinfo]
   ==
@@ -25,7 +25,7 @@
       [%kids ~]
   ==
 +$  storageinfo  [storage=@ud used=@ud upload-key=(unit @uv) files=(map @uv fileinfo)]
-+$  fileinfo  [size=@ud]
++$  fileinfo  [download-url=tape size=@ud]
 
 +$  request-response
   $%  [%got-url url=tape key=@uv] :: url includes key, key tracks fileid

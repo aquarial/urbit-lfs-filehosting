@@ -120,7 +120,7 @@
   ^-  (unit (unit cage))
   ?+    pax  (on-peek:default pax)
   [%x %all-storage-info ~]
-      =/  json-fileinfo  |=  [fileid=@uv size=@ud]  [(crip "{<fileid>}") [%o (my ~[['size' [%n (crip (format-number:hc size))]]])]]
+      =/  json-fileinfo  |=  [fileid=@uv download-url=tape size=@ud]  [(crip "{<fileid>}") [%o (my ~[['download-url' [%s (crip download-url)]] ['size' [%n (crip (format-number:hc size))]]])]]
       =/  json-storage  |=  =storageinfo:lfs-provider  [%o (my ~[['storage' [%n (crip (format-number:hc storage.storageinfo))]] ['used' [%n (crip (format-number:hc used.storageinfo))]] ['upload-key' (fall ((lift |=(key=@uv [%s (crip "{<key>}")])) upload-key.storageinfo) ~)] ['files' [%o ((map @ta json) (transform-map:hc files.storageinfo json-fileinfo))]]])]
       =/  json-storage-map  |=  [=ship =storageinfo:lfs-provider]  [(crip "{<ship>}") (json-storage storageinfo)]
       ``json+!>([%o ((map @ta json) (transform-map:hc store.state json-storage-map))])
@@ -152,7 +152,7 @@
           ~&  >  "client knows file upload {<fileid.resp>} succeeded!"
           =/  old=storageinfo:lfs-provider  (~(gut by store.state) src.bowl [storage=0 used=0 upload-url=~ files=[~]])
           =/  key  ?:  =(upload-key.old (some fileid.resp))  ~  upload-key.old
-          =/  new=storageinfo:lfs-provider  old(used (add used.old filesize.resp), upload-key key, files (~(put by files.old) fileid.resp filesize.resp))
+          =/  new=storageinfo:lfs-provider  old(used (add used.old filesize.resp), upload-key key, files (~(put by files.old) fileid.resp [download-url.resp filesize.resp]))
           `this(state state(store (~(put by store.state) src.bowl new)))
         %request-response
            =/  split-reqs  (skid pending-requests.state |=(r=[id=@uv =request-src] =(id.r id.resp)))
