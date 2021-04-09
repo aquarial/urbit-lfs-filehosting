@@ -11,7 +11,8 @@ use lazy_static::lazy_static;
 
 use rocket::{State, Data};
 use rocket::http::Status;
-use rocket::response::Stream;
+use rocket::response::NamedFile;
+use rocket::response::status::NotFound;
 use rocket::request::{FromRequest, Request, Outcome};
 
 use reqwest::blocking::{Client};
@@ -128,13 +129,12 @@ fn upload_file(state: State<Info>, key: String, data: Data) -> &'static str {
 
 
 #[get("/download/file/<key>")]
-fn download_file(key: String) -> Option<Stream<File>> {
+fn download_file(key: String) -> Result<NamedFile, NotFound<String>> {
     // TODO: any other security concerns?
-    if key.contains("..") {
-        return None;
+    if key.contains("..") || key.contains("/") {
+        return Err(NotFound("invalid path".into()));
     }
-    let f = File::open(format!("./files/{}", key)).unwrap();
-    Some(Stream::from(f))
+    NamedFile::open(&format!("./files/{}", key)).map_err(|e| NotFound(e.to_string()))
 }
 
 
