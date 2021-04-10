@@ -30,7 +30,7 @@
 ^-  form:m
 ;<  =bowl:spider  bind:m  get-bowl:strandio
 =/  action  (parse-action arg (some tid.bowl))
-?~  action  (pure:m !>([%o (my ~[['failure' [%b %.n]] ['reason' [%s (crip "unexpected input: {<arg>}")]]])]))
+?~  action  (pure:m !>([%o (my ~[['success' [%b %.n]] ['reason' [%s (crip "unexpected input: {<arg>}")]]])]))
 ::
 ;<  ~             bind:m  (poke:strandio [our.bowl %lfs-client] %lfs-client-action !>(u.action))
 ;<  vmsg=vase     bind:m  (take-poke:strandio %client-action-response)
