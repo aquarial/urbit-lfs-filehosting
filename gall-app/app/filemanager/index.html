@@ -104,8 +104,10 @@
          function(xmlhttp) {
            let resp = JSON.parse(xmlhttp.response)
            let file = uploadFile.files[0];
+           var fd = new FormData();
+           fd.append('file', file);
            console.log("reqeust resp", resp)
-           httpPostAsync(resp.url, file,
+           httpPostAsync(resp.url, fd,
              function(xmlhttp) {
                console.log("uplaidndgn file got:", xmlhttp.response);
                window.location.reload();
