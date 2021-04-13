@@ -111,7 +111,7 @@ fn upload_file(state: State<Info>, key: String, data: Data) -> &'static str {
 
             let url = state.provider_url.lock().unwrap();
             let auth: &str = &*AUTH_KEY.read().unwrap();
-            let url2: String = format!("http://{}/~lfs/completed/{}/{}", (*url).as_ref().unwrap(), key, written);
+            let url2: String = format!("http://{}/~lfs/completed/{}/{}", (*url).as_ref().unwrap(), key, hoon_format_num(written));
             println!("Curling to {}", url2);
             let res = state.client
                 .post(url2)
@@ -140,6 +140,15 @@ fn upload_file(state: State<Info>, key: String, data: Data) -> &'static str {
     }
 }
 
+fn hoon_format_num(n: u64) -> String {
+    if n >= 1000 {
+        let mut s = hoon_format_num(n / 1000);
+        s.push_str(&format!("{}.", n % 1000));
+        s
+    } else {
+        format!("{}.", n)
+    }
+}
 
 
 #[get("/download/file/<key>")]
