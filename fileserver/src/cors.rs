@@ -1,6 +1,7 @@
 use rocket::{Request, Response};
 use rocket::fairing::{Fairing, Info, Kind};
-use rocket::http::{Header};
+use rocket::http::{Header, ContentType, Method};
+use std::io::Cursor;
 
 
 // https://github.com/SergioBenitez/Rocket/issues/25#issuecomment-313895086
@@ -16,14 +17,19 @@ impl Fairing for CORS {
     }
 
     fn on_response(&self, request: &Request, response: &mut Response) {
-        if request.uri().path().starts_with("/upload/file/") {
+        if request.method() == Method::Options || request.uri().path().starts_with("/upload/file/") {
             println!("allowing cors");
             response.set_header(Header::new("Access-Control-Allow-Origin", "*"));
-            response.set_header(Header::new("Access-Control-Allow-Methods", "POST"));
+            response.set_header(Header::new("Access-Control-Allow-Methods", "OPTIONS, POST"));
             response.set_header(Header::new("Access-Control-Allow-Headers", "Content-Type"));
             response.set_header(Header::new("Access-Control-Allow-Credentials", "true"));
         } else {
             println!("NOT allowing cors");
+        }
+
+        if request.method() == Method::Options {
+            response.set_header(ContentType::Plain);
+            response.set_sized_body(Cursor::new(""));
         }
     }
 }
