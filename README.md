@@ -19,10 +19,10 @@
 - [x] eyre endpoint to confirm upload
 - [x] upload permissions based on clients/groups/%kids of provider
 - [ ] gall app restores webserver state on reboot
-- [ ] poke to delete uploaded files
-- [ ] client uses scrys+threads instead of pokes
-- [ ] http upload interface
-- [ ] demo html+js UI
+- [x] poke to delete uploaded files
+- [x] client uses scrys+threads instead of pokes
+- [x] http upload interface
+- [x] demo html+js UI
 - [ ] provider uses threads to connect IO
 - [ ] backup provider map of file ownership
 - [ ] behn fileserver status check
