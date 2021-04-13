@@ -21,4 +21,9 @@
 ::      ==
 ::    --
   --
+++  grow
+  |%
+  ++  noun  act
+  --
+++  grad  %noun
 --
