@@ -41,6 +41,9 @@
 
     <script>
      // https://stackoverflow.com/questions/247483/http-get-request-in-javascript
+     function sleep(ms) {
+       return new Promise(resolve => setTimeout(resolve, ms));
+     }
      function httpGetAsync(theUrl, callback, errHandle) {
        var xmlHttp = new XMLHttpRequest();
        xmlHttp.onreadystatechange = function() {
@@ -101,19 +104,19 @@
      uploadSubmit.addEventListener("click", function() {
        httpPostAsync("http://localhost:8081/spider/noun/lfs-client-action/json.json",
          JSON.stringify(["request-upload", uploadProvider.value]),
-         function(xmlhttp) {
+         async function(xmlhttp) {
+           await sleep(1000);
            let resp = JSON.parse(xmlhttp.response)
            let file = uploadFile.files[0];
-           var fd = new FormData();
-           fd.append('file', file);
-           console.log("reqeust resp", resp)
-           httpPostAsync(resp.url, fd,
-             function(xmlhttp) {
-               console.log("uplaidndgn file got:", xmlhttp.response);
+           console.log("uploading to", resp.url);
+           httpPostAsync(resp.url, file,
+             async function(xmlhttp) {
+               console.log("uploading file got:", xmlhttp.response);
+               await sleep(500);
                window.location.reload();
              },
-             function() {
-               console.error("uplaidndgn file an error?");
+             function(xmlhttp) {
+               console.error("uploading file got an error?", xmlhttp.response);
              }
            );
          },
