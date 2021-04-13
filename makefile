@@ -68,7 +68,4 @@ reload-zod:
 start-fileserver:
 	cd ./fileserver && ROCKET_PORT=8000 cargo run -- --UNSAFE_DEBUG_AUTH
 
-start-client-ui:
-	cd ./client-ui && ROCKET_PORT=8001 cargo run -- 
-
-.PHONY: start-fileserver start-client-ui
+.PHONY: start-fileserver
