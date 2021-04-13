@@ -164,7 +164,7 @@
   :_  this(state state(store (~(gas by store.state) ~[updated])))
   :~  [%give %fact ~[/uploader/(scot %p src.bowl)] [%lfs-provider-server-update !>([%storageinfo storageinfo=storageinfo.updated])]]  ==
 ++  on-leave
-  |=  path
+  |=  =path
   ~&  "provider on-leave from {<src.bowl>} on {<path>}"
   `this
 ++  on-peek   on-peek:default
