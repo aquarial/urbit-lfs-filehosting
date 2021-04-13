@@ -48,8 +48,8 @@ zod-clean:
 	tmux send-keys -t zod "C-l"; sleep 0.4
 	rsync -a --ignore-times ./gall-app/ ./data/zod/home/
 	tmux send-keys -t zod "|commit %home" "ENTER"; sleep 1
-	tmux send-keys -t zod "|start %lfs-provider" "ENTER"; sleep 2
-	tmux send-keys -t zod "|start %lfs-client" "ENTER"; sleep 2
+	tmux send-keys -t zod "|start %lfs-provider" "ENTER"; sleep 3
+	tmux send-keys -t zod "|start %lfs-client" "ENTER"; sleep 3
 	tmux send-keys -t zod ":lfs-provider &lfs-provider-action [%connect-server loopback=\"localhost:8081\" fileserver=\"localhost:8000\" token=\"hunter2\"]"; sleep 0.5; tmux send-keys -t zod "ENTER"; sleep 0.5
 	tmux send-keys -t zod ":lfs-provider [%add-rule [justification=[%ship ships=~[~zod]] size=3.000]]"; sleep 0.5; tmux send-keys -t zod "ENTER"; sleep 0.5
 	tmux send-keys -t zod ":lfs-client &lfs-client-action [threadid=~ [%add-provider ~zod]]" "ENTER"; sleep 1
