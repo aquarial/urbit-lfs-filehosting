@@ -30,7 +30,6 @@
 =/  m  (strand ,vase)
 ^-  form:m
 ;<  =bowl:spider  bind:m  get-bowl:strandio
-~&  >>  "arg is {<arg>}"
 =/  action  (parse-action arg (some tid.bowl))
 ?~  action  (pure:m !>([%o (my ~[['success' [%b %.n]] ['reason' [%s (crip "unexpected input: {<arg>}")]]])]))
 ::
