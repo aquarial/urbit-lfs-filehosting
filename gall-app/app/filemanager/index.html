@@ -69,7 +69,9 @@
      }
      function hoonFormatNumber(n) {
        if (n >= 1000) {
-         return hoonFormatNumber(Math.floor(n / 1000)) + "." + (n % 1000)
+         let s = "" + (n % 1000);
+         while (s.length < 3) { s = "0" + s; }
+         return hoonFormatNumber(Math.floor(n / 1000)) + "." + s
        } else {
          return "" + n
        }

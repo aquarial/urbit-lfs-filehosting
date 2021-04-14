@@ -143,10 +143,10 @@ fn upload_file(state: State<Info>, key: String, data: Data) -> &'static str {
 fn hoon_format_num(n: u64) -> String {
     if n >= 1000 {
         let mut s = hoon_format_num(n / 1000);
-        s.push_str(&format!("{}.", n % 1000));
+        s.push_str(&format!(".{:0>3}", n % 1000));
         s
     } else {
-        format!("{}.", n)
+        format!("{}", n)
     }
 }
 
