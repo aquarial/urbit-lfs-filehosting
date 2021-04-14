@@ -137,8 +137,7 @@
         :~  [%give %fact ~[/uploader/(scot %p src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="no space left"]])]  ==
       =/  storageinfo=storageinfo  (need (~(get by store.state) src.bowl))
       =/  code  (fall upload-key.storageinfo ?:(unsafe-demo.state "0vbeef" "{<`@uv`(cut 8 [0 1] eny.bowl)>}"))
-      :: TODO sanitize filename
-      =/  name  (fall filename.action "file")
+      =/  name  (sanitize-filename:hc (fall filename.action "file"))
       =/  pass  "{code}-{name}"
       =/  up-url  "{protocol:hc}://{fileserver.state}/upload/file/{pass}"
       =/  new-url  "{protocol:hc}://{fileserver.state}/upload/new/{pass}/{(format-number space)}"
@@ -277,6 +276,19 @@
   |=  n=@ud
   :: 1.234 -> "1234"
   (tape (skim ((list @tD) "{<n>}") |=(c=@tD ?!(=(c '.')))))
+++  sanitize-char
+  |=  c=@t
+  ?:  ?|  =(c '_')  =(c '-')  =(c '.')
+          &((gte c 'a') (lte c 'z'))
+          &((gte c 'A') (lte c 'Z'))
+      ==
+    c
+  '-'
+:: TODO allow any filename by url-encoding it?
+++  sanitize-filename
+  |=  in=tape
+  ^-  tape
+  (turn in sanitize-char)
 ++  compute-ships-to-store
   |=  ships=(set ship)
   :: called when groups update, ships might not be subscribers
