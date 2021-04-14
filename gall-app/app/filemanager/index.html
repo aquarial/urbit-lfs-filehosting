@@ -76,6 +76,10 @@
          return "" + n
        }
      }
+     function disableCache() {
+       return "?disableCache=" + Math.random();
+     }
+
 
 
      let providerNew = document.getElementById("provider-new");
@@ -92,7 +96,7 @@
      uploadSubmit.disabled = true;
 
      providerSubmit.addEventListener("click", function() {
-       httpPostAsync("/spider/noun/lfs-client-action/json.json",
+       httpPostAsync("/spider/noun/lfs-client-action/json.json" + disableCache(),
          JSON.stringify(["add-provider", providerNew.value]),
          function(xmlhttp) {
            console.log("Add Provder response is:", xmlhttp.response);
@@ -103,7 +107,7 @@
        });
      });
      providerSubmitRemove.addEventListener("click", function() {
-       httpPostAsync("/spider/noun/lfs-client-action/json.json",
+       httpPostAsync("/spider/noun/lfs-client-action/json.json" + disableCache(),
          JSON.stringify(["remove-provider", providerNew.value]),
          function(xmlhttp) {
            console.log("Remove Provder response is:", xmlhttp.response);
@@ -127,7 +131,7 @@
 
      uploadSubmit.addEventListener("click", function() {
        let file = uploadFile.files[0];
-       httpPostAsync("/spider/noun/lfs-client-action/json.json",
+       httpPostAsync("/spider/noun/lfs-client-action/json.json" + disableCache(),
          JSON.stringify(["request-upload", uploadProvider.value, file.name]),
          async function(xmlhttp) {
            await sleep(1000);
@@ -149,7 +153,7 @@
          });
      });
 
-     httpGetAsync("/~/scry/lfs-client/providers.json",
+     httpGetAsync("/~/scry/lfs-client/providers.json" + disableCache(),
        function(xmlhttp) {
          let resp = JSON.parse(xmlhttp.response)
          uploadProviderList.textContent = "[" + resp.join(", ") + "]"
@@ -163,7 +167,7 @@
          console.error("Getting providers ran into some kind of error?");
        }
      );
-     httpGetAsync("/~/scry/lfs-client/all-storage-info.json",
+     httpGetAsync("/~/scry/lfs-client/all-storage-info.json" + disableCache(),
        function(xmlhttp) {
          let resp = JSON.parse(xmlhttp.response)
          console.log("add info:", resp);
@@ -178,7 +182,7 @@
              let input = document.createElement("input");
              input.type = "submit"; input.value="X";
              input.addEventListener("click", function() {
-               httpPostAsync("/spider/noun/lfs-client-action/json.json",
+               httpPostAsync("/spider/noun/lfs-client-action/json.json" + disableCache(),
                  JSON.stringify(["request-delete", provider, fileid]),
                  function(xmlhttp) {
                    console.log("Request delete response is:", xmlhttp.response);
