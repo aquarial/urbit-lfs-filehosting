@@ -67,6 +67,14 @@
        xmlHttp.open("POST", theUrl, true); // true for asynchronous
        xmlHttp.send(body);
      }
+     function hoonFormatNumber(n) {
+       if (n >= 1000) {
+         return hoonFormatNumber(Math.floor(n / 1000)) + "." + (n % 1000)
+       } else {
+         return "" + n
+       }
+     }
+
 
      let providerNew = document.getElementById("provider-new");
      let providerSubmit = document.getElementById("provider-submit-add");
@@ -146,7 +154,7 @@
          Object.keys(resp).forEach(provider => {
            let storage = resp[provider];
            let h3 = document.createElement("h3");
-           h3.textContent = "" + provider + " using " + storage.used + " of " + storage.storage + " bytes";
+           h3.textContent = "" + provider + " using " + hoonFormatNumber(storage.used) + " of " + hoonFormatNumber(storage.storage) + " bytes";
            storageDiv.appendChild(h3);
 
            Object.keys(storage.files).forEach(fileid => {
@@ -166,7 +174,7 @@
              });
              storageDiv.appendChild(input);
              let link = document.createElement("a")
-             link.target="_blank"; link.href = file['download-url']; link.textContent = "  " + provider + " / " + fileid + "  (" + file.size + " bytes)";
+             link.target="_blank"; link.href = file['download-url']; link.textContent = "  " + provider + " / " + fileid + "  (" + hoonFormatNumber(file.size) + " bytes)";
              storageDiv.appendChild(link);
              let br = document.createElement("br")
              storageDiv.appendChild(br);
