@@ -87,6 +87,8 @@
 
      let storageDiv = document.getElementById("files");
 
+     uploadSubmit.disabled = true;
+
      providerSubmit.addEventListener("click", function() {
        httpPostAsync("/spider/noun/lfs-client-action/json.json",
          JSON.stringify(["add-provider", providerNew.value]),
@@ -109,6 +111,18 @@
            console.error("RFemove provider failed?");
          });
      });
+
+
+
+     uploadFile.addEventListener('change', function() {
+       console.log('file');
+       uploadSubmit.disabled = uploadProvider.value == "" || uploadFile.files == [];
+     });
+     uploadProvider.addEventListener('change', function() {
+       console.log('prov');
+       uploadSubmit.disabled = uploadProvider.value == "" || uploadFile.files == [];
+     });
+
      uploadSubmit.addEventListener("click", function() {
        let file = uploadFile.files[0];
        httpPostAsync("/spider/noun/lfs-client-action/json.json",
