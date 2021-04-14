@@ -13,10 +13,11 @@
       loopback=tape
       fileserver=tape
       fileserverauth=tape
-      unsafe-demo=?
   ==
 --
 %-  agent:dbug
+=/  unsafe-reuse-upload-urls  %.n
+=/  unsafe-http  %.y
 =/  state=state-0
   :*  %0
       fileserver-status=%offline
@@ -25,7 +26,6 @@
       loopback=""
       fileserver=""
       fileserverauth=""
-      unsafe-demo=%.n
   ==
 ^-  agent:gall
 =<
@@ -136,7 +136,7 @@
         :_  this
         :~  [%give %fact ~[/uploader/(scot %p src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="no space left"]])]  ==
       =/  storageinfo=storageinfo  (need (~(get by store.state) src.bowl))
-      =/  code  (fall upload-key.storageinfo ?:(unsafe-demo.state "0vbeef" "{<`@uv`(cut 8 [0 1] eny.bowl)>}"))
+      =/  code  (fall upload-key.storageinfo ?:(unsafe-reuse-upload-urls "0vbeef" "{<`@uv`(cut 8 [0 1] eny.bowl)>}"))
       =/  name  (sanitize-filename:hc (fall filename.action "file"))
       =/  pass  "{code}-{name}"
       =/  up-url  "{protocol:hc}://{fileserver.state}/upload/file/{pass}"
@@ -262,9 +262,7 @@
       ?!  =(loopback.state "")
   ==
 ++  protocol
-  :: ?:  unsafe-demo.state  "http"
-  :: "https"
-  "http"
+  ?:  unsafe-http  "http"  "https"
 ++  handle-http-request
   |=  [req=inbound-request:eyre status=@t]
   ^-  simple-payload:http
