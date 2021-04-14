@@ -31,7 +31,7 @@
       <!--
       <h3>~zod using 3131 / 4242 bytes<h3/>
       <input type="submit" id="submit" value="X">
-      <a target="_blank" href="http://localhost:8000/download/file/0vbeef">~zod / 0vbeef</a>
+      <a target="_blank" href="link_to_download">~zod / 0vbeef</a>
       <br/>
       -->
 
@@ -80,7 +80,7 @@
      let storageDiv = document.getElementById("files");
 
      providerSubmit.addEventListener("click", function() {
-       httpPostAsync("http://localhost:8081/spider/noun/lfs-client-action/json.json",
+       httpPostAsync("/spider/noun/lfs-client-action/json.json",
          JSON.stringify(["add-provider", providerNew.value]),
          function(xmlhttp) {
            console.log("Add Provder response is:", xmlhttp.response);
@@ -91,7 +91,7 @@
        });
      });
      providerSubmitRemove.addEventListener("click", function() {
-       httpPostAsync("http://localhost:8081/spider/noun/lfs-client-action/json.json",
+       httpPostAsync("/spider/noun/lfs-client-action/json.json",
          JSON.stringify(["remove-provider", providerNew.value]),
          function(xmlhttp) {
            console.log("Remove Provder response is:", xmlhttp.response);
@@ -102,7 +102,7 @@
          });
      });
      uploadSubmit.addEventListener("click", function() {
-       httpPostAsync("http://localhost:8081/spider/noun/lfs-client-action/json.json",
+       httpPostAsync("/spider/noun/lfs-client-action/json.json",
          JSON.stringify(["request-upload", uploadProvider.value]),
          async function(xmlhttp) {
            await sleep(1000);
@@ -125,7 +125,7 @@
          });
      });
 
-     httpGetAsync("http://localhost:8081/~/scry/lfs-client/providers.json",
+     httpGetAsync("/~/scry/lfs-client/providers.json",
        function(xmlhttp) {
          let resp = JSON.parse(xmlhttp.response)
          uploadProviderList.textContent = "[" + resp.join(", ") + "]"
@@ -139,7 +139,7 @@
          console.error("Getting providers ran into some kind of error?");
        }
      );
-     httpGetAsync("http://localhost:8081/~/scry/lfs-client/all-storage-info.json",
+     httpGetAsync("/~/scry/lfs-client/all-storage-info.json",
        function(xmlhttp) {
          let resp = JSON.parse(xmlhttp.response)
          console.log("add info:", resp);
@@ -154,7 +154,7 @@
              let input = document.createElement("input");
              input.type = "submit"; input.value="X";
              input.addEventListener("click", function() {
-               httpPostAsync("http://localhost:8081/spider/noun/lfs-client-action/json.json",
+               httpPostAsync("/spider/noun/lfs-client-action/json.json",
                  JSON.stringify(["request-delete", provider, fileid]),
                  function(xmlhttp) {
                    console.log("Request delete response is:", xmlhttp.response);
