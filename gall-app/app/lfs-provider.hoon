@@ -178,7 +178,7 @@
     :: %poke-ack
     %fact
       ?+  p.cage.sign  (on-agent:default wire sign)
-      %group-update
+      %group-update-0
         =/  resp  !<(update:group-store q.cage.sign)
         ~&  "provider received group-update {<resp>}"
         ?+  -.resp  `this
