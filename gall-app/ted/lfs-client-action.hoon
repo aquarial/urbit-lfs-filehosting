@@ -13,13 +13,14 @@
      =/  target  `@p`(slav %p `@t`+>+>->:arg)
      (some [threadid=tid %remove-provider target])
   ::
-  [* [~ [%a [%s %request-upload] [%s @ud] %.0]]]
+  [* [~ [%a [%s %request-upload] [%s @ud] [%s @ud] %.0]]]
      =/  target  `@p`(slav %p `@t`+>+>->:arg)
-     (some [threadid=tid %request-upload target])
+     =/  filename  (trip `@t`+>+>+<+:arg)
+     (some [threadid=tid %request-upload target (some filename)])
   ::
   [* [~ [%a [%s %request-delete] [%s @ud] [%s @ud] %.0]]]
       =/  target  `@p`(slav %p `@t`+>+>->:arg)
-      =/  fileid  `@uv`(slav %uv `@t`+>+>+<+:arg)
+      =/  fileid  (trip `@t`+>+>+<+:arg)
      (some [threadid=tid %request-delete ship=target fileid=fileid])
   ==
 --
@@ -29,6 +30,7 @@
 =/  m  (strand ,vase)
 ^-  form:m
 ;<  =bowl:spider  bind:m  get-bowl:strandio
+~&  >>  "arg is {<arg>}"
 =/  action  (parse-action arg (some tid.bowl))
 ?~  action  (pure:m !>([%o (my ~[['success' [%b %.n]] ['reason' [%s (crip "unexpected input: {<arg>}")]]])]))
 ::

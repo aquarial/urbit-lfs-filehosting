@@ -58,7 +58,7 @@
     =/  request-src=request-src  ?:  =(threadid.action ~)  [%local-poke ~]  [%thread id=(need threadid.action)]
     ?-  +<.action
     %list-files
-      =/  files=(list [ship @uv])  (zing (turn ~(tap by store.state) |=([=ship =storageinfo:lfs-provider] (turn ~(tap by files.storageinfo) |=([fid=@uv =fileinfo:lfs-provider] [ship fid])))))
+      =/  files=(list [ship tape])  (zing (turn ~(tap by store.state) |=([=ship =storageinfo:lfs-provider] (turn ~(tap by files.storageinfo) |=([fid=tape =fileinfo:lfs-provider] [ship fid])))))
       ~&  >  "client has the following files: {<files>}"
       `this
     %add-provider
@@ -93,7 +93,7 @@
       ?:  (~(has by wex.bowl) [wire=/lfs ship=ship.action term=%lfs-provider])
         ~&  "client on-poke upload request to {<ship.action>} {<`@uv`id>}"
         :_  this(state state(pending-requests (snoc pending-requests.state [id=id request-src=request-src])))
-        :~  [%pass /(scot %da now.bowl) %agent [ship.action %lfs-provider] %poke %lfs-provider-action !>([%request-upload id=id])]  ==
+        :~  [%pass /(scot %da now.bowl) %agent [ship.action %lfs-provider] %poke %lfs-provider-action !>([%request-upload filename=filename.action id=id])]  ==
       ::
       ~&  >  "client won't request upload to {<ship.action>} because we are not subscribed to them"
       ?~  threadid.action  `this
@@ -126,13 +126,13 @@
       ``json+!>([%a (turn subs |=([wire=* =ship term=*] [%s (crip "{<ship>}")]))])
   ::
   [%x %all-storage-info ~]
-      =/  json-fileinfo  |=  [fileid=@uv download-url=tape size=@ud]  [(crip "{<fileid>}") [%o (my ~[['download-url' [%s (crip download-url)]] ['size' [%n (crip (format-number:hc size))]]])]]
-      =/  json-storage  |=  =storageinfo:lfs-provider  [%o (my ~[['storage' [%n (crip (format-number:hc storage.storageinfo))]] ['used' [%n (crip (format-number:hc used.storageinfo))]] ['upload-key' (fall ((lift |=(key=@uv [%s (crip "{<key>}")])) upload-key.storageinfo) ~)] ['files' [%o ((map @ta json) (transform-map:hc files.storageinfo json-fileinfo))]]])]
+      =/  json-fileinfo  |=  [fileid=tape download-url=tape size=@ud]  [(crip fileid) [%o (my ~[['download-url' [%s (crip download-url)]] ['size' [%n (crip (format-number:hc size))]]])]]
+      =/  json-storage  |=  =storageinfo:lfs-provider  [%o (my ~[['storage' [%n (crip (format-number:hc storage.storageinfo))]] ['used' [%n (crip (format-number:hc used.storageinfo))]] ['upload-key' (fall ((lift |=(key=tape [%s (crip key)])) upload-key.storageinfo) ~)] ['files' [%o ((map @ta json) (transform-map:hc files.storageinfo json-fileinfo))]]])]
       =/  json-storage-map  |=  [=ship =storageinfo:lfs-provider]  [(crip "{<ship>}") (json-storage storageinfo)]
       ``json+!>([%o ((map @ta json) (transform-map:hc store.state json-storage-map))])
   [%x %list-files ~]
-      =/  files=(list [ship @uv])  (zing (turn ~(tap by store.state) |=([=ship =storageinfo:lfs-provider] (turn ~(tap by files.storageinfo) |=([fid=@uv =fileinfo:lfs-provider] [ship fid])))))
-      =/  jsonfiles  (turn files |=([=ship id=@uv] [%o (my ~[['provider' [%s (crip "{<ship>}")]] ['fileid' [%s (crip "{<id>}")]]])]))
+      =/  files=(list [ship tape])  (zing (turn ~(tap by store.state) |=([=ship =storageinfo:lfs-provider] (turn ~(tap by files.storageinfo) |=([fid=tape =fileinfo:lfs-provider] [ship fid])))))
+      =/  jsonfiles  (turn files |=([=ship id=tape] [%o (my ~[['provider' [%s (crip "{<ship>}")]] ['fileid' [%s (crip id)]]])]))
       ``json+!>([%a jsonfiles])
   ==
 ++  on-agent

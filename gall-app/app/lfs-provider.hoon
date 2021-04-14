@@ -25,7 +25,7 @@
       loopback=""
       fileserver=""
       fileserverauth=""
-      unsafe-demo=%.y
+      unsafe-demo=%.n
   ==
 ^-  agent:gall
 =<
@@ -68,16 +68,16 @@
     =/  url  (parse-request-line:srv url.request.inbound-request)
     ?+  site.url  `this
     [%'~lfs' %completed @t @t ~]
-      =/  fileid=@uv  (slav %uv &3:site.url)
+      =/  fileid=tape  (trip &3:site.url)
       =/  filesize=@ud  (slav %ud &4:site.url)
-      ~&  >  "provider knows someone uploaded {<filesize>} bytes of {<fileid>}, notifying them"
+      ~&  >  "provider knows someone uploaded {<filesize>} bytes of {fileid}, notifying them"
       =/  storelist  ~(tap by store.state)
       =/  match  (skim storelist |=([=ship =storageinfo] =(upload-key.storageinfo (some fileid))))
       ?~  match
-        ~&  >>  "provider could not identify who uploaded fileid {<fileid>}"
+        ~&  >>  "provider could not identify who uploaded fileid {fileid}"
         :_  this
         (give-simple-payload:app:srv id (handle-http-request:hc inbound-request 'failure'))
-      =/  down-url  "{protocol:hc}://{fileserver.state}/download/file/{<fileid>}"
+      =/  down-url  "{protocol:hc}://{fileserver.state}/download/file/{fileid}"
       =/  ship=ship  p.i.match
       =/  old=storageinfo  q.i.match
       =/  new=storageinfo  old(used (add used.old filesize), upload-key ~, files (~(put by files.old) fileid [down-url filesize]))
@@ -122,7 +122,7 @@
       =/  del-url  "{protocol:hc}://{fileserver.state}/upload/remove/{<fileid.action>}"
       =/  newstorage  storageinfo(used (sub used.storageinfo size.u.ufile), files (~(del by files.storageinfo) fileid.action))
       :_  this(state state(store (~(put by store.state) src.bowl newstorage)))
-      :~  [%pass /upload/remove/[(scot %uv fileid.action)] %arvo %i %request [%'DELETE' (crip del-url) ~[['auth_token' (crip fileserverauth.state)]] ~] *outbound-config:iris]
+      :~  [%pass /upload/remove/[(crip fileid.action)] %arvo %i %request [%'DELETE' (crip del-url) ~[['auth_token' (crip fileserverauth.state)]] ~] *outbound-config:iris]
           [%give %fact ~[/uploader/(scot %p src.bowl)] [%lfs-provider-server-update !>([%request-response id=id.action response=[%file-deleted key=fileid.action]])]]
       ==
     %request-upload
@@ -136,13 +136,16 @@
         :_  this
         :~  [%give %fact ~[/uploader/(scot %p src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="no space left"]])]  ==
       =/  storageinfo=storageinfo  (need (~(get by store.state) src.bowl))
-      =/  pass  (fall upload-key.storageinfo ?:(unsafe-demo.state 0vbeef (cut 8 [0 1] eny.bowl)))
-      =/  up-url  "{protocol:hc}://{fileserver.state}/upload/file/{<pass>}"
-      =/  new-url  "{protocol:hc}://{fileserver.state}/upload/new/{<pass>}/{(format-number space)}"
+      =/  code  (fall upload-key.storageinfo ?:(unsafe-demo.state "0vbeef" "{<`@uv`(cut 8 [0 1] eny.bowl)>}"))
+      :: TODO sanitize filename
+      =/  name  (fall filename.action "file")
+      =/  pass  "{code}-{name}"
+      =/  up-url  "{protocol:hc}://{fileserver.state}/upload/file/{pass}"
+      =/  new-url  "{protocol:hc}://{fileserver.state}/upload/new/{pass}/{(format-number space)}"
       ~&  >  "provider sends authorizing url to {new-url}"
       ^-  (quip card _this)
       :_  this(state state(store (~(put by store.state) src.bowl storageinfo(upload-key (some pass)))))
-      :~  [%pass /upload/[(scot %uv pass)] %arvo %i %request [%'POST' (crip new-url) ~[['auth_token' (crip fileserverauth.state)]] ~] *outbound-config:iris]
+      :~  [%pass /upload/[(crip pass)] %arvo %i %request [%'POST' (crip new-url) ~[['auth_token' (crip fileserverauth.state)]] ~] *outbound-config:iris]
           [%give %fact ~[/uploader/(scot %p src.bowl)] [%lfs-provider-server-update !>([%request-response id=id.action response=[%got-url url=up-url key=pass]])]]
           :: confirm file server is up before giving fact?
       ==
@@ -166,7 +169,6 @@
   :~  [%give %fact ~[/uploader/(scot %p src.bowl)] [%lfs-provider-server-update !>([%storageinfo storageinfo=storageinfo.updated])]]  ==
 ++  on-leave
   |=  =path
-  ~&  "provider on-leave from {<src.bowl>} on {<path>}"
   `this
 ++  on-peek   on-peek:default
 ++  on-agent
@@ -261,8 +263,9 @@
       ?!  =(loopback.state "")
   ==
 ++  protocol
-  ?:  unsafe-demo.state  "http"
-  "https"
+  :: ?:  unsafe-demo.state  "http"
+  :: "https"
+  "http"
 ++  handle-http-request
   |=  [req=inbound-request:eyre status=@t]
   ^-  simple-payload:http

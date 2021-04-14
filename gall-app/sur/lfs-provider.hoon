@@ -1,8 +1,8 @@
 |%
 +$  action
   $%  [%connect-server loopback=tape fileserver=tape token=tape]
-      [%request-upload id=@uv]
-      [%request-delete fileid=@uv id=@uv]
+      [%request-upload filename=(unit tape) id=@uv]
+      [%request-delete fileid=tape id=@uv]
    :: [%test-loopback loopback=tape]
   ==
 +$  client-request
@@ -14,7 +14,7 @@
   ==
 +$  server-update
   $%  [%heartbeat fileserver-status]
-      [%file-uploaded fileid=@uv filesize=@ud download-url=tape]
+      [%file-uploaded fileid=tape filesize=@ud download-url=tape]
       [%request-response id=@uv response=request-response]
       [%storageinfo =storageinfo]
   ==
@@ -24,12 +24,12 @@
       [%ship ships=(list ship)]
       [%kids ~]
   ==
-+$  storageinfo  [storage=@ud used=@ud upload-key=(unit @uv) files=(map @uv fileinfo)]
++$  storageinfo  [storage=@ud used=@ud upload-key=(unit tape) files=(map tape fileinfo)]
 +$  fileinfo  [download-url=tape size=@ud]
 
 +$  request-response
-  $%  [%got-url url=tape key=@uv] :: url includes key, key tracks fileid
-      [%file-deleted key=@uv]
+  $%  [%got-url url=tape key=tape] :: url includes key, key tracks fileid
+      [%file-deleted key=tape]
       [%failure reason=tape]
   ==
 --

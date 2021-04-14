@@ -102,12 +102,12 @@
          });
      });
      uploadSubmit.addEventListener("click", function() {
+       let file = uploadFile.files[0];
        httpPostAsync("/spider/noun/lfs-client-action/json.json",
-         JSON.stringify(["request-upload", uploadProvider.value]),
+         JSON.stringify(["request-upload", uploadProvider.value, file.name]),
          async function(xmlhttp) {
            await sleep(1000);
            let resp = JSON.parse(xmlhttp.response)
-           let file = uploadFile.files[0];
            console.log("uploading to", resp.url);
            httpPostAsync(resp.url, file,
              async function(xmlhttp) {
