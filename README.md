@@ -14,28 +14,28 @@
 - [x] client subscribes to providers
 - [x] client `[%request-upload ~]` receives url response
 - [x] webserver authenticates lfs-provider
-- [ ] gall app stores uploaded-files and pending-requests
+- [x] gall app stores uploaded-files and pending-requests
 - [x] upload limits
 - [x] eyre endpoint to confirm upload
 - [x] upload permissions based on clients/groups/%kids of provider
-- [ ] gall app restores webserver state on reboot
 - [x] poke to delete uploaded files
 - [x] client uses scrys+threads instead of pokes
 - [x] http upload interface
 - [x] demo html+js UI
-- [ ] provider uses threads to connect IO
-- [ ] backup provider map of file ownership
+- [ ] gall app restores webserver state on reboot
+- [ ] provider confirms upload url is open before telling the client
+- [ ] uses threads to connect IO
+- [ ] provider can export & restore state
 - [ ] behn fileserver status check
 - [ ] transactions either succeed or can be safely retried
 
 Considerations 
 
-- [ ] how to ratelimit threads
 - [ ] match client/provider versioning
+- [ ] moons count to parent storage?
 - [ ] ensure provider is safe even if clients are modified 
-- [ ] stats on fileserver
-- [ ] deny comets. moon storage is based on parent
 - [ ] handle deleting a group
+- [ ] what to do when client unsubscribes?
 
 
 
