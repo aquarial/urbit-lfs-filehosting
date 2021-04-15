@@ -67,7 +67,7 @@
     ?>  =(value.i.-.auth (crip fileserverauth.state))
     =/  url  (parse-request-line:srv url.request.inbound-request)
     ?+  site.url  `this
-    :: extra param * needed because handle-http-requests strips trailing ".stuff"
+    :: extra param * needed because parse-request-line remoes trailing ".stuff"
     [%'~lfs' %completed @t @t * ~]
       =/  fileid=tape  (trip &3:site.url)
       =/  filesize=@ud  (slav %ud &4:site.url)

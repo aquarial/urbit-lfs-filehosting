@@ -111,8 +111,7 @@ fn upload_file(state: State<Info>, key: String, data: Data) -> &'static str {
 
             let url = state.provider_url.lock().unwrap();
             let auth: &str = &*AUTH_KEY.read().unwrap();
-            // TODO remove "end" parameter once urbit no longer removes trailing ".stuff"
-            let url2: String = format!("http://{}/~lfs/completed/{}/{}/end", (*url).as_ref().unwrap(), key, hoon_format_num(written));
+            let url2: String = format!("http://{}/~lfs/completed/{}/{}/padding", (*url).as_ref().unwrap(), key, hoon_format_num(written));
             println!("curling to {}", url2);
             let res = state.client
                 .post(url2)
