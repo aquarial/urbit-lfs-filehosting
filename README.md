@@ -39,7 +39,7 @@ Replace the `loopback` parameter with the current address/port of ~zod.
 
 Go to `http://localhost:8081/~filemanager` for a simple html interface
 
-
+![demo ui](./data/interface.png)
 
 ## TODO
 
