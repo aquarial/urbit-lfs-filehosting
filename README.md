@@ -58,18 +58,17 @@ cargo run -- --UNSAFE_DEBUG_AUTH
 
 :lfs-provider %bowl
 :lfs-provider [%add-rule [justification=[%ship ships=~[~zod]] size=1.000]]
-:lfs-provider [%add-rule [justification=[%group group=`@tas`'asdf'] size=30]]
-:lfs-provider &lfs-provider-action [%connect-server address="localhost:8000" token="hunter2"]
+:lfs-provider [%add-rule [justification=[%group group='asdf'] size=30]]
+:lfs-provider &lfs-provider-action [%connect-server loopback="localhost:8081" fileserver="localhost:8000" token="hunter2"]
 
 :lfs-client %bowl
 :lfs-client &lfs-client-action [threadid=~ %list-files ~]
 :lfs-client &lfs-client-action [threadid=~ %add-provider ~zod]
 :lfs-client &lfs-client-action [threadid=~ %remove-provider ~zod]
-:lfs-client &lfs-client-action [threadid=~ %request-upload ~zod]]
-:lfs-client &lfs-client-action [threadid=~ %request-delete ~zod 0vbeef]
+:lfs-client &lfs-client-action [threadid=~ %request-upload ~zod [~ "myfile.png"]]
+:lfs-client &lfs-client-action [threadid=~ %request-delete ~zod "0vbeef""]
 
 rsync -a --ignore-times ./src/ ./dst/
-
 
 =m (my [["a" 1] ["b" 2] ~])
 (~(rut by m) |=([name=tape age=@ud] 1))
