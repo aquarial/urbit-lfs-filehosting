@@ -8,6 +8,38 @@
 
 `./src/app/lfs-client.hoon` can subscribe to a provider and request an upload url
 
+## How to run
+
+#### Start fileserver
+
+Run `make start-fileserver` which runs: `cd ./fileserver && ROCKET_PORT=8000 cargo run -- --UNSAFE_DEBUG_AUTH`
+
+The provider controls the fileserver using a password printed when it starts up. With the debug flag it will
+be be `hunter2`
+
+If you get an error message while building that mentions nightly compiler, run `rustup override set nightly`
+
+#### Setup provider
+
+```
+# startup ~zod and
+|mount %
+:: copy app onto ship
+|commit %home
+|start %lfs-provider
+|start %lfs-client
+:lfs-provider &lfs-provider-action [%connect-server loopback="localhost:8081" fileserver="localhost:8000" token="hunter2"]
+:lfs-provider [%add-rule [justification=[%ship ships=~[~zod]] size=1.000.000]]
+```
+
+Replace the `loopback` parameter with the current address/port of ~zod.
+
+
+#### Upload files
+
+Go to `http://localhost:8081/~filemanager` for a simple html interface
+
+
 
 ## TODO
 
