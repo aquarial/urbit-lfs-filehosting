@@ -284,11 +284,11 @@
       ==
     c
   '-'
-:: TODO allow any filename by url-encoding it?
+:: TODO allow any filename by url-encoding it? allow more than 40 chars?
 ++  sanitize-filename
   |=  in=tape
   ^-  tape
-  (turn in sanitize-char)
+  (swag [0 40] (turn in sanitize-char))
 ++  compute-ships-to-store
   |=  ships=(set ship)
   :: called when groups update, ships might not be subscribers
