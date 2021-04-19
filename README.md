@@ -34,7 +34,6 @@ If you get an error message while building that mentions nightly compiler, run `
 :: setup file storage permissions
 :lfs-provider [%add-rule [justification=[%ship ships=~[~zod]] size=1.000.000]]
 :lfs-provider [%add-rule [justification=[%group 'groupname'] size=3.000]]
-
 ```
 
 Replace the `loopback` parameter with the current address/port of ~zod.
@@ -66,11 +65,11 @@ Go to `http://localhost:8081/~filemanager` for a simple html interface
 - [ ] behn fileserver status check
 - [ ] transactions either succeed or can be safely retried
 
-Considerations 
+Considerations
 
 - [ ] match client/provider versioning
 - [ ] moons count to parent storage?
-- [ ] ensure provider is safe even if clients are modified 
+- [ ] ensure provider is safe even if clients are modified
 - [ ] handle deleting a group
 - [ ] what to do when client unsubscribes?
 
