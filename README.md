@@ -34,6 +34,9 @@ If you get an error message while building that mentions nightly compiler, run `
 :: setup file storage permissions
 :lfs-provider [%add-rule [justification=[%ship ships=~[~zod]] size=1.000.000]]
 :lfs-provider [%add-rule [justification=[%group 'groupname'] size=3.000]]
+
+:lfs-provider %list-rules
+:lfs-provider [%remove-rule 0]
 ```
 
 Replace the `loopback` parameter with the current address/port of ~zod.

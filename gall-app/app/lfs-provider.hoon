@@ -94,6 +94,14 @@
         :: TODO use behn
         ~&  "provider will send subscribers hearbeat"
        `this
+     %list-rules
+       ~&  "rules are: {<upload-rules.state>}"
+       `this
+     [%remove-rule *]
+       =+  !<([%remove-rule index=@ud] vase)
+       =/  new-rules  (oust [index 1] upload-rules.state)
+       =/  new-store  (~(gas by store.state) (turn ~(tap by store.state) (compute-ship-storage:hc new-rules)))
+       `this(state state(upload-rules new-rules, store new-store))
      [%add-rule *]
        =+  !<([%add-rule [=justification size=@ud]] vase)
        =/  new-rules  (snoc upload-rules.state [justification size])
