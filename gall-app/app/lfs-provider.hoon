@@ -110,9 +110,10 @@
       :: TODO set state to %connecting and test connection
       ::      don't set status online until we confirm fileserver responds
       :: TODO invalidate all the urls, send updates to all clients
-      =/  setup-url  "{protocol:hc}://{fileserver.action}/setup/{loopback.action}"
+      =/  setup-url  "{protocol:hc}://{fileserver.action}/setup"
+      =/  body  (some (as-octt:mimes:html "{protocol:hc}://{loopback.action}"))
       :_  this(state state(fileserver-status %online, loopback loopback.action, fileserver fileserver.action, fileserverauth token.action))
-      :~  [%pass /setup %arvo %i %request [%'POST' (crip setup-url) ~[['AuthToken' (crip token.action)]] ~] *outbound-config:iris]  ==
+      :~  [%pass /setup %arvo %i %request [%'POST' (crip setup-url) ~[['AuthToken' (crip token.action)]] body] *outbound-config:iris]  ==
     %request-delete
       ?>  src-is-subscriber:hc
       =/  storageinfo  (need (~(get by store.state) src.bowl))

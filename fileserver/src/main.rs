@@ -68,8 +68,11 @@ fn default() -> &'static str {
     "fileserver online\n"
 }
 
-#[post("/setup/<provider>")]
-fn setup_provider(_tok: AuthToken, state: State<Info>, provider: String) -> &'static str {
+
+#[post("/setup", data = "<data>")]
+fn setup_provider(_tok: AuthToken, state: State<Info>, data: Data) -> &'static str {
+    let mut provider = String::new();
+    data.open().take(1000).read_to_string(&mut provider).unwrap();
     let mut url = state.provider_url.lock().unwrap();
     *url = Some(provider);
     "setup provider\n"
@@ -111,7 +114,7 @@ fn upload_file(state: State<Info>, key: String, data: Data) -> &'static str {
 
             let url = state.provider_url.lock().unwrap();
             let auth: &str = &*AUTH_KEY.read().unwrap();
-            let url2: String = format!("http://{}/~lfs/completed/{}/{}/padding", (*url).as_ref().unwrap(), key, hoon_format_num(written));
+            let url2: String = format!("{}/~lfs/completed/{}/{}/padding", (*url).as_ref().unwrap(), key, hoon_format_num(written));
             println!("curling to {}", url2);
             let res = state.client
                 .post(url2)
