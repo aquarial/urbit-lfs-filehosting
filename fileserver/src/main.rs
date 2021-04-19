@@ -124,10 +124,15 @@ fn upload_file(state: State<Info>, key: String, data: Data) -> &'static str {
             match res {
                 Ok(res) => {
                     println!("Got resposne: {:?}", res);
-                    println!("uploaded file {}", key);
-                    std::mem::drop(ups);
-                    let mut downs = state.download_paths.write().unwrap();
-                    downs.insert(String::from(key), ());
+                    if res.status() == 200 {
+                        println!("uploaded file {}", key);
+                        std::mem::drop(ups);
+                        let mut downs = state.download_paths.write().unwrap();
+                        downs.insert(String::from(key), ());
+                    } else {
+                        println!("Error uploading {}", key);
+                        ups.insert(key, size);
+                    }
                 },
                 Err(err) => {
                     println!("Error uploading {}: {:?}", key, err);
