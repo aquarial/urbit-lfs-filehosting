@@ -121,12 +121,10 @@
 
 
      uploadFile.addEventListener('change', function() {
-       console.log('file');
-       uploadSubmit.disabled = uploadProvider.value == "" || uploadFile.files == [];
+       uploadSubmit.disabled = uploadProvider.value == "" || uploadFile.files.length == 0;
      });
      uploadProvider.addEventListener('change', function() {
-       console.log('prov');
-       uploadSubmit.disabled = uploadProvider.value == "" || uploadFile.files == [];
+       uploadSubmit.disabled = uploadProvider.value == "" || uploadFile.files.length == 0;
      });
 
      uploadSubmit.addEventListener("click", function() {
@@ -134,6 +132,7 @@
        httpPostAsync("/spider/noun/lfs-client-action/json.json" + disableCache(),
          JSON.stringify(["request-upload", uploadProvider.value, file.name]),
          async function(xmlhttp) {
+           uploadFile.value = uploadFile.defaultValue;
            await sleep(1000);
            let resp = JSON.parse(xmlhttp.response)
            console.log("uploading to", resp.url);
@@ -162,6 +161,7 @@
            opt.text = key;
            uploadProvider.add(opt);
          });
+         uploadSubmit.disabled = uploadProvider.value == "" || uploadFile.files.length == 0;
        },
        function() {
          console.error("Getting providers ran into some kind of error?");
