@@ -33,7 +33,7 @@ impl<'a, 'r> FromRequest<'a, 'r> for AuthToken {
     type Error = AuthTokenError;
 
     fn from_request(request: &'a Request<'r>) -> Outcome<Self, Self::Error> {
-        let token = request.headers().get_one("AuthToken");
+        let token = request.headers().get_one("authtoken");
         if let Some(token) = token {
             let key = AUTH_KEY.read().unwrap();
             // compare each byte to prevent timing attack
@@ -118,7 +118,7 @@ fn upload_file(state: State<Info>, key: String, data: Data) -> &'static str {
             println!("curling to {}", url2);
             let res = state.client
                 .post(url2)
-                .header("AuthToken", auth)
+                .header("authtoken", auth)
                 .send();
 
             match res {

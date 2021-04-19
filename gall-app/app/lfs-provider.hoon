@@ -58,17 +58,17 @@
     =+  !<([id=@ta =inbound-request:eyre] vase)
     ::  [authenticated=%.n secure=%.n address=[%ipv4 .127.0.0.1]
     ::   request=[method=%'POST' url='/~lfs/completed/0v1a.42hat'
-    ::       header-list=~[[key='host' value='localhost:8081'] [key='AuthToken' value='hunter2']
+    ::       header-list=~[[key='host' value='localhost:8081'] [key='authtoken' value='hunter2']
     ::                 [key='accept' value='*/*']]
     ::       body=~ ]
     ::  ]
     =/  headers  header-list.request.inbound-request
-    =/  auth  (skim headers |=([key=cord value=cord] =(key 'AuthToken')))
+    =/  auth  (skim headers |=([key=cord value=cord] =(key 'authtoken')))
     ?>  =(value.i.-.auth (crip fileserverauth.state))
     =/  url  (parse-request-line:srv url.request.inbound-request)
     ?+  site.url  `this
-    :: extra param * needed because parse-request-line remoes trailing ".stuff"
     [%'~lfs' %completed @t @t * ~]
+      :: extra param * needed because parse-request-line remoes trailing ".stuff"
       =/  fileid=tape  (trip &3:site.url)
       =/  filesize=@ud  (slav %ud &4:site.url)
       ~&  >  "provider knows someone uploaded {<filesize>} bytes of {fileid}, notifying them"
@@ -113,7 +113,7 @@
       =/  setup-url  "{protocol:hc}://{fileserver.action}/setup"
       =/  body  (some (as-octt:mimes:html "{protocol:hc}://{loopback.action}"))
       :_  this(state state(fileserver-status %online, loopback loopback.action, fileserver fileserver.action, fileserverauth token.action))
-      :~  [%pass /setup %arvo %i %request [%'POST' (crip setup-url) ~[['AuthToken' (crip token.action)]] body] *outbound-config:iris]  ==
+      :~  [%pass /setup %arvo %i %request [%'POST' (crip setup-url) ~[['authtoken' (crip token.action)]] body] *outbound-config:iris]  ==
     %request-delete
       ?>  src-is-subscriber:hc
       =/  storageinfo  (need (~(get by store.state) src.bowl))
@@ -124,7 +124,7 @@
       =/  del-url  "{protocol:hc}://{fileserver.state}/upload/remove/{<fileid.action>}"
       =/  newstorage  storageinfo(used (sub used.storageinfo size.u.ufile), files (~(del by files.storageinfo) fileid.action))
       :_  this(state state(store (~(put by store.state) src.bowl newstorage)))
-      :~  [%pass /upload/remove/[(crip fileid.action)] %arvo %i %request [%'DELETE' (crip del-url) ~[['AuthToken' (crip fileserverauth.state)]] ~] *outbound-config:iris]
+      :~  [%pass /upload/remove/[(crip fileid.action)] %arvo %i %request [%'DELETE' (crip del-url) ~[['authtoken' (crip fileserverauth.state)]] ~] *outbound-config:iris]
           [%give %fact ~[/uploader/(scot %p src.bowl)] [%lfs-provider-server-update !>([%request-response id=id.action response=[%file-deleted key=fileid.action]])]]
       ==
     %request-upload
@@ -146,7 +146,7 @@
       ~&  >  "provider sends authorizing url to {new-url}"
       ^-  (quip card _this)
       :_  this(state state(store (~(put by store.state) src.bowl storageinfo(upload-key (some pass)))))
-      :~  [%pass /upload/[(crip pass)] %arvo %i %request [%'POST' (crip new-url) ~[['AuthToken' (crip fileserverauth.state)]] ~] *outbound-config:iris]
+      :~  [%pass /upload/[(crip pass)] %arvo %i %request [%'POST' (crip new-url) ~[['authtoken' (crip fileserverauth.state)]] ~] *outbound-config:iris]
           [%give %fact ~[/uploader/(scot %p src.bowl)] [%lfs-provider-server-update !>([%request-response id=id.action response=[%got-url url=up-url key=pass]])]]
           :: confirm file server is up before giving fact?
       ==
