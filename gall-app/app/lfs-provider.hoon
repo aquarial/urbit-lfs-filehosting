@@ -129,7 +129,7 @@
       ?~  ufile
         :_  this
         :~  [%give %fact ~[(subscriber-path:hc src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="no such fileid"]])]  ==
-      =/  del-url  "{protocol:hc}://{fileserver.state}/upload/remove/{<fileid.action>}"
+      =/  del-url  "{protocol:hc}://{fileserver.state}/upload/remove/{fileid.action}"
       =/  newstorage  storageinfo(used (sub used.storageinfo size.u.ufile), files (~(del by files.storageinfo) fileid.action))
       :_  this(state state(store (~(put by store.state) src.bowl newstorage)))
       :~  [%pass /upload/remove/[(crip fileid.action)] %arvo %i %request [%'DELETE' (crip del-url) ~[['authtoken' (crip fileserverauth.state)]] ~] *outbound-config:iris]
