@@ -71,10 +71,10 @@
         ==
       :_  this
       ?~  threadid.action
-      :~  [%pass /lfs %agent [ship.action %lfs-provider] %watch /uploader/(scot %p our:bowl)]  ==
+      :~  [%pass /lfs %agent [ship.action %lfs-provider] %watch (subscriber-path:hc our:bowl)]  ==
       ::
       =/  tid  (need threadid.action)
-      :~  [%pass /lfs %agent [ship.action %lfs-provider] %watch /uploader/(scot %p our:bowl)]
+      :~  [%pass /lfs %agent [ship.action %lfs-provider] %watch (subscriber-path:hc our:bowl)]
           [%pass /thread/[tid] %agent [our.bowl %spider] %poke %spider-input !>([tid %client-action-response !>([%updated-providers ~])])]
       ==
     %remove-provider
@@ -209,4 +209,11 @@
 ++  transform-map
   |*  [m=(map * *) f=gate]
   (~(gas by *(map * *)) (turn ~(tap by m) f))
+++  subscriber-path
+  |=  =ship
+  :: moons count as the planet
+  =/  new-ship  ?:  ?=(%earl (clan:title ship))
+                  (sein:title our.bowl now.bowl ship)
+                 ship
+  /uploader/(scot %p new-ship)
 --

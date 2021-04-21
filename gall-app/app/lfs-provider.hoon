@@ -83,7 +83,7 @@
       =/  old=storageinfo  q.i.match
       =/  new=storageinfo  old(used (add used.old filesize), upload-key ~, files (~(put by files.old) fileid [down-url filesize]))
       :_  this(state state(store (~(put by store.state) ship new)))
-      (snoc (give-simple-payload:app:srv id (handle-http-request:hc inbound-request %success)) [%give %fact ~[/uploader/(scot %p ship)] %lfs-provider-server-update !>([%file-uploaded fileid=fileid filesize=filesize download-url=down-url])])
+      (snoc (give-simple-payload:app:srv id (handle-http-request:hc inbound-request %success)) [%give %fact ~[(subscriber-path:hc ship)] %lfs-provider-server-update !>([%file-uploaded fileid=fileid filesize=filesize download-url=down-url])])
     ==
   %noun
      ?+  +.vase  `this
@@ -128,23 +128,23 @@
       =/  ufile  (~(get by files.storageinfo) fileid.action)
       ?~  ufile
         :_  this
-        :~  [%give %fact ~[/uploader/(scot %p src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="no such fileid"]])]  ==
+        :~  [%give %fact ~[(subscriber-path:hc src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="no such fileid"]])]  ==
       =/  del-url  "{protocol:hc}://{fileserver.state}/upload/remove/{<fileid.action>}"
       =/  newstorage  storageinfo(used (sub used.storageinfo size.u.ufile), files (~(del by files.storageinfo) fileid.action))
       :_  this(state state(store (~(put by store.state) src.bowl newstorage)))
       :~  [%pass /upload/remove/[(crip fileid.action)] %arvo %i %request [%'DELETE' (crip del-url) ~[['authtoken' (crip fileserverauth.state)]] ~] *outbound-config:iris]
-          [%give %fact ~[/uploader/(scot %p src.bowl)] [%lfs-provider-server-update !>([%request-response id=id.action response=[%file-deleted key=fileid.action]])]]
+          [%give %fact ~[(subscriber-path:hc src.bowl)] [%lfs-provider-server-update !>([%request-response id=id.action response=[%file-deleted key=fileid.action]])]]
       ==
     %request-upload
       ?>  src-is-subscriber:hc
       ?.  server-accepting-upload:hc
         :_  this
-        :~  [%give %fact ~[/uploader/(scot %p src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="server offline"]])]  ==
+        :~  [%give %fact ~[(subscriber-path:hc src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="server offline"]])]  ==
       ::
       =/  space  upload-space:hc
       ?:  =(space 0)
         :_  this
-        :~  [%give %fact ~[/uploader/(scot %p src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="no space left"]])]  ==
+        :~  [%give %fact ~[(subscriber-path:hc src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="no space left"]])]  ==
       =/  storageinfo=storageinfo  (need (~(get by store.state) src.bowl))
       =/  code  (fall upload-key.storageinfo ?:(unsafe-reuse-upload-urls "0vbeef" "{<`@uv`(cut 8 [0 1] eny.bowl)>}"))
       =/  name  (sanitize-filename:hc (fall filename.action "file"))
@@ -155,7 +155,7 @@
       ^-  (quip card _this)
       :_  this(state state(store (~(put by store.state) src.bowl storageinfo(upload-key (some pass)))))
       :~  [%pass /upload/[(crip pass)] %arvo %i %request [%'POST' (crip new-url) ~[['authtoken' (crip fileserverauth.state)]] ~] *outbound-config:iris]
-          [%give %fact ~[/uploader/(scot %p src.bowl)] [%lfs-provider-server-update !>([%request-response id=id.action response=[%got-url url=up-url key=pass]])]]
+          [%give %fact ~[(subscriber-path:hc src.bowl)] [%lfs-provider-server-update !>([%request-response id=id.action response=[%got-url url=up-url key=pass]])]]
           :: confirm file server is up before giving fact?
       ==
       :: :~  [%pass /bind %arvo %e %connect [~ /'~upload'] %lfs-provider]
@@ -168,14 +168,13 @@
   ?:  ?=([%http-response *] path)
     ~&  "provider on-watch http-response on path: {<path>}"
     `this
-  :: only ~ship can subscribe to /uploader/~ship path
-  ?>  ?=([%uploader @ ~] path)
-  ?>  =((slav %p i.t.path) src.bowl)
+  :: only ~ship can subscribe to /uploader/~ship path (moons count as parent)
+  ?>  =((subscriber-path:hc src.bowl) path)
   ~&  "provider on-watch subscription from {<src.bowl>} on path: {<path>}"
   =/  updated  ((compute-ship-storage:hc upload-rules.state) [src.bowl (~(gut by store.state) src.bowl [storage=0 used=0 upload-url=~ files=[~]])])
   ?>  (gth storage.storageinfo.updated 0)
   :_  this(state state(store (~(gas by store.state) ~[updated])))
-  :~  [%give %fact ~[/uploader/(scot %p src.bowl)] [%lfs-provider-server-update !>([%storageinfo storageinfo=storageinfo.updated])]]  ==
+  :~  [%give %fact ~[(subscriber-path:hc src.bowl)] [%lfs-provider-server-update !>([%storageinfo storageinfo=storageinfo.updated])]]  ==
 ++  on-leave
   |=  =path
   `this
@@ -256,9 +255,16 @@
 --
 ::  helper core
 |_  =bowl:gall
+++  subscriber-path
+  |=  =ship
+  :: moons count as the planet
+  =/  new-ship  ?:  ?=(%earl (clan:title ship))
+                  (sein:title our.bowl now.bowl ship)
+                 ship
+  /uploader/(scot %p new-ship)
 ++  src-is-subscriber
   =/  subscribers  ~(val by sup.bowl)
-  =/  src-subscriber  [p=src.bowl q=/uploader/(scot %p src.bowl)]
+  =/  src-subscriber  [p=src.bowl q=(subscriber-path src.bowl)]
   ?!  =(~ (find ~[src-subscriber] subscribers))
 ++  upload-space
   =/  m  (~(get by store.state) src.bowl)
