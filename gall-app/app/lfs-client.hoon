@@ -137,7 +137,7 @@
   ==
 ++  on-agent
   |=  [=wire =sign:agent:gall]
-  ?+   wire  ~&  "client on-agent got un-handled {<-.sign>} from {<dap.bowl>} on wire {<wire>}"
+  ?+   wire  ~&  "client on-agent got {<-.sign>} from {<dap.bowl>} on wire {<wire>}"
              `this
   [%lfs ~]
     ?+  -.sign  (on-agent:default wire sign)
