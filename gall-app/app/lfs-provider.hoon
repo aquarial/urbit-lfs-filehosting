@@ -124,14 +124,14 @@
       :~  [%pass /setup %arvo %i %request [%'POST' (crip setup-url) ~[['authtoken' (crip token.action)]] body] *outbound-config:iris]  ==
     %request-delete
       ?>  src-is-subscriber:hc
-      =/  storageinfo  (need (~(get by store.state) src.bowl))
+      =/  storageinfo  (need (~(get by store.state) (subscriber-name:hc src.bowl)))
       =/  ufile  (~(get by files.storageinfo) fileid.action)
       ?~  ufile
         :_  this
         :~  [%give %fact ~[(subscriber-path:hc src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="no such fileid"]])]  ==
       =/  del-url  "{protocol:hc}://{fileserver.state}/upload/remove/{fileid.action}"
       =/  newstorage  storageinfo(used (sub used.storageinfo size.u.ufile), files (~(del by files.storageinfo) fileid.action))
-      :_  this(state state(store (~(put by store.state) src.bowl newstorage)))
+      :_  this(state state(store (~(put by store.state) (subscriber-name:hc src.bowl) newstorage)))
       :~  [%pass /upload/remove/[(crip fileid.action)] %arvo %i %request [%'DELETE' (crip del-url) ~[['authtoken' (crip fileserverauth.state)]] ~] *outbound-config:iris]
           [%give %fact ~[(subscriber-path:hc src.bowl)] [%lfs-provider-server-update !>([%request-response id=id.action response=[%file-deleted key=fileid.action]])]]
       ==
@@ -145,7 +145,7 @@
       ?:  =(space 0)
         :_  this
         :~  [%give %fact ~[(subscriber-path:hc src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="no space left"]])]  ==
-      =/  storageinfo=storageinfo  (need (~(get by store.state) src.bowl))
+      =/  storageinfo=storageinfo  (need (~(get by store.state) (subscriber-name:hc src.bowl)))
       =/  code  (fall upload-key.storageinfo ?:(unsafe-reuse-upload-urls "0vbeef" "{<`@uv`(cut 8 [0 1] eny.bowl)>}"))
       =/  name  (sanitize-filename:hc (fall filename.action "file"))
       =/  pass  "{code}-{name}"
@@ -153,7 +153,7 @@
       =/  new-url  "{protocol:hc}://{fileserver.state}/upload/new/{pass}/{(format-number space)}"
       ~&  >  "provider sends authorizing url to {new-url}"
       ^-  (quip card _this)
-      :_  this(state state(store (~(put by store.state) src.bowl storageinfo(upload-key (some pass)))))
+      :_  this(state state(store (~(put by store.state) (subscriber-name:hc src.bowl) storageinfo(upload-key (some pass)))))
       :~  [%pass /upload/[(crip pass)] %arvo %i %request [%'POST' (crip new-url) ~[['authtoken' (crip fileserverauth.state)]] ~] *outbound-config:iris]
           [%give %fact ~[(subscriber-path:hc src.bowl)] [%lfs-provider-server-update !>([%request-response id=id.action response=[%got-url url=up-url key=pass]])]]
           :: confirm file server is up before giving fact?
@@ -171,7 +171,8 @@
   :: only ~ship can subscribe to /uploader/~ship path (moons count as parent)
   ?>  =((subscriber-path:hc src.bowl) path)
   ~&  "provider on-watch subscription from {<src.bowl>} on path: {<path>}"
-  =/  updated  ((compute-ship-storage:hc upload-rules.state) [src.bowl (~(gut by store.state) src.bowl [storage=0 used=0 upload-url=~ files=[~]])])
+  :: need to store files under the subscriber name (only different for moons)
+  =/  updated  ((compute-ship-storage:hc upload-rules.state) [(subscriber-name:hc src.bowl) (~(gut by store.state) (subscriber-name:hc src.bowl) [storage=0 used=0 upload-url=~ files=[~]])])
   ?>  (gth storage.storageinfo.updated 0)
   :_  this(state state(store (~(gas by store.state) ~[updated])))
   :~  [%give %fact ~[(subscriber-path:hc src.bowl)] [%lfs-provider-server-update !>([%storageinfo storageinfo=storageinfo.updated])]]  ==
@@ -255,19 +256,21 @@
 --
 ::  helper core
 |_  =bowl:gall
+++  subscriber-name
+  |=  =ship
+  ?:  ?=(%earl (clan:title ship))
+    (sein:title our.bowl now.bowl ship)
+  ship
 ++  subscriber-path
   |=  =ship
   :: moons count as the planet
-  =/  new-ship  ?:  ?=(%earl (clan:title ship))
-                  (sein:title our.bowl now.bowl ship)
-                 ship
-  /uploader/(scot %p new-ship)
+  /uploader/(scot %p (subscriber-name ship))
 ++  src-is-subscriber
   =/  subscribers  ~(val by sup.bowl)
   =/  src-subscriber  [p=src.bowl q=(subscriber-path src.bowl)]
   ?!  =(~ (find ~[src-subscriber] subscribers))
 ++  upload-space
-  =/  m  (~(get by store.state) src.bowl)
+  =/  m  (~(get by store.state) (subscriber-name src.bowl))
   ?:  =(m ~)  0
   ?:  (lte storage:(need m) used:(need m))  0
   (sub storage:(need m) used:(need m))
@@ -309,7 +312,7 @@
   :: called when groups update, ships might not be subscribers
   =/  pair-with-storageinfo
       |=  =ship
-      ((lift |=(=storageinfo [ship storageinfo])) (~(get by store.state) ship))
+      ((lift |=(=storageinfo [ship storageinfo])) (~(get by store.state) (subscriber-name ship)))
   =/  updated  (turn (murn ~(tap in ships) pair-with-storageinfo) (compute-ship-storage upload-rules.state))
   =/  store  (~(gas by store.state) updated)
   store.state
