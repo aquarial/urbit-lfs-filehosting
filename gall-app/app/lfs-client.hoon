@@ -162,28 +162,25 @@
           `this(state state(store (~(put by store.state) src.bowl new)))
         %request-response
            =/  split-reqs  (skid pending-requests.state |=(r=[id=@uv =request-src] =(id.r id.resp)))
-           ?:  ?=(~ p.split-reqs)
-             ~|  "client received unexpected response for request {<id.resp>}"
-             !!
            =/  cards
-             ?:  ?=(%thread -.request-src.i.p.split-reqs)
-               =/  tid  id.request-src.i.p.split-reqs
-               :~  [%pass /thread/[tid] %agent [our.bowl %spider] %poke %spider-input !>([tid %client-action-response !>(response.resp)])]  ==
-             ~
+             ?:  ?=(~ p.split-reqs)  ~
+             ?.  ?=(%thread -.request-src.i.p.split-reqs)  ~
+             =/  tid  id.request-src.i.p.split-reqs
+             :~  [%pass /thread/[tid] %agent [our.bowl %spider] %poke %spider-input !>([tid %client-action-response !>(response.resp)])]  ==
            ?-  -.response.resp
            %failure
-             ~&  >  "client tells {<request-src.i.p.split-reqs>} that request failed : {reason.response.resp}"
+             ~&  >  "client tells {<p.split-reqs>} that request failed : {reason.response.resp}"
              :_  this(state state(pending-requests q.split-reqs))
              cards
            %file-deleted
-             ~&  >  "client tells {<request-src.i.p.split-reqs>} that we deleted : {<key.response.resp>}"
+             ~&  >  "client tells {<p.split-reqs>} that we deleted : {<key.response.resp>}"
              =/  old=storageinfo:lfs-provider  (~(gut by store.state) src.bowl [storage=0 used=0 upload-url=~ files=[~]])
              =/  size  size:(~(got by files.old) key.response.resp)
              =/  new=storageinfo:lfs-provider  old(used (sub used.old size), files (~(del by files.old) key.response.resp))
              :_  this(state state(pending-requests q.split-reqs, store (~(put by store.state) src.bowl new)))
              cards
            %got-url
-             ~&  >  "client tells {<request-src.i.p.split-reqs>} to upload with : {url.response.resp}"
+             ~&  >  "client tells {<p.split-reqs>} to upload with : {url.response.resp}"
              =/  old=storageinfo:lfs-provider  (~(gut by store.state) src.bowl [storage=0 used=0 upload-url=~ files=[~]])
              =/  new=storageinfo:lfs-provider  old(upload-key (some key.response.resp))
              :_  this(state state(pending-requests q.split-reqs, store (~(put by store.state) src.bowl new)))
