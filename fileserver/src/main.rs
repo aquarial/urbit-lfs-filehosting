@@ -47,7 +47,7 @@ impl<'a, 'r> FromRequest<'a, 'r> for AuthToken {
 
 struct Info {
     upload_paths: RwLock<HashMap<String, u64>>,
-    download_paths: RwLock<HashMap<String, ()>>,
+    //download_paths: RwLock<HashMap<String, ()>>,
     provider_url: Mutex<Option<String>>,
     client: Client,
 }
@@ -56,7 +56,8 @@ impl Info {
     fn new() -> Self {
         Info {
             upload_paths: RwLock::new(HashMap::new()),
-            download_paths: RwLock::new(HashMap::new()),
+            // TODO allow adding alternate paths to download a file?
+            //download_paths: RwLock::new(HashMap::new()),
             provider_url: Mutex::new(None),
             client: Client::new(),
         }
@@ -127,8 +128,8 @@ fn upload_file(state: State<Info>, key: String, data: Data) -> &'static str {
                     if res.status() == 200 {
                         println!("uploaded file {}", key);
                         std::mem::drop(ups);
-                        let mut downs = state.download_paths.write().unwrap();
-                        downs.insert(String::from(key), ());
+                        //let mut downs = state.download_paths.write().unwrap();
+                        //downs.insert(String::from(key), ());
                     } else {
                         println!("Error uploading {}", key);
                         ups.insert(key, size);
