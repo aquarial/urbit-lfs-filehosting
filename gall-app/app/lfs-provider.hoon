@@ -335,10 +335,13 @@
     =/  ppp  ?~  ginfo  "~"  "{<members:+<:ginfo>}"
     ?&  ?!  =(ginfo ~)
         (~(has in members:+<:ginfo) ship)
+        ?!  ?=   %pawn  (clan:title ship)
     ==
   %ship
     ?!  =(~ (find ~[ship] ships.justification))
   %kids
-    =(our.bowl (sein:title our.bowl now.bowl ship))
+    ?&  =(our.bowl (sein:title our.bowl now.bowl ship))
+        ?!  ?=   %pawn  (clan:title ship)
+    ==
   ==
 --
