@@ -146,11 +146,10 @@
         :_  this
         :~  [%give %fact ~[(subscriber-path:hc src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="no space left"]])]  ==
       =/  storageinfo=storageinfo  (need (~(get by store.state) (subscriber-name:hc src.bowl)))
-      :: TODO don't add filename next if storageinfo give cached key
-      :: TODO what happens when two moons upload at the same time? ratelimiting?
-      =/  code  (fall upload-key.storageinfo ?:(unsafe-reuse-upload-urls "0vbeef" "{<`@uv`(cut 8 [0 1] eny.bowl)>}"))
+      :: TODO what happens when two moons upload at the same time? rate limiting?
+      =/  code  ?:  unsafe-reuse-upload-urls  "0vbeef"  "{<`@uv`(cut 8 [0 1] eny.bowl)>}"
       =/  name  (sanitize-filename:hc (fall filename.action "file"))
-      =/  pass  "{code}-{name}"
+      =/  pass  (fall upload-key.storageinfo "{code}-{name}")
       =/  up-url  "{protocol:hc}://{fileserver.state}/upload/file/{pass}"
       =/  new-url  "{protocol:hc}://{fileserver.state}/upload/new/{pass}/{(format-number space)}"
       ~&  >  "provider sends authorizing url to {new-url}"
