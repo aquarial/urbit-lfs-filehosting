@@ -135,17 +135,19 @@
            uploadFile.value = uploadFile.defaultValue;
            await sleep(1000);
            let resp = JSON.parse(xmlhttp.response)
-           console.log("uploading to", resp.url);
-           httpPostAsync(resp.url, file,
-             async function(xmlhttp) {
-               console.log("uploading file got:", xmlhttp.response);
-               await sleep(500);
-               window.location.reload();
-             },
-             function(xmlhttp) {
-               console.error("uploading file got an error?", xmlhttp.response);
-             }
-           );
+           console.log("request upload response uploading ", resp);
+           if (resp.url !== undefined) {
+             httpPostAsync(resp.url, file,
+               async function(xmlhttp) {
+                 console.log("uploading file got:", xmlhttp.response);
+                 await sleep(500);
+                 window.location.reload();
+               },
+               function(xmlhttp) {
+                 console.error("uploading file got an error?", xmlhttp.response);
+               }
+             );
+           };
          },
          function() {
            console.error("Request upload failed?");
