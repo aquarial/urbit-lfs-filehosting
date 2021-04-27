@@ -173,7 +173,7 @@
   ?>  =((subscriber-path:hc src.bowl) path)
   ~&  "provider on-watch subscription from {<src.bowl>} on path: {<path>}"
   :: need to store files under the subscriber name (only different for moons)
-  =/  updated  ((compute-ship-storage:hc upload-rules.state) [(subscriber-name:hc src.bowl) (~(gut by store.state) (subscriber-name:hc src.bowl) [storage=0 used=0 upload-url=~ files=[~]])])
+  =/  updated  ((compute-ship-storage:hc upload-rules.state) [src.bowl (~(gut by store.state) (subscriber-name:hc src.bowl) [storage=0 used=0 upload-url=~ files=[~]])])
   ?>  (gth storage.storageinfo.updated 0)
   :_  this(state state(store (~(gas by store.state) ~[updated])))
   :~  [%give %fact ~[(subscriber-path:hc src.bowl)] [%lfs-provider-server-update !>([%storageinfo storageinfo=storageinfo.updated])]]  ==
@@ -325,7 +325,7 @@
   =/  izes  (turn (skim rules (match-rule ship)) |=([=justification size=@ud] size))
   =/  space  (roll (snoc izes 0) max)
   ~&  "  compute-ship-storage gave {<ship>} {<space>} bytes"
-  [ship=ship storageinfo=storageinfo(storage space)]
+  [ship=(subscriber-name ship) storageinfo=storageinfo(storage space)]
 ++  match-rule
   |=  =ship
   |=  [=justification size=@ud]
@@ -333,13 +333,16 @@
   %group
     =/  x  group:justification
     =/  ginfo  .^((unit group:group) %gx /(scot %p our.bowl)/group-store/(scot %da now.bowl)/groups/ship/(scot %p our.bowl)/[x]/noun)
-    =/  ppp  ?~  ginfo  "~"  "{<members:+<:ginfo>}"
-    ?&  ?!  =(ginfo ~)
-        (~(has in members:+<:ginfo) ship)
-        ?!  ?=   %pawn  (clan:title ship)
+    ?&  ?!  ?=   %pawn  (clan:title ship)
+        ?!  =(ginfo ~)
+        ?|  (~(has in members:+<:ginfo) ship)
+            (~(has in members:+<:ginfo) (subscriber-name ship))
+        ==
     ==
   %ship
-    ?!  =(~ (find ~[ship] ships.justification))
+    ?|  ?!  =(~ (find ~[ship] ships.justification))
+        ?!  =(~ (find ~[(subscriber-name ship)] ships.justification))
+    ==
   %kids
     ?&  =(our.bowl (sein:title our.bowl now.bowl ship))
         ?!  ?=   %pawn  (clan:title ship)
