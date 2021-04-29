@@ -282,6 +282,7 @@
       ?!  =(loopback.state "")
   ==
 ++  protocol
+  :: TODO handle both "domain" and "http://domain" input cleanly
   ?:  unsafe-http  "http"  "https"
 ++  handle-http-request
   |=  [req=inbound-request:eyre status=@t]
