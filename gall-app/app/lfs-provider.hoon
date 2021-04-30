@@ -113,6 +113,9 @@
   %lfs-provider-action
     =/  action  !<(action vase)
     ?-  -.action
+    %disconnect-server
+      ?>  (team:title [our src]:bowl)
+      `this(state state(fileserver-status %offline, loopback "", fileserver "", fileserverauth ""))
     %connect-server
       ?>  (team:title [our src]:bowl)
       :: TODO set state to %connecting and test connection
