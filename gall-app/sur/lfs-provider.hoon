@@ -4,10 +4,6 @@
       [%disconnect-server ~]
       [%request-upload filename=(unit tape) id=@uv]
       [%request-delete fileid=tape id=@uv]
-   :: [%test-loopback loopback=tape]
-  ==
-+$  client-request
-  $%  [%upload]
   ==
 +$  fileserver-status
   $%  %online
