@@ -9,6 +9,7 @@
   $:  %0
       =fileserver-status
       store=(map ship storageinfo)
+      pending=(map ship tape)
       =upload-rules
       loopback=tape
       fileserver=tape
@@ -23,6 +24,7 @@
       fileserver-status=%offline
       store=[~]
       upload-rules=[~]
+      pending=[~]
       loopback=""
       fileserver=""
       fileserverauth=""
@@ -72,17 +74,16 @@
       =/  fileid=tape  (trip &3:site.url)
       =/  filesize=@ud  (slav %ud &4:site.url)
       ~&  >  "provider knows someone uploaded {<filesize>} bytes of {fileid}, notifying them"
-      =/  storelist  ~(tap by store.state)
-      =/  match  (skim storelist |=([=ship =storageinfo] =(upload-key.storageinfo (some fileid))))
-      ?~  match
+      =/  src  (skim ~(tap by pending.state) |=([=ship id=tape] =(id fileid)))
+      ?~  src
         ~&  >>  "provider could not identify who uploaded fileid {fileid}"
         :_  this
         (give-simple-payload:app:srv id (handle-http-request:hc inbound-request 'failure'))
       =/  down-url  "{protocol:hc}://{fileserver.state}/download/file/{fileid}"
-      =/  ship=ship  p.i.match
-      =/  old=storageinfo  q.i.match
-      =/  new=storageinfo  old(used (add used.old filesize), upload-key ~, files (~(put by files.old) fileid [down-url filesize]))
-      :_  this(state state(store (~(put by store.state) ship new)))
+      =/  ship=ship  (subscriber-name:hc p.i.src)
+      =/  old=storageinfo  (~(got by store.state) ship)
+      =/  new=storageinfo  old(used (add used.old filesize), files (~(put by files.old) fileid [down-url filesize]))
+      :_  this(state state(pending (~(del by pending.state) src), store (~(put by store.state) ship new)))
       (snoc (give-simple-payload:app:srv id (handle-http-request:hc inbound-request %success)) [%give %fact ~[(subscriber-path:hc ship)] %lfs-provider-server-update !>([%file-uploaded fileid=fileid filesize=filesize download-url=down-url])])
     ==
   %noun
@@ -148,22 +149,21 @@
       ?:  =(space 0)
         :_  this
         :~  [%give %fact ~[(subscriber-path:hc src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="no space left"]])]  ==
+      ?^  (~(get by pending.state) (subscriber-name:hc src.bowl))
+        :_  this
+        :~  [%give %fact ~[(subscriber-path:hc src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="you can only request one thing at a time"]])]  ==
       =/  storageinfo=storageinfo  (need (~(get by store.state) (subscriber-name:hc src.bowl)))
-      :: TODO what happens when two moons upload at the same time? rate limiting?
       =/  code  ?:  unsafe-reuse-upload-urls  "0vbeef"  "{<`@uv`(cut 8 [0 1] eny.bowl)>}"
       =/  name  (sanitize-filename:hc (fall filename.action "file"))
-      =/  pass  (fall upload-key.storageinfo "{code}-{name}")
-      =/  up-url  "{protocol:hc}://{fileserver.state}/upload/file/{pass}"
+      =/  pass  "{code}-{name}"
       =/  new-url  "{protocol:hc}://{fileserver.state}/upload/new/{pass}/{(format-number space)}"
       ~&  >  "provider sends authorizing url to {new-url}"
       ^-  (quip card _this)
-      :_  this(state state(store (~(put by store.state) (subscriber-name:hc src.bowl) storageinfo(upload-key (some pass)))))
-      :~  [%pass /upload/[(crip pass)] %arvo %i %request [%'POST' (crip new-url) ~[['authtoken' (crip fileserverauth.state)]] ~] *outbound-config:iris]
-          [%give %fact ~[(subscriber-path:hc src.bowl)] [%lfs-provider-server-update !>([%request-response id=id.action response=[%got-url url=up-url key=pass]])]]
-          :: confirm file server is up before giving fact?
-      ==
+      :_  this(state state(pending (~(put by pending.state) (subscriber-name:hc src.bowl) pass)))
+      :~  [%pass /upload/[(crip pass)] %arvo %i %request [%'POST' (crip new-url) ~[['authtoken' (crip fileserverauth.state)]] ~] *outbound-config:iris]  ==
       :: :~  [%pass /bind %arvo %e %connect [~ /'~upload'] %lfs-provider]
       :: ~[[%pass /poke-wire %agent [src.bowl %lfs-provider] %poke %noun !>([%receive-poke 2])]]
+          :: confirm file server is up before giving fact?
     ==
   ==
 ++  on-watch
@@ -176,7 +176,7 @@
   ?>  =((subscriber-path:hc src.bowl) path)
   ~&  "provider on-watch subscription from {<src.bowl>} on path: {<path>}"
   :: need to store files under the subscriber name (only different for moons)
-  =/  updated  ((compute-ship-storage:hc upload-rules.state) [src.bowl (~(gut by store.state) (subscriber-name:hc src.bowl) [storage=0 used=0 upload-url=~ files=[~]])])
+  =/  updated  ((compute-ship-storage:hc upload-rules.state) [src.bowl (~(gut by store.state) (subscriber-name:hc src.bowl) [storage=0 used=0 files=[~]])])
   ?>  (gth storage.storageinfo.updated 0)
   :_  this(state state(store (~(gas by store.state) ~[updated])))
   :~  [%give %fact ~[(subscriber-path:hc src.bowl)] [%lfs-provider-server-update !>([%storageinfo storageinfo=storageinfo.updated])]]  ==
@@ -222,6 +222,10 @@
     `this
   ?:  ?=(%iris -.sign-arvo)
   ?>  ?=(%http-response +<.sign-arvo)
+  :: give fact to client about request
+  :: remove from pending.state
+  :: =/  up-url  "{protocol:hc}://{fileserver.state}/upload/file/{pass}"
+  :: [%give %fact ~[(subscriber-path:hc src.bowl)] [%lfs-provider-server-update !>([%request-response id=id.action response=[%got-url url=up-url key=pass]])]]
   ?+  wire  (on-arvo:default wire sign-arvo)
     :: client-response = [%finished response-header=[status-code=200
     ::   headers=~[[key='content-type' value='text/plain; charset=utf-8'] [key='server' value='Rocket']
