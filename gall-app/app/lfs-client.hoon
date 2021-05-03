@@ -127,7 +127,7 @@
   ::
   [%x %all-storage-info ~]
       =/  json-fileinfo  |=  [fileid=tape download-url=tape size=@ud]  [(crip fileid) [%o (my ~[['download-url' [%s (crip download-url)]] ['size' [%n (crip (format-number:hc size))]]])]]
-      =/  json-storage  |=  =storageinfo:lfs-provider  [%o (my ~[['storage' [%n (crip (format-number:hc storage.storageinfo))]] ['used' [%n (crip (format-number:hc used.storageinfo))]] ['upload-key' (fall ((lift |=(key=tape [%s (crip key)])) upload-key.storageinfo) ~)] ['files' [%o ((map @ta json) (transform-map:hc files.storageinfo json-fileinfo))]]])]
+      =/  json-storage  |=  =storageinfo:lfs-provider  [%o (my ~[['storage' [%n (crip (format-number:hc storage.storageinfo))]] ['used' [%n (crip (format-number:hc used.storageinfo))]] ['files' [%o ((map @ta json) (transform-map:hc files.storageinfo json-fileinfo))]]])]
       =/  json-storage-map  |=  [=ship =storageinfo:lfs-provider]  [(crip "{<ship>}") (json-storage storageinfo)]
       ``json+!>([%o ((map @ta json) (transform-map:hc store.state json-storage-map))])
   [%x %list-files ~]
@@ -156,9 +156,8 @@
           `this(state state(store (~(put by store.state) src.bowl storageinfo.resp)))
         %file-uploaded
           ~&  >  "client knows file upload {<fileid.resp>} succeeded!"
-          =/  old=storageinfo:lfs-provider  (~(gut by store.state) src.bowl [storage=0 used=0 upload-url=~ files=[~]])
-          =/  key  ?:  =(upload-key.old (some fileid.resp))  ~  upload-key.old
-          =/  new=storageinfo:lfs-provider  old(used (add used.old filesize.resp), upload-key key, files (~(put by files.old) fileid.resp [download-url.resp filesize.resp]))
+          =/  old=storageinfo:lfs-provider  (~(gut by store.state) src.bowl [storage=0 used=0 files=[~]])
+          =/  new=storageinfo:lfs-provider  old(used (add used.old filesize.resp), files (~(put by files.old) fileid.resp [download-url.resp filesize.resp]))
           `this(state state(store (~(put by store.state) src.bowl new)))
         %request-response
            =/  split-reqs  (skid pending-requests.state |=(r=[id=@uv =request-src] =(id.r id.resp)))
@@ -174,16 +173,14 @@
              cards
            %file-deleted
              ~&  >  "client tells {<p.split-reqs>} that we deleted : {<key.response.resp>}"
-             =/  old=storageinfo:lfs-provider  (~(gut by store.state) src.bowl [storage=0 used=0 upload-url=~ files=[~]])
+             =/  old=storageinfo:lfs-provider  (~(gut by store.state) src.bowl [storage=0 used=0 files=[~]])
              =/  size  size:(~(got by files.old) key.response.resp)
              =/  new=storageinfo:lfs-provider  old(used (sub used.old size), files (~(del by files.old) key.response.resp))
              :_  this(state state(pending-requests q.split-reqs, store (~(put by store.state) src.bowl new)))
              cards
            %got-url
              ~&  >  "client tells {<p.split-reqs>} to upload with : {url.response.resp}"
-             =/  old=storageinfo:lfs-provider  (~(gut by store.state) src.bowl [storage=0 used=0 upload-url=~ files=[~]])
-             =/  new=storageinfo:lfs-provider  old(upload-key (some key.response.resp))
-             :_  this(state state(pending-requests q.split-reqs, store (~(put by store.state) src.bowl new)))
+             :_  this
              cards
            ==
         ==
