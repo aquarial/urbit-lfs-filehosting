@@ -21,7 +21,7 @@
       [%ship ships=(list ship)]
       [%kids ~]
   ==
-+$  storageinfo  [storage=@ud used=@ud upload-key=(unit tape) files=(map tape fileinfo)]
++$  storageinfo  [storage=@ud used=@ud files=(map tape fileinfo)]
 +$  fileinfo  [download-url=tape size=@ud]
 
 +$  request-response
