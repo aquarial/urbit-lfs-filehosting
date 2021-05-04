@@ -163,9 +163,6 @@
       ^-  (quip card _this)
       :_  this(state state(pending (~(put by pending.state) (subscriber-name:hc src.bowl) pass)))
       :~  [%pass /upload/request/[(crip "{<src.bowl>}")]/[(crip "{<id.action>}")]/[(crip pass)] %arvo %i %request [%'POST' (crip new-url) ~[['authtoken' (crip fileserverauth.state)]] ~] *outbound-config:iris]  ==
-      :: :~  [%pass /bind %arvo %e %connect [~ /'~upload'] %lfs-provider]
-      :: ~[[%pass /poke-wire %agent [src.bowl %lfs-provider] %poke %noun !>([%receive-poke 2])]]
-      :: confirm file server is up before giving fact?
     ==
   ==
 ++  on-watch
@@ -224,8 +221,6 @@
     `this
   ?:  ?=(%iris -.sign-arvo)
   ?>  ?=(%http-response +<.sign-arvo)
-  :: TODO give fact to client about request
-  :: remove from pending.state
   ~&  "provider on-arvo {<wire>}"
   ?+  wire  ~&  "provider unexpected on-arvo on {<wire>}"  (on-arvo:default wire sign-arvo)
     :: client-response = [%finished response-header=[status-code=200
@@ -237,6 +232,7 @@
     ~&  "provider on-arvo setup response code {<status-code.response-header.client-response.sign-arvo>}"
     ?:  =(200 status-code.response-header.client-response.sign-arvo)
       ~&  "provider connected to {fileserver.state}"
+      :: TODO ensure received url matches the sent loopback server url?
       `this(state state(fileserver-status %online))
     ~&  >>  "provider error connecting {fileserver.state}: {<status-code.response-header.client-response.sign-arvo>}"
     `this
