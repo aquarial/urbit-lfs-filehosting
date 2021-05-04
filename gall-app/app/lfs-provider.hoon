@@ -128,6 +128,7 @@
       :~  [%pass /setup %arvo %i %request [%'POST' (crip setup-url) ~[['authtoken' (crip token.action)]] body] *outbound-config:iris]  ==
     %request-delete
       ?>  src-is-subscriber:hc
+      ?>  =("{<id.action>}" (sanitize-filename:hc "{<id.action>}"))
       =/  storageinfo  (need (~(get by store.state) (subscriber-name:hc src.bowl)))
       =/  ufile  (~(get by files.storageinfo) fileid.action)
       ?~  ufile
