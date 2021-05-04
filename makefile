@@ -67,3 +67,36 @@ start-fileserver:
 	cd ./fileserver && ROCKET_PORT=8000 cargo run -- --UNSAFE_DEBUG_AUTH
 
 .PHONY: start-fileserver
+
+
+.PHONY: demo
+demo:
+	tmux has-session -t zod ||      \
+	    (echo "\n\nRUN: tmux new -s zod in other terminal"; exit 1)
+	tmux send-keys -t zod "C-c"; sleep 0.3
+	tmux send-keys -t zod "C-z"; sleep 0.3
+	tmux send-keys -t zod "C-c"; sleep 0.3
+	tmux send-keys -t zod "cd $$(pwd)" "ENTER"
+	rsync -a --delete ./data/old.zod/ ./data/zod
+	tmux send-keys -t zod "./data/urbit -L ./data/zod" "ENTER"
+	sleep 1.5 # startup eats ''enter keys'
+	tmux send-keys -t zod "C-l"; sleep 0.4
+	#
+	rsync -a --ignore-times ./gall-app/ ./data/zod/home/
+	tmux send-keys -t zod "|commit %home" "ENTER"; sleep 1
+	tmux send-keys -t zod "|start %lfs-provider" "ENTER"; sleep 3
+	#
+	#
+	tmux has-session -t dopzod ||      \
+	    (echo "\n\nRUN: tmux new -s dopzod in other terminal"; exit 1)
+	tmux send-keys -t dopzod "C-c"; sleep 0.3
+	tmux send-keys -t dopzod "C-z"; sleep 0.3
+	tmux send-keys -t dopzod "C-c"; sleep 0.3
+	tmux send-keys -t dopzod "cd $$(pwd)" "ENTER"
+	rsync -a --delete ./data/old.dopzod/ ./data/dopzod
+	tmux send-keys -t dopzod "./data/urbit -L ./data/dopzod" "ENTER"
+	sleep 1.5 # startup eats ''enter keys'
+	tmux send-keys -t dopzod "C-l"; sleep 0.4
+	rsync -a --ignore-times ./gall-app/ ./data/dopzod/home/
+	tmux send-keys -t dopzod "|commit %home" "ENTER"; sleep 1
+	tmux send-keys -t dopzod "|start %lfs-client" "ENTER"; sleep 2
