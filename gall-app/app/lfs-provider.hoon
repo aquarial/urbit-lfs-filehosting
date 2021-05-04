@@ -124,7 +124,7 @@
       :: TODO invalidate all the urls, send updates to all clients
       =/  setup-url  "{protocol:hc}://{fileserver.action}/setup"
       =/  body  (some (as-octt:mimes:html "{protocol:hc}://{loopback.action}"))
-      :_  this(state state(fileserver-status %online, loopback loopback.action, fileserver fileserver.action, fileserverauth token.action))
+      :_  this(state state(loopback loopback.action, fileserver fileserver.action, fileserverauth token.action))
       :~  [%pass /setup %arvo %i %request [%'POST' (crip setup-url) ~[['authtoken' (crip token.action)]] body] *outbound-config:iris]  ==
     %request-delete
       ?>  src-is-subscriber:hc
