@@ -1,8 +1,10 @@
 |%
-+$  action
++$  command
   $%  [%connect-server loopback=tape fileserver=tape token=tape]
       [%disconnect-server ~]
-      [%request-upload filename=(unit tape) id=@uv]
+  ==
++$  action
+  $%  [%request-upload filename=(unit tape) id=@uv]
       [%request-delete fileid=tape id=@uv]
   ==
 +$  fileserver-status

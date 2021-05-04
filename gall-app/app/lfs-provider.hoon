@@ -110,22 +110,22 @@
        :: TODO give out new upload rules (changed storage)
        `this(state state(upload-rules new-rules, store new-store))
      ==
-  :: /mar/lfs-provider/action.hoon
+  %lfs-provider-command
+    ?>  (team:title [our src]:bowl)
+    =/  command  !<(command vase)
+    ?-  -.command
+    %disconnect-server
+      `this(state state(fileserver-status %offline, loopback "", fileserver "", fileserverauth ""))
+    %connect-server
+      :: TODO send update for fileserver ulr to all clients?
+      =/  setup-url  "{protocol:hc}://{fileserver.command}/setup"
+      =/  body  (some (as-octt:mimes:html "{protocol:hc}://{loopback.command}"))
+      :_  this(state state(loopback loopback.command, fileserver fileserver.command, fileserverauth token.command))
+      :~  [%pass /setup %arvo %i %request [%'POST' (crip setup-url) ~[['authtoken' (crip token.command)]] body] *outbound-config:iris]  ==
+  ::
   %lfs-provider-action
     =/  action  !<(action vase)
     ?-  -.action
-    %disconnect-server
-      ?>  (team:title [our src]:bowl)
-      `this(state state(fileserver-status %offline, loopback "", fileserver "", fileserverauth ""))
-    %connect-server
-      ?>  (team:title [our src]:bowl)
-      :: TODO set state to %connecting and test connection
-      ::      don't set status online until we confirm fileserver responds
-      :: TODO invalidate all the urls, send updates to all clients
-      =/  setup-url  "{protocol:hc}://{fileserver.action}/setup"
-      =/  body  (some (as-octt:mimes:html "{protocol:hc}://{loopback.action}"))
-      :_  this(state state(loopback loopback.action, fileserver fileserver.action, fileserverauth token.action))
-      :~  [%pass /setup %arvo %i %request [%'POST' (crip setup-url) ~[['authtoken' (crip token.action)]] body] *outbound-config:iris]  ==
     %request-delete
       ?>  src-is-subscriber:hc
       ?>  =("{<id.action>}" (sanitize-filename:hc "{<id.action>}"))
