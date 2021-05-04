@@ -137,11 +137,11 @@
       =/  del-url  "{protocol:hc}://{fileserver.state}/upload/remove/{fileid.action}"
       =/  newstorage  storageinfo(used (sub used.storageinfo size.u.ufile), files (~(del by files.storageinfo) fileid.action))
       :_  this(state state(store (~(put by store.state) (subscriber-name:hc src.bowl) newstorage)))
-      :~  [%pass /upload/remove/[(crip fileid.action)] %arvo %i %request [%'DELETE' (crip del-url) ~[['authtoken' (crip fileserverauth.state)]] ~] *outbound-config:iris]
-          [%give %fact ~[(subscriber-path:hc src.bowl)] [%lfs-provider-server-update !>([%request-response id=id.action response=[%file-deleted key=fileid.action]])]]
+      :~  [%pass /upload/remove/[(crip "{<src.bowl>}")]/[(crip "{<id.action>}")]/[(crip fileid.action)] %arvo %i %request [%'DELETE' (crip del-url) ~[['authtoken' (crip fileserverauth.state)]] ~] *outbound-config:iris]
       ==
     %request-upload
       ?>  src-is-subscriber:hc
+      ?>  =("{<id.action>}" (sanitize-filename:hc "{<id.action>}"))
       ?.  server-accepting-upload:hc
         :_  this
         :~  [%give %fact ~[(subscriber-path:hc src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="server offline"]])]  ==
@@ -152,7 +152,8 @@
         :~  [%give %fact ~[(subscriber-path:hc src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="no space left"]])]  ==
       ?^  (~(get by pending.state) (subscriber-name:hc src.bowl))
         :_  this
-        :~  [%give %fact ~[(subscriber-path:hc src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="you can only request one thing at a time"]])]  ==
+        :~  [%give %fact ~[(subscriber-path:hc src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="you can only request one thing at a time"]])]
+        ==
       =/  storageinfo=storageinfo  (need (~(get by store.state) (subscriber-name:hc src.bowl)))
       =/  code  ?:  unsafe-reuse-upload-urls  "0vbeef"  "{<`@uv`(cut 8 [0 1] eny.bowl)>}"
       =/  name  (sanitize-filename:hc (fall filename.action "file"))
@@ -161,10 +162,10 @@
       ~&  >  "provider sends authorizing url to {new-url}"
       ^-  (quip card _this)
       :_  this(state state(pending (~(put by pending.state) (subscriber-name:hc src.bowl) pass)))
-      :~  [%pass /upload/[(crip pass)] %arvo %i %request [%'POST' (crip new-url) ~[['authtoken' (crip fileserverauth.state)]] ~] *outbound-config:iris]  ==
+      :~  [%pass /upload/request/[(crip "{<src.bowl>}")]/[(crip "{<id.action>}")]/[(crip pass)] %arvo %i %request [%'POST' (crip new-url) ~[['authtoken' (crip fileserverauth.state)]] ~] *outbound-config:iris]  ==
       :: :~  [%pass /bind %arvo %e %connect [~ /'~upload'] %lfs-provider]
       :: ~[[%pass /poke-wire %agent [src.bowl %lfs-provider] %poke %noun !>([%receive-poke 2])]]
-          :: confirm file server is up before giving fact?
+      :: confirm file server is up before giving fact?
     ==
   ==
 ++  on-watch
@@ -223,11 +224,10 @@
     `this
   ?:  ?=(%iris -.sign-arvo)
   ?>  ?=(%http-response +<.sign-arvo)
-  :: give fact to client about request
+  :: TODO give fact to client about request
   :: remove from pending.state
-  :: =/  up-url  "{protocol:hc}://{fileserver.state}/upload/file/{pass}"
-  :: [%give %fact ~[(subscriber-path:hc src.bowl)] [%lfs-provider-server-update !>([%request-response id=id.action response=[%got-url url=up-url key=pass]])]]
-  ?+  wire  (on-arvo:default wire sign-arvo)
+  ~&  "provider on-arvo {<wire>}"
+  ?+  wire  ~&  "provider unexpected on-arvo on {<wire>}"  (on-arvo:default wire sign-arvo)
     :: client-response = [%finished response-header=[status-code=200
     ::   headers=~[[key='content-type' value='text/plain; charset=utf-8'] [key='server' value='Rocket']
     ::   [key='content-length' value='19'] [key='date' value='Tue, 16 Mar 2021 01:23:34 GMT']]]
@@ -235,15 +235,30 @@
   [%setup ~]
      ?>  ?=(%finished -.client-response.sign-arvo)
      ~&  "provider on-arvo setup response code {<status-code.response-header.client-response.sign-arvo>}"
+    ?:  =(200 status-code.response-header.client-response.sign-arvo)
+      ~&  "provider connected to {fileserver.state}"
+       `this(state state(fileserver-status %online))
+    ~&  >>  "provider error connecting {fileserver.state}: {<status-code.response-header.client-response.sign-arvo>}"
     `this
-  [%upload * ~]
+  [%upload @ta @ta @ta @ta ~]
     ?>  ?=(%finished -.client-response.sign-arvo)
-    ~&  "provider on-arvo upload response code {<status-code.response-header.client-response.sign-arvo>}"
-    `this
-  [%upload %remove * ~]
-    ?>  ?=(%finished -.client-response.sign-arvo)
-    ~&  "provider on-arvo file deleted code {<status-code.response-header.client-response.sign-arvo>}"
-    `this
+    =/  action  &2:wire   =/  src  (slav %ud &3:wire)  =/  id  (slav %ud &4:wire)  =/  pass  (slav %ud &5:wire)
+    =/  give-resp  |*  res  :~  [%give %fact ~[(subscriber-path:hc src)] %lfs-provider-server-update !>([%request-response id=id response=res])]  ==
+    =/  this-no-pending  this(state state(pending (~(del by pending.state) (subscriber-name:hc src))))
+    ::
+    ?+  action  [(give-resp [%failure reason="internal error: unhandled client-action"]) this-no-pending]
+    %remove
+      [(give-resp [%got-url url=up-url key=pass]) this-no-pending]
+    %request
+
+    =/  response
+          ?.  =(200 status-code.response-header.client-response.sign-arvo)  [%failure reason="server offline"]
+          ?+  action  [%failure reason="internal error: unhandled client-action"]
+          %request  [%got-url url=up-url key=pass]
+          %remove   [%file-deleted key=fileid.action]
+    ::
+    :_  ?:  =(action %request)  this  this(state state(pending (~(del by pending.state) (subscriber-name:hc src))))
+    :~  [%give %fact ~[(subscriber-path:hc src)] %lfs-provider-server-update !>([%request-response id=id response=response])]  ==
   ==
   ::   =^  cards  state
   ::      ~&  "provider on-arvo got on wire {<wire>} = {<client-response.sign-arvo>}"
