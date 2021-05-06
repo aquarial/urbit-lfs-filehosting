@@ -9,7 +9,7 @@
   $:  %0
       =fileserver-status
       store=(map ship storageinfo)
-      pending=(map ship tape)
+      waitlist=(list [src=ship action=action])
       =upload-rules
       loopback=tape
       fileserver=tape
@@ -24,7 +24,7 @@
       fileserver-status=%offline
       store=[~]
       upload-rules=[~]
-      pending=[~]
+      waitlist=[~]
       loopback=""
       fileserver=""
       fileserverauth=""
@@ -117,7 +117,7 @@
     %disconnect-server
       `this(state state(fileserver-status %offline, loopback "", fileserver "", fileserverauth ""))
     %connect-server
-      :: TODO send update for fileserver ulr to all clients?
+      :: TODO send update for fileserver url to all clients?
       =/  setup-url  "{protocol:hc}://{fileserver.command}/setup"
       =/  body  (some (as-octt:mimes:html "{protocol:hc}://{loopback.command}"))
       :_  this(state state(loopback loopback.command, fileserver fileserver.command, fileserverauth token.command))
