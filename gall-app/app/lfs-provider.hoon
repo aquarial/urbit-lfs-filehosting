@@ -9,6 +9,7 @@
   $:  %0
       =fileserver-status
       store=(map ship storageinfo)
+      pending=(map ship tape)
       waitlist=(list [src=ship action=action])
       =upload-rules
       loopback=tape
@@ -24,6 +25,7 @@
       fileserver-status=%offline
       store=[~]
       upload-rules=[~]
+      pending=[~]
       waitlist=[~]
       loopback=""
       fileserver=""
@@ -122,6 +124,7 @@
       =/  body  (some (as-octt:mimes:html "{protocol:hc}://{loopback.command}"))
       :_  this(state state(loopback loopback.command, fileserver fileserver.command, fileserverauth token.command))
       :~  [%pass /setup %arvo %i %request [%'POST' (crip setup-url) ~[['authtoken' (crip token.command)]] body] *outbound-config:iris]  ==
+    ==
   ::
   %lfs-provider-action
     =/  action  !<(action vase)
@@ -131,6 +134,7 @@
     :: TODO track usage statistics
     :: TODO reject if waitlist is too long
     ?:  =(0 (lent waitlist.state))
+      :: (handle-action:hc state [~] action)
       (handle-action:hc action)
     `this(state state(waitlist (snoc waitlist.state action)))
   ==
@@ -221,9 +225,11 @@
           ?+  action  [%failure reason="internal error: unhandled client-action"]
           %request  [%got-url url=up-url key=pass]
           %remove   [%file-deleted key=fileid.action]
+          ==
     ::
     :_  ?:  =(action %request)  this  this(state state(pending (~(del by pending.state) (subscriber-name:hc src))))
     :~  [%give %fact ~[(subscriber-path:hc src)] %lfs-provider-server-update !>([%request-response id=id response=response])]  ==
+    ==
   ==
   ::   =^  cards  state
   ::      ~&  "provider on-arvo got on wire {<wire>} = {<client-response.sign-arvo>}"
@@ -338,44 +344,45 @@
     ==
   ==
 ++  handle-action
+  :: |=  [=state =cards =action]
   |=  =action
   :: no assertions here because crashing loses progress
   ?-  -.action
   %request-delete
-    ?.  server-accepting-upload:hc
+    ?.  server-accepting-upload
       :_  this
-      :~  [%give %fact ~[(subscriber-path:hc src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="server offline"]])]  ==
-    =/  storageinfo  (need (~(get by store.state) (subscriber-name:hc src.bowl)))
+      :~  [%give %fact ~[(subscriber-path src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="server offline"]])]  ==
+    =/  storageinfo  (need (~(get by store.state) (subscriber-name src.bowl)))
     =/  ufile  (~(get by files.storageinfo) fileid.action)
     ?~  ufile
       :_  this
-      :~  [%give %fact ~[(subscriber-path:hc src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="no such fileid"]])]  ==
-    =/  del-url  "{protocol:hc}://{fileserver.state}/upload/remove/{fileid.action}"
+      :~  [%give %fact ~[(subscriber-path src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="no such fileid"]])]  ==
+    =/  del-url  "{protocol}://{fileserver.state}/upload/remove/{fileid.action}"
     =/  newstorage  storageinfo(used (sub used.storageinfo size.u.ufile), files (~(del by files.storageinfo) fileid.action))
-    :_  this(state state(store (~(put by store.state) (subscriber-name:hc src.bowl) newstorage)))
+    :_  this(state state(store (~(put by store.state) (subscriber-name src.bowl) newstorage)))
     :~  [%pass /upload/remove/[(crip "{<src.bowl>}")]/[(crip "{<id.action>}")]/[(crip fileid.action)] %arvo %i %request [%'DELETE' (crip del-url) ~[['authtoken' (crip fileserverauth.state)]] ~] *outbound-config:iris]
     ==
   %request-upload
-    ?.  server-accepting-upload:hc
+    ?.  server-accepting-upload
       :_  this
-      :~  [%give %fact ~[(subscriber-path:hc src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="server offline"]])]  ==
+      :~  [%give %fact ~[(subscriber-path src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="server offline"]])]  ==
     ::
-    =/  space  upload-space:hc
+    =/  space  upload-space
     ?:  =(space 0)
       :_  this
-      :~  [%give %fact ~[(subscriber-path:hc src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="no space left"]])]  ==
-    ?^  (~(get by pending.state) (subscriber-name:hc src.bowl))
+      :~  [%give %fact ~[(subscriber-path src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="no space left"]])]  ==
+    ?^  (~(get by pending.state) (subscriber-name src.bowl))
       :_  this
-      :~  [%give %fact ~[(subscriber-path:hc src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="you can only request one thing at a time"]])]
+      :~  [%give %fact ~[(subscriber-path src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="you can only request one thing at a time"]])]
       ==
-    =/  storageinfo=storageinfo  (need (~(get by store.state) (subscriber-name:hc src.bowl)))
+    =/  storageinfo=storageinfo  (need (~(get by store.state) (subscriber-name src.bowl)))
     =/  code  ?:  unsafe-reuse-upload-urls  "0vbeef"  "{<`@uv`(cut 8 [0 1] eny.bowl)>}"
-    =/  name  (sanitize-filename:hc (fall filename.action "file"))
+    =/  name  (sanitize-filename (fall filename.action "file"))
     =/  pass  "{code}-{name}"
-    =/  new-url  "{protocol:hc}://{fileserver.state}/upload/new/{pass}/{(format-number space)}"
+    =/  new-url  "{protocol}://{fileserver.state}/upload/new/{pass}/{(format-number space)}"
     ~&  >  "provider sends authorizing url to {new-url}"
     ^-  (quip card _this)
-    :_  this(state state(pending (~(put by pending.state) (subscriber-name:hc src.bowl) pass)))
+    :_  this(state state(pending (~(put by pending.state) (subscriber-name src.bowl) pass)))
     :~  [%pass /upload/request/[(crip "{<src.bowl>}")]/[(crip "{<id.action>}")]/[(crip pass)] %arvo %i %request [%'POST' (crip new-url) ~[['authtoken' (crip fileserverauth.state)]] ~] *outbound-config:iris]  ==
   ==
 --
