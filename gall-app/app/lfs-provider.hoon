@@ -212,14 +212,14 @@
     `this
   [%upload @ta @ta @ta @ta ~]
     ?>  ?=(%finished -.client-response.sign-arvo)
-    =/  action-type  &2:wire   =/  src  (slav %ud &3:wire)  =/  pass  (trip &5:wire)
+    =/  action-type  &2:wire   =/  src  (slav %p &3:wire)  =/  pass  (trip &5:wire)
     ::
     =/  response
         ?.  =(200 status-code.response-header.client-response.sign-arvo)  [%failure reason="internal error: fileserver not responding"]
         ::
         ?+  action-type  [%failure reason="internal error: unhandled client-action"]
-        %request  [%got-url url="{protocol}://{fileserver.state}/upload/file/{<pass>}" key=pass]
-        %remove   [%file-deleted key="{<pass>}"]
+        %request  [%got-url url="{protocol}://{fileserver.state}/upload/file/{pass}" key=pass]
+        %remove   [%file-deleted key="{pass}"]
         ==
     ::
     :_  this(state state(pending (~(del by pending.state) (subscriber-name:hc src))))
