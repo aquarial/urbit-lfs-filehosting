@@ -211,7 +211,7 @@
     `this
   [%upload @ta @ta @ta @ta ~]
     ?>  ?=(%finished -.client-response.sign-arvo)
-    =/  action-type  &2:wire   =/  src  (slav %p &3:wire)  =/  pass  (trip &5:wire)
+    =/  action-type  &2:wire   =/  src  (slav %p &3:wire)  =/  id  (slav %uv &4:wire)  =/  pass  (trip &5:wire)
     ::
     =/  response
         ?.  =(200 status-code.response-header.client-response.sign-arvo)  [%failure reason="internal error: fileserver not responding"]
@@ -221,8 +221,8 @@
         %remove   [%file-deleted key="{pass}"]
         ==
     ::
-    :_  this(state state(pending (~(del by pending.state) (subscriber-name:hc src))))
-    :~  [%give %fact ~[(subscriber-path:hc src)] %lfs-provider-server-update !>([%request-response id=0vbeef response=response])]  ==
+    :_  ?:  =(action-type %request)  this  this(state state(pending (~(del by pending.state) (subscriber-name:hc src))))
+    :~  [%give %fact ~[(subscriber-path:hc src)] %lfs-provider-server-update !>([%request-response id=id response=response])]  ==
   ==
   ::   =^  cards  state
   ::      ~&  "provider on-arvo got on wire {<wire>} = {<client-response.sign-arvo>}"
