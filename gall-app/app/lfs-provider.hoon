@@ -133,7 +133,7 @@
     :: TODO track usage statistics
     :: TODO reject if waitlist is too long
     ?:  =(0 (lent waitlist.state))
-      =/  cardstate  (handle-action:hc state action)
+      =/  cardstate  (handle-action:hc state src.bowl action)
       :_  this(state +3:cardstate)
       +2:cardstate
     `this(state state(waitlist (snoc waitlist.state [src=src.bowl action=action])))
@@ -337,43 +337,44 @@
     ==
   ==
 ++  handle-action
-  |=  [state=state-0 =action]
+  |=  [state=_state src=ship =action]
+  :: can be called from anywhere, don't use src.bowl
   :: no assertions here because crashing loses progress
   ?-  -.action
   %request-delete
     ?.  server-accepting-upload
       :_  state
-      :~  [%give %fact ~[(subscriber-path src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="server offline"]])]  ==
-    =/  storageinfo  (need (~(get by store.state) (subscriber-name src.bowl)))
+      :~  [%give %fact ~[(subscriber-path src)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="server offline"]])]  ==
+    =/  storageinfo  (need (~(get by store.state) (subscriber-name src)))
     =/  ufile  (~(get by files.storageinfo) fileid.action)
     ?~  ufile
       :_  state
-      :~  [%give %fact ~[(subscriber-path src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="no such fileid"]])]  ==
+      :~  [%give %fact ~[(subscriber-path src)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="no such fileid"]])]  ==
     =/  del-url  "{protocol}://{fileserver.state}/upload/remove/{fileid.action}"
     =/  newstorage  storageinfo(used (sub used.storageinfo size.u.ufile), files (~(del by files.storageinfo) fileid.action))
-    :_  state(store (~(put by store.state) (subscriber-name src.bowl) newstorage))
-    :~  [%pass /upload/remove/[(crip "{<src.bowl>}")]/[(crip "{<id.action>}")]/[(crip fileid.action)] %arvo %i %request [%'DELETE' (crip del-url) ~[['authtoken' (crip fileserverauth.state)]] ~] *outbound-config:iris]
+    :_  state(store (~(put by store.state) (subscriber-name src) newstorage))
+    :~  [%pass /upload/remove/[(crip "{<src>}")]/[(crip "{<id.action>}")]/[(crip fileid.action)] %arvo %i %request [%'DELETE' (crip del-url) ~[['authtoken' (crip fileserverauth.state)]] ~] *outbound-config:iris]
     ==
   %request-upload
     ?.  server-accepting-upload
       :_  state
-      :~  [%give %fact ~[(subscriber-path src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="server offline"]])]  ==
+      :~  [%give %fact ~[(subscriber-path src)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="server offline"]])]  ==
     ::
     =/  space  upload-space
     ?:  =(space 0)
       :_  state
-      :~  [%give %fact ~[(subscriber-path src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="no space left"]])]  ==
-    ?^  (~(get by pending.state) (subscriber-name src.bowl))
+      :~  [%give %fact ~[(subscriber-path src)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="no space left"]])]  ==
+    ?^  (~(get by pending.state) (subscriber-name src))
       :_  state
-      :~  [%give %fact ~[(subscriber-path src.bowl)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="you can only request one thing at a time"]])]
+      :~  [%give %fact ~[(subscriber-path src)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="you can only request one thing at a time"]])]
       ==
-    =/  storageinfo=storageinfo  (need (~(get by store.state) (subscriber-name src.bowl)))
+    =/  storageinfo=storageinfo  (need (~(get by store.state) (subscriber-name src)))
     =/  code  ?:  unsafe-reuse-upload-urls  "0vbeef"  "{<`@uv`(cut 8 [0 1] eny.bowl)>}"
     =/  name  (sanitize-filename (fall filename.action "file"))
     =/  pass  "{code}-{name}"
     =/  new-url  "{protocol}://{fileserver.state}/upload/new/{pass}/{(format-number space)}"
     ~&  >  "provider sends authorizing url to {new-url}"
-    :_  state(pending (~(put by pending.state) (subscriber-name src.bowl) pass))
-    :~  [%pass /upload/request/[(crip "{<src.bowl>}")]/[(crip "{<id.action>}")]/[(crip pass)] %arvo %i %request [%'POST' (crip new-url) ~[['authtoken' (crip fileserverauth.state)]] ~] *outbound-config:iris]  ==
+    :_  state(pending (~(put by pending.state) (subscriber-name src) pass))
+    :~  [%pass /upload/request/[(crip "{<src>}")]/[(crip "{<id.action>}")]/[(crip pass)] %arvo %i %request [%'POST' (crip new-url) ~[['authtoken' (crip fileserverauth.state)]] ~] *outbound-config:iris]  ==
   ==
 --
