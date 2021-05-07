@@ -155,7 +155,7 @@
           ~&  "client received provider's cache : {<storageinfo.resp>}"
           `this(state state(store (~(put by store.state) src.bowl storageinfo.resp)))
         %file-uploaded
-          ~&  >  "client knows file upload {<fileid.resp>} succeeded!"
+          ~&  >  "client knows file upload {fileid.resp} succeeded!"
           =/  old=storageinfo:lfs-provider  (~(gut by store.state) src.bowl [storage=0 used=0 files=[~]])
           =/  new=storageinfo:lfs-provider  old(used (add used.old filesize.resp), files (~(put by files.old) fileid.resp [download-url.resp filesize.resp]))
           `this(state state(store (~(put by store.state) src.bowl new)))
@@ -166,20 +166,21 @@
              ?.  ?=(%thread -.request-src.i.p.split-reqs)  ~
              =/  tid  id.request-src.i.p.split-reqs
              :~  [%pass /thread/[tid] %agent [our.bowl %spider] %poke %spider-input !>([tid %client-action-response !>(response.resp)])]  ==
+           =/  messenger  ?~  p.split-reqs  %unknown-src  -.request-src.i.p.split-reqs
            ?-  -.response.resp
            %failure
-             ~&  >  "client tells {<p.split-reqs>} that request failed : {reason.response.resp}"
+             ~&  >  "client tells {<messenger>} that request failed : {reason.response.resp}"
              :_  this(state state(pending-requests q.split-reqs))
              cards
            %file-deleted
-             ~&  >  "client tells {<p.split-reqs>} that we deleted : {<key.response.resp>}"
+             ~&  >  "client tells {<messenger>} that we deleted : {key.response.resp}"
              =/  old=storageinfo:lfs-provider  (~(gut by store.state) src.bowl [storage=0 used=0 files=[~]])
              =/  size  size:(~(got by files.old) key.response.resp)
              =/  new=storageinfo:lfs-provider  old(used (sub used.old size), files (~(del by files.old) key.response.resp))
              :_  this(state state(pending-requests q.split-reqs, store (~(put by store.state) src.bowl new)))
              cards
            %got-url
-             ~&  >  "client tells {<p.split-reqs>} to upload with : {url.response.resp}"
+             ~&  >  "client tells {<messenger>} to upload with : {url.response.resp}"
              :_  this
              cards
            ==
