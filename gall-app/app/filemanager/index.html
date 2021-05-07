@@ -40,10 +40,10 @@
 
 
     <script>
-     // https://stackoverflow.com/questions/247483/http-get-request-in-javascript
      function sleep(ms) {
        return new Promise(resolve => setTimeout(resolve, ms));
      }
+     // https://stackoverflow.com/questions/247483/http-get-request-in-javascript
      function httpGetAsync(theUrl, callback, errHandle) {
        var xmlHttp = new XMLHttpRequest();
        xmlHttp.onreadystatechange = function() {
@@ -133,14 +133,12 @@
          JSON.stringify(["request-upload", uploadProvider.value, file.name]),
          async function(xmlhttp) {
            uploadFile.value = uploadFile.defaultValue;
-           await sleep(1000);
            let resp = JSON.parse(xmlhttp.response)
            console.log("request upload response uploading ", resp);
            if (resp.url !== undefined) {
              httpPostAsync(resp.url, file,
                async function(xmlhttp) {
                  console.log("uploading file got:", xmlhttp.response);
-                 await sleep(500);
                  window.location.reload();
                },
                function(xmlhttp) {
