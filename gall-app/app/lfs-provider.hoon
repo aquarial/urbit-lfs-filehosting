@@ -129,7 +129,6 @@
   %lfs-provider-action
     =/  action  !<(action vase)
     ?>  src-is-subscriber:hc
-    ?>  =("{<id.action>}" (sanitize-filename:hc "{<id.action>}"))
     :: TODO ratelimit checks?
     :: TODO track usage statistics
     :: TODO reject if waitlist is too long
