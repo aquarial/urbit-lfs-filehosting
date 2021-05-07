@@ -212,24 +212,18 @@
     `this
   [%upload @ta @ta @ta @ta ~]
     ?>  ?=(%finished -.client-response.sign-arvo)
-    =/  action  &2:wire   =/  src  (slav %ud &3:wire)  =/  id  (slav %ud &4:wire)  =/  pass  (slav %ud &5:wire)
-    =/  give-resp  |*  res  :~  [%give %fact ~[(subscriber-path:hc src)] %lfs-provider-server-update !>([%request-response id=id response=res])]  ==
-    =/  this-no-pending  this(state state(pending (~(del by pending.state) (subscriber-name:hc src))))
+    =/  action-type  &2:wire   =/  src  (slav %ud &3:wire)  =/  pass  (trip &5:wire)
     ::
-    ?+  action  [(give-resp [%failure reason="internal error: unhandled client-action"]) this-no-pending]
-    %remove
-      [(give-resp [%got-url url=up-url key=pass]) this-no-pending]
-    %request
-      =/  response
-          ?.  =(200 status-code.response-header.client-response.sign-arvo)  [%failure reason="server offline"]
-          ?+  action  [%failure reason="internal error: unhandled client-action"]
-          %request  [%got-url url=up-url key=pass]
-          %remove   [%file-deleted key=fileid.action]
-          ==
-      ::
-      :_  ?:  =(action %request)  this  this(state state(pending (~(del by pending.state) (subscriber-name:hc src))))
-      :~  [%give %fact ~[(subscriber-path:hc src)] %lfs-provider-server-update !>([%request-response id=id response=response])]  ==
-    ==
+    =/  response
+        ?.  =(200 status-code.response-header.client-response.sign-arvo)  [%failure reason="internal error: fileserver not responding"]
+        ::
+        ?+  action-type  [%failure reason="internal error: unhandled client-action"]
+        %request  [%got-url url="{protocol}://{fileserver.state}/upload/file/{<pass>}" key=pass]
+        %remove   [%file-deleted key="{<pass>}"]
+        ==
+    ::
+    :_  this(state state(pending (~(del by pending.state) (subscriber-name:hc src))))
+    :~  [%give %fact ~[(subscriber-path:hc src)] %lfs-provider-server-update !>([%request-response id=0vbeef response=response])]  ==
   ==
   ::   =^  cards  state
   ::      ~&  "provider on-arvo got on wire {<wire>} = {<client-response.sign-arvo>}"
