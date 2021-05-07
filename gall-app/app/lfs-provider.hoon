@@ -219,16 +219,15 @@
     %remove
       [(give-resp [%got-url url=up-url key=pass]) this-no-pending]
     %request
-
-    =/  response
+      =/  response
           ?.  =(200 status-code.response-header.client-response.sign-arvo)  [%failure reason="server offline"]
           ?+  action  [%failure reason="internal error: unhandled client-action"]
           %request  [%got-url url=up-url key=pass]
           %remove   [%file-deleted key=fileid.action]
           ==
-    ::
-    :_  ?:  =(action %request)  this  this(state state(pending (~(del by pending.state) (subscriber-name:hc src))))
-    :~  [%give %fact ~[(subscriber-path:hc src)] %lfs-provider-server-update !>([%request-response id=id response=response])]  ==
+      ::
+      :_  ?:  =(action %request)  this  this(state state(pending (~(del by pending.state) (subscriber-name:hc src))))
+      :~  [%give %fact ~[(subscriber-path:hc src)] %lfs-provider-server-update !>([%request-response id=id response=response])]  ==
     ==
   ==
   ::   =^  cards  state
