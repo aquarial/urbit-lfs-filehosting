@@ -230,16 +230,11 @@
         ==
     ::
     =/  cards  ~[[%give %fact ~[(subscriber-path:hc src)] %lfs-provider-server-update !>([%request-response id=id response=response])]]
-    ?+  action-type  ~&  >>  "provider unexpected on-arvo for: {<action-type>}"  `this
-    %request
+    ?:  ?=(~ pending.state)
       [cards this]
-    %remove
-      ?:  ?=(~ pending.state)
-        [cards this]
-      =/  cardstate  (handle-action:hc state(pending t.pending.state) src.i.pending.state action.i.pending.state)
-      :_  this(state +3:cardstate)
-      (weld ((list card) +2:cardstate) ((list card) cards))
-    ==
+    =/  cardstate  (handle-action:hc state(pending t.pending.state) src.i.pending.state action.i.pending.state)
+    :_  this(state +3:cardstate)
+    (weld ((list card) +2:cardstate) ((list card) cards))
   ==
   ::   =^  cards  state
   ::      ~&  "provider on-arvo got on wire {<wire>} = {<client-response.sign-arvo>}"
