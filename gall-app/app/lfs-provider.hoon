@@ -83,10 +83,18 @@
         (give-simple-payload:app:srv id (handle-http-request:hc inbound-request 'failure'))
       =/  down-url  "{protocol:hc}://{fileserver.state}/download/file/{fileid}"
       =/  ship=ship  (subscriber-name:hc p.i.src)
+      =/  client-card  [%give %fact ~[(subscriber-path:hc ship)] %lfs-provider-server-update !>([%file-uploaded fileid=fileid filesize=filesize download-url=down-url])]
+      =/  cards  (snoc (give-simple-payload:app:srv id (handle-http-request:hc inbound-request %success)) client-card)
+      ::
       =/  old=storageinfo  (~(got by store.state) ship)
       =/  new=storageinfo  old(used (add used.old filesize), files (~(put by files.old) fileid [down-url filesize]))
-      :_  this(state state(pending (~(del by pending.state) src), store (~(put by store.state) ship new)))
-      (snoc (give-simple-payload:app:srv id (handle-http-request:hc inbound-request %success)) [%give %fact ~[(subscriber-path:hc ship)] %lfs-provider-server-update !>([%file-uploaded fileid=fileid filesize=filesize download-url=down-url])])
+      =/  newstate  state(pending (~(del by pending.state) src), store (~(put by store.state) ship new))
+      ::
+      ?:  ?=(~ waitlist.state)
+        [cards this(state newstate)]
+      =/  cardstate  (handle-action:hc state(waitlist t.waitlist.state) src.i.waitlist.state action.i.waitlist.state)
+      :_  this(state +3:cardstate)
+      (weld +2:cardstate cards)
     ==
   %noun
      ?+  +.vase  `this
@@ -132,7 +140,7 @@
     :: TODO ratelimit checks?
     :: TODO track usage statistics
     :: TODO reject if waitlist is too long
-    ?:  =(0 (lent waitlist.state))
+    ?:  ?=(~ waitlist.state)
       =/  cardstate  (handle-action:hc state src.bowl action)
       :_  this(state +3:cardstate)
       +2:cardstate
@@ -221,8 +229,18 @@
         %remove   [%file-deleted key="{pass}"]
         ==
     ::
-    :_  ?:  =(action-type %request)  this  this(state state(pending (~(del by pending.state) (subscriber-name:hc src))))
-    :~  [%give %fact ~[(subscriber-path:hc src)] %lfs-provider-server-update !>([%request-response id=id response=response])]  ==
+    =/  cards  ~[[%give %fact ~[(subscriber-path:hc src)] %lfs-provider-server-update !>([%request-response id=id response=response])]]
+    ?+  action-type  ~&  >>  "provider unexpected on-arvo for: {<action-type>}"  `this
+    %request
+      [cards this]
+    %remove
+      =/  no-pend  state(pending (~(del by pending.state) (subscriber-name:hc src)))
+      ?:  ?=(~ waitlist.state)
+        [cards this(state no-pend)]
+      =/  cardstate  (handle-action:hc state(waitlist t.waitlist.state) src.i.waitlist.state action.i.waitlist.state)
+      :_  this(state +3:cardstate)
+      (weld ((list card) +2:cardstate) ((list card) cards))
+    ==
   ==
   ::   =^  cards  state
   ::      ~&  "provider on-arvo got on wire {<wire>} = {<client-response.sign-arvo>}"
