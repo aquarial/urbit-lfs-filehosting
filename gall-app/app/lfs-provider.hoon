@@ -9,8 +9,8 @@
   $:  %0
       =fileserver-status
       store=(map ship storageinfo)
-      pending=(map ship tape)
-      waitlist=(list [src=ship action=action])
+      active-urls=(map ship tape)
+      pending=(list [src=ship action=action])
       =upload-rules
       loopback=tape
       fileserver=tape
@@ -25,8 +25,8 @@
       fileserver-status=%offline
       store=[~]
       upload-rules=[~]
+      active-urls=[~]
       pending=[~]
-      waitlist=[~]
       loopback=""
       fileserver=""
       fileserverauth=""
@@ -76,7 +76,7 @@
       =/  fileid=tape  (trip &3:site.url)
       =/  filesize=@ud  (slav %ud &4:site.url)
       ~&  >  "provider knows someone uploaded {<filesize>} bytes of {fileid}, notifying them"
-      =/  src  (skim ~(tap by pending.state) |=([=ship id=tape] =(id fileid)))
+      =/  src  (skim ~(tap by active-urls.state) |=([=ship id=tape] =(id fileid)))
       ?~  src
         ~&  >>  "provider could not identify who uploaded fileid {fileid}"
         :_  this
@@ -88,11 +88,11 @@
       ::
       =/  old=storageinfo  (~(got by store.state) ship)
       =/  new=storageinfo  old(used (add used.old filesize), files (~(put by files.old) fileid [down-url filesize]))
-      =/  newstate  state(pending (~(del by pending.state) src), store (~(put by store.state) ship new))
+      =/  newstate  state(active-urls (~(del by active-urls.state) src), store (~(put by store.state) ship new))
       ::
-      ?:  ?=(~ waitlist.state)
+      ?:  ?=(~ pending.state)
         [cards this(state newstate)]
-      =/  cardstate  (handle-action:hc state(waitlist t.waitlist.state) src.i.waitlist.state action.i.waitlist.state)
+      =/  cardstate  (handle-action:hc state(pending t.pending.state) src.i.pending.state action.i.pending.state)
       :_  this(state +3:cardstate)
       (weld +2:cardstate cards)
     ==
@@ -139,12 +139,12 @@
     ?>  src-is-subscriber:hc
     :: TODO ratelimit checks?
     :: TODO track usage statistics
-    :: TODO reject if waitlist is too long
-    ?:  ?=(~ waitlist.state)
+    :: TODO reject if pending is too long
+    ?:  ?=(~ pending.state)
       =/  cardstate  (handle-action:hc state src.bowl action)
       :_  this(state +3:cardstate)
       +2:cardstate
-    `this(state state(waitlist (snoc waitlist.state [src=src.bowl action=action])))
+    `this(state state(pending (snoc pending.state [src=src.bowl action=action])))
   ==
 ++  on-watch
   |=  =path
@@ -234,10 +234,9 @@
     %request
       [cards this]
     %remove
-      =/  no-pend  state(pending (~(del by pending.state) (subscriber-name:hc src)))
-      ?:  ?=(~ waitlist.state)
-        [cards this(state no-pend)]
-      =/  cardstate  (handle-action:hc state(waitlist t.waitlist.state) src.i.waitlist.state action.i.waitlist.state)
+      ?:  ?=(~ pending.state)
+        [cards this]
+      =/  cardstate  (handle-action:hc state(pending t.pending.state) src.i.pending.state action.i.pending.state)
       :_  this(state +3:cardstate)
       (weld ((list card) +2:cardstate) ((list card) cards))
     ==
@@ -382,7 +381,7 @@
     ?:  =(space 0)
       :_  state
       :~  [%give %fact ~[(subscriber-path src)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="no space left"]])]  ==
-    ?^  (~(get by pending.state) (subscriber-name src))
+    ?^  (~(get by active-urls.state) (subscriber-name src))
       :_  state
       :~  [%give %fact ~[(subscriber-path src)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="you can only request one thing at a time"]])]
       ==
@@ -392,7 +391,7 @@
     =/  pass  "{code}-{name}"
     =/  new-url  "{protocol}://{fileserver.state}/upload/new/{pass}/{(format-number space)}"
     ~&  >  "provider sends authorizing url to {new-url}"
-    :_  state(pending (~(put by pending.state) (subscriber-name src) pass))
+    :_  state(active-urls (~(put by active-urls.state) (subscriber-name src) pass))
     :~  [%pass /upload/request/[(crip "{<src>}")]/[(crip "{<id.action>}")]/[(crip pass)] %arvo %i %request [%'POST' (crip new-url) ~[['authtoken' (crip fileserverauth.state)]] ~] *outbound-config:iris]  ==
   ==
 --
