@@ -137,7 +137,7 @@
       =/  cardstate  (handle-action:hc state action)
       :_  this(state +3:cardstate)
       +2:cardstate
-    `this(state state(waitlist (snoc waitlist.state action)))
+    `this(state state(waitlist (snoc waitlist.state [src=src.bowl action=action])))
   ==
 ++  on-watch
   |=  =path
