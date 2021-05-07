@@ -344,7 +344,7 @@
         ?!  =(~ (find ~[(subscriber-name ship)] ships.justification))
     ==
   %kids
-    ?&  =(our.bowl (sein:title our.bowl now.bowl ship))
+    ?&  =((subscriber-name our.bowl) (sein:title our.bowl now.bowl (subscriber-name ship)))
         ?!  ?=   %pawn  (clan:title ship)
     ==
   ==
