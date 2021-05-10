@@ -19,7 +19,7 @@
 --
 %-  agent:dbug
 =/  unsafe-reuse-upload-urls  %.n
-=/  unsafe-http  %.y
+=/  unsafe-allow-http  %.y
 =/  state=state-0
   :*  %0
       fileserver-status=%offline
@@ -81,7 +81,7 @@
         ~&  >>  "provider could not identify who uploaded fileid {fileid}"
         :_  this
         (give-simple-payload:app:srv id (handle-http-request:hc inbound-request 'failure'))
-      =/  down-url  "{protocol:hc}://{fileserver.state}/download/file/{fileid}"
+      =/  down-url  "{fileserver.state}/download/file/{fileid}"
       =/  ship=ship  (subscriber-name:hc p.i.src)
       =/  client-card  [%give %fact ~[(subscriber-path:hc ship)] %lfs-provider-server-update !>([%file-uploaded fileid=fileid filesize=filesize download-url=down-url])]
       =/  cards  (snoc (give-simple-payload:app:srv id (handle-http-request:hc inbound-request %success)) client-card)
@@ -128,8 +128,11 @@
       `this(state state(fileserver-status %offline, loopback "", fileserver "", fileserverauth ""))
     %connect-server
       :: TODO send update for fileserver url to all clients?
-      =/  setup-url  "{protocol:hc}://{fileserver.command}/setup"
-      =/  body  (some (as-octt:mimes:html "{protocol:hc}://{loopback.command}"))
+      ?.  &((is-safe-url fileserver.command) (is-safe-url loopback.command))
+        ~&  >>  "provider %connect-server urls must use 'https://domain' (http allowed: {<unsafe-allow-http>})"
+        `this
+      =/  setup-url  "{fileserver.command}/setup"
+      =/  body  (some (as-octt:mimes:html "{loopback.command}"))
       :_  this(state state(loopback loopback.command, fileserver fileserver.command, fileserverauth token.command))
       :~  [%pass /setup %arvo %i %request [%'POST' (crip setup-url) ~[['authtoken' (crip token.command)]] body] *outbound-config:iris]  ==
     ==
@@ -225,7 +228,7 @@
         ?.  =(200 status-code.response-header.client-response.sign-arvo)  [%failure reason="internal error: fileserver not responding"]
         ::
         ?+  action-type  [%failure reason="internal error: unhandled client-action"]
-        %request  [%got-url url="{protocol}://{fileserver.state}/upload/file/{pass}" key=pass]
+        %request  [%got-url url="{fileserver.state}/upload/file/{pass}" key=pass]
         %remove   [%file-deleted key="{pass}"]
         ==
     ::
@@ -280,9 +283,11 @@
       ?!  =(fileserverauth.state "")
       ?!  =(loopback.state "")
   ==
-++  protocol
-  :: TODO handle both "domain" and "http://domain" input cleanly
-  ?:  unsafe-http  "http"  "https"
+++  is-safe-url
+  |=  url=tape
+  ?|  =("https://" (swag [0 8] url))
+      &(=("http://" (swag [0 7] url)) unsafe-allow-http)
+  ==
 ++  handle-http-request
   |=  [req=inbound-request:eyre status=@t]
   ^-  simple-payload:http
@@ -362,7 +367,7 @@
     ?~  ufile
       :_  state
       :~  [%give %fact ~[(subscriber-path src)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="no such fileid"]])]  ==
-    =/  del-url  "{protocol}://{fileserver.state}/upload/remove/{fileid.action}"
+    =/  del-url  "{fileserver.state}/upload/remove/{fileid.action}"
     =/  newstorage  storageinfo(used (sub used.storageinfo size.u.ufile), files (~(del by files.storageinfo) fileid.action))
     :_  state(store (~(put by store.state) (subscriber-name src) newstorage))
     :~  [%pass /upload/remove/[(crip "{<src>}")]/[(crip "{<id.action>}")]/[(crip fileid.action)] %arvo %i %request [%'DELETE' (crip del-url) ~[['authtoken' (crip fileserverauth.state)]] ~] *outbound-config:iris]
@@ -385,7 +390,7 @@
     =/  code  ?:  unsafe-reuse-upload-urls  "0vbeef"  "{<`@uv`(cut 8 [0 1] eny.bowl)>}"
     =/  name  (sanitize-filename (fall filename.action "file"))
     =/  pass  "{code}-{name}"
-    =/  new-url  "{protocol}://{fileserver.state}/upload/new/{pass}/{(format-number space)}"
+    =/  new-url  "{fileserver.state}/upload/new/{pass}/{(format-number space)}"
     ~&  >  "provider sends authorizing url to {new-url}"
     :_  state(active-urls (~(put by active-urls.state) (subscriber-name src) pass))
     :~  [%pass /upload/request/[(crip "{<src>}")]/[(crip "{<id.action>}")]/[(crip pass)] %arvo %i %request [%'POST' (crip new-url) ~[['authtoken' (crip fileserverauth.state)]] ~] *outbound-config:iris]  ==
