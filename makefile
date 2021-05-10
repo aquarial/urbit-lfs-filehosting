@@ -42,16 +42,13 @@ zod-clean-deep:
 	rsync -a --delete ./data/old.zod/ ./data/zod
 	tmux send-keys -t zod "./data/urbit -L ./data/zod" "ENTER"
 	sleep 1.5 # startup eats ''enter keys'
-	make zod-clean
-
-zod-clean:
 	tmux send-keys -t zod "C-l"; sleep 0.4
 	rsync -a --ignore-times ./gall-app/ ./data/zod/home/
 	tmux send-keys -t zod "|commit %home" "ENTER"; sleep 1
 	tmux send-keys -t zod "|start %lfs-provider" "ENTER"; sleep 3
 	tmux send-keys -t zod "|start %lfs-client" "ENTER"; sleep 3
 	tmux send-keys -t zod ":lfs-provider &lfs-provider-command "; sleep 2;
-	tmux send-keys -t zod "[%connect-server loopback=\"localhost:8080\" fileserver=\"localhost:8000\" token=\"hunter2\"]"; sleep 0.5; tmux send-keys -t zod "ENTER"; sleep 0.5
+	tmux send-keys -t zod "[%connect-server loopback=\"http://localhost:8080\" fileserver=\"http://localhost:8000\" token=\"hunter2\"]"; sleep 0.5; tmux send-keys -t zod "ENTER"; sleep 0.5
 	tmux send-keys -t zod ":lfs-provider [%add-rule [justification=[%ship ships=~[~zod]] size=1.000.000]]"; sleep 0.5; tmux send-keys -t zod "ENTER"; sleep 0.5
 	sleep 4;
 	tmux send-keys -t zod ":lfs-client &lfs-client-action [threadid=~ %add-provider ~zod]"; sleep 0.5; tmux send-keys -t zod "ENTER"; sleep 0.5
