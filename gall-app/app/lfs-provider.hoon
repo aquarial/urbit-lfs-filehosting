@@ -377,8 +377,9 @@
       :_  state
       :~  [%give %fact ~[(subscriber-path src)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="no space left"]])]  ==
     ?^  (~(get by active-urls.state) (subscriber-name src))
+      =/  pass  (~(got by active-urls.state) (subscriber-name src))
       :_  state
-      :~  [%give %fact ~[(subscriber-path src)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="you can only request one thing at a time"]])]
+      :~  [%give %fact ~[(subscriber-path src)] %lfs-provider-server-update !>([%request-response id=id.action response=[%got-url url="{fileserver.state}/upload/file/{pass}" key=pass]])]
       ==
     =/  storageinfo=storageinfo  (need (~(get by store.state) (subscriber-name src)))
     =/  code  ?:  unsafe-reuse-upload-urls  "0vbeef"  "{<`@uv`(cut 8 [0 1] eny.bowl)>}"
