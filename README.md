@@ -28,8 +28,8 @@ If you get an error message while building that mentions nightly compiler, run `
 |commit %home
 |start %lfs-provider
 |start %lfs-client
-:lfs-provider &lfs-provider-action [%connect-server loopback="localhost:8081" fileserver="localhost:8000" token="hunter2"]
-:lfs-provider &lfs-provider-action [%connect-server loopback="urbit.vps.stephan.to" fileserver="fileserver.vps.stephan.to" token="M<k2?j0~RICyASZhR2@2*<?epHEwL(VDRm*?>RymGOdTP0&as(E5!$o(O65#"]
+:lfs-provider &lfs-provider-command [%connect-server loopback="http://localhost:8081" fileserver="http://localhost:8000" token="hunter2"]
+:lfs-provider &lfs-provider-command [%connect-server loopback="https://provider.urbit.domain.tdl" fileserver="https://fileserver.domain.tld" token="M*?>RymGOdTP0&as(E5!$o(O65#"]
 
 :: setup file storage permissions
 :lfs-provider [%add-rule [justification=[%ship ships=~[~zod]] size=1.000.000]]
