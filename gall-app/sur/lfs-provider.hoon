@@ -19,6 +19,7 @@
       [%file-uploaded fileid=tape filesize=@ud download-url=tape]
       [%request-response id=@uv response=request-response]
       [%storageinfo =storageinfo]
+      [%storage-rules-changed newsize=@ud]
   ==
 +$  upload-rules  (list [=justification size=@ud])
 +$  justification

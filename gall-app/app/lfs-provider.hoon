@@ -116,6 +116,7 @@
     %remove-rule
        =/  new-rules  (oust [index.command 1] upload-rules.state)
        =/  new-store  (~(gas by store.state) (turn ~(tap by store.state) (compute-ship-storage:hc new-rules)))
+       :: TODO send %storage-rules-changed updates to everyone
        `this(state state(upload-rules new-rules, store new-store))
     %add-rule
        =/  new-rules  (snoc upload-rules.state [justification.command size.command])

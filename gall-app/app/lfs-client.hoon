@@ -153,6 +153,11 @@
         %heartbeat
           ~&  >>  "client received unexpected heartbeat : {<resp>}"
           `this
+        %storage-rules-changed
+          ~&  "client was notified that provider updated our storage updated to {<newsize.resp>}"
+          =/  old  (~(gut by store.state) src.bowl [storage=0 used=0 files=[~]])
+          =/  new  old(storage newsize.resp)
+          `this(state state(store (~(put by store.state) src.bowl new)))
         %storageinfo
           ~&  "client received provider's cache : {<storageinfo.resp>}"
           `this(state state(store (~(put by store.state) src.bowl storageinfo.resp)))
