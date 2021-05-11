@@ -117,16 +117,21 @@
     %list-rules
        ~&  "rules are: {<upload-rules.state>}"
        `this
+    :: TODO remove/add almost exactly the same, combine?
     %remove-rule
        =/  new-rules  (oust [index.command 1] upload-rules.state)
        =/  new-store  (~(gas by store.state) (turn ~(tap by store.state) (compute-ship-storage:hc new-rules)))
-       :: TODO send %storage-rules-changed updates to everyone
-       `this(state state(upload-rules new-rules, store new-store))
+       =/  update  |=  [=ship =storageinfo]
+           [%give %fact ~[(subscriber-path ship)] %lfs-provider-server-update !>([%storage-rules-changed newsize=storage.storageinfo])]
+       :_  this(state state(upload-rules new-rules, store new-store))
+       (turn ~(tap by new-store) update)
     %add-rule
        =/  new-rules  (snoc upload-rules.state [justification.command size.command])
        =/  new-store  (~(gas by store.state) (turn ~(tap by store.state) (compute-ship-storage:hc new-rules)))
-       :: TODO give out new upload rules (changed storage)
-       `this(state state(upload-rules new-rules, store new-store))
+       =/  update  |=  [=ship =storageinfo]
+           [%give %fact ~[(subscriber-path ship)] %lfs-provider-server-update !>([%storage-rules-changed newsize=storage.storageinfo])]
+       :_  this(state state(upload-rules new-rules, store new-store))
+       (turn ~(tap by new-store) update)
     %disconnect-server
     ~&  >  "provider offline"
       `this(state state(fileserver-status %offline, loopback "", fileserver "", fileserverauth ""))
