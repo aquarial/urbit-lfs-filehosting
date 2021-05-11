@@ -143,7 +143,7 @@
     %kick
       ~&  >  "client was kicked from provider: {<src.bowl>}"
       :_  this(state state(store (~(del by store.state) src.bowl)))
-      :~  [%pass /lfs %agent [ship.action %lfs-provider] %watch (subscriber-path:hc our:bowl)]  ==
+      :~  [%pass /lfs %agent [src.bowl %lfs-provider] %watch (subscriber-path:hc our:bowl)]  ==
     :: %poke-ack
     %fact
       ?+  p.cage.sign  (on-agent:default wire sign)
