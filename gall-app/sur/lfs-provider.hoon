@@ -2,6 +2,9 @@
 +$  command
   $%  [%connect-server loopback=tape fileserver=tape token=tape]
       [%disconnect-server ~]
+      [%list-rules ~]
+      [%remove-rule index=@ud]
+      [%add-rule =justification size=@ud]
   ==
 +$  action
   $%  [%request-upload filename=(unit tape) id=@uv]
