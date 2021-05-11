@@ -52,7 +52,7 @@
   ^-  (quip card _this)
   =/  prev  !<(versioned-state old-state)
   ?-  -.prev
-  %0  `this(state prev)
+  %0  `this(state prev(active-urls [~]))
   ==
 ++  on-poke
   |=  [=mark =vase]
@@ -216,9 +216,9 @@
     ?:  =(200 status-code.response-header.client-response.sign-arvo)
       ~&  "provider connected to {fileserver.state}"
       :: TODO ensure received url matches the sent loopback server url?
-      `this(state state(fileserver-status %online))
+      `this(state state(fileserver-status %online, active-urls [~]))
     ~&  >>  "provider error connecting {fileserver.state}: {<status-code.response-header.client-response.sign-arvo>}"
-    `this
+    `this(state state(fileserver-status %offline))
   [%upload @ta @ta @ta @ta ~]
     ?>  ?=(%finished -.client-response.sign-arvo)
     =/  action-type  &2:wire   =/  src  (slav %p &3:wire)  =/  id  (slav %uv &4:wire)  =/  pass  (trip &5:wire)
