@@ -140,6 +140,9 @@
   [%lfs ~]
     ?+  -.sign  (on-agent:default wire sign)
     :: %watch-ack
+    %kick
+      ~&  >  "client was kicked from provider: {<src.bowl>}"
+      `this(state state(store (~(del by store.state) src.bowl)))
     :: %poke-ack
     %fact
       ?+  p.cage.sign  (on-agent:default wire sign)
