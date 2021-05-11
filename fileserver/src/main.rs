@@ -76,6 +76,8 @@ fn setup_provider(_tok: AuthToken, state: State<Info>, data: Data) -> &'static s
     data.open().take(1000).read_to_string(&mut provider).unwrap();
     let mut url = state.provider_url.lock().unwrap();
     *url = Some(provider);
+    let mut ups = state.upload_paths.write().unwrap();
+    ups.clear();
     "setup provider\n"
 }
 
