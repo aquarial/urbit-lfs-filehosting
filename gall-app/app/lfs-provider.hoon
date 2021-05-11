@@ -88,7 +88,7 @@
       ::
       =/  old=storageinfo  (~(got by store.state) ship)
       =/  new=storageinfo  old(used (add used.old filesize), files (~(put by files.old) fileid [down-url filesize]))
-      =/  newstate  state(active-urls (~(del by active-urls.state) src), store (~(put by store.state) ship new))
+      =/  newstate  state(active-urls (~(del by active-urls.state) ship), store (~(put by store.state) ship new))
       ::
       ?:  ?=(~ pending.state)
         [cards this(state newstate)]
