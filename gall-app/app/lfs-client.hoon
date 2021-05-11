@@ -78,11 +78,9 @@
           [%pass /thread/[tid] %agent [our.bowl %spider] %poke %spider-input !>([tid %client-action-response !>([%updated-providers ~])])]
       ==
     %remove-provider
-      :: TODO clean this up!
-      =/  subs=(set ship)  (~(run in ~(key by wex.bowl)) |=([wire=* =ship term=*] ship))
-      =/  used  (skip ~(tap by store.state) |=([=ship =storageinfo:lfs-provider] &(=(used.storageinfo 0) !(~(has in subs) ship))))
-      :_  this(state state(store (~(gas by *(map ship storageinfo:lfs-provider)) used)))
+      :_  this(state state(store (~(del by store.state) ship.action)))
       ?~  threadid.action
+        ~&  >  "client unsubscribing from {<ship.action>}"
         :~  [%pass /lfs %agent [ship.action %lfs-provider] %leave ~]  ==
         =/  tid  (need threadid.action)
         :~  [%pass /lfs %agent [ship.action %lfs-provider] %leave ~]
