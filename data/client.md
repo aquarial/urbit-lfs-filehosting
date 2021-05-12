@@ -12,7 +12,7 @@ Since the project isn't stable yet, you should use a moon instead of your normal
 ~your-ship:dojo> |moon
 >=
 moon: ~some-long-your-ship
-0v31a.6auka.k6f4c.dhr56.9uig5.pcktv.t98mv.kqj2l.jir0h.oteng.gpo5p.2pqcu.rm9f6.u6olk.km4vu.pptf4.at2vt.8itjc.vepc9.g83dr.aah3c
+0v31a.6auka.k6f4c.dhr56.9uig5.pcktv.t98mv...
 ```
 
 Now in a normal terminal start the moon by running:
@@ -39,7 +39,8 @@ Back on the moon dojo
 
 # terminal 
 user@computer:~$ git clone --depth 10 https://github.com/aquarial/urbit-lfs-filehosting/
-user@computer:~$ rsync --archive --ignore-times ./urbit-lfs-filehosting/gall-app/ ./some-long-your-ship/home/
+user@computer:~$ rsync --archive --ignore-times \
+                    ./urbit-lfs-filehosting/gall-app/ ./some-long-your-ship/home/
 
 # moon dojo
 ~your-ship:dojo> |commit %home
