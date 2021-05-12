@@ -188,7 +188,7 @@
       ?+  p.cage.sign  (on-agent:default wire sign)
       %group-update-0
         =/  resp  !<(update:group-store q.cage.sign)
-        ~&  "provider received group-update {<resp>}"
+        ~&  "provider received group-update {<-.resp>}"
         ?+  -.resp  `this
         %initial
           :: TODO filter to only look at groups referenced in upload rules
