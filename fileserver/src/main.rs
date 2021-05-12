@@ -130,8 +130,7 @@ fn upload_file(state: State<Info>, key: String, data: Data) -> &'static str {
                     if res.status() == 200 {
                         println!("uploaded file {}", key);
                         std::mem::drop(ups);
-                        //let mut downs = state.download_paths.write().unwrap();
-                        //downs.insert(String::from(key), ());
+                        return "uploaded\n";
                     } else {
                         println!("Error uploading {}", key);
                         ups.insert(key, size);
@@ -142,11 +141,11 @@ fn upload_file(state: State<Info>, key: String, data: Data) -> &'static str {
                     ups.insert(key, size);
                 }
             }
-            "uploaded\n"
+            return "could not confirm upload with provider. try again when it's online\n"
         }
         None => {
             println!("no path to upload {}", key);
-            "no such path\n"
+            return "no such path\n";
         }
     }
 }
