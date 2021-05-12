@@ -39,7 +39,7 @@
 =/  msg
   ?-  -.resp
   %got-url
-    (my ~[['success' [%b %.y]] ['key' [%s (crip "{<key.resp>}")]] ['url' [%s (crip url.resp)]]])
+    (my ~[['success' [%b %.y]] ['key' [%s (crip "{key.resp}")]] ['url' [%s (crip url.resp)]]])
   %file-deleted
     (my ~[['success' [%b %.y]]])
   %updated-providers
