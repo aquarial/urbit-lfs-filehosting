@@ -1,3 +1,4 @@
 data/*
 !data/*.sh
 !data/interface.png
+!data/client.md
