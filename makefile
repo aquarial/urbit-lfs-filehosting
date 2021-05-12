@@ -16,15 +16,12 @@ dopzod-clean-deep:
 	rsync -a --delete ./data/old.dopzod/ ./data/dopzod
 	tmux send-keys -t dopzod "./data/urbit -L ./data/dopzod" "ENTER"
 	sleep 1.5 # startup eats ''enter keys'
-	make dopzod-clean
-
-dopzod-clean:
 	tmux send-keys -t dopzod "C-l"; sleep 0.4
 	rsync -a --ignore-times ./gall-app/ ./data/dopzod/home/
 	tmux send-keys -t dopzod "|commit %home" "ENTER"; sleep 1
 	tmux send-keys -t dopzod "|start %lfs-client" "ENTER"; sleep 2
 	tmux send-keys -t dopzod ":lfs-client &lfs-client-action [threadid=~ [%add-provider ~zod]]" "ENTER"; sleep 0.5
-	tmux send-keys -t dopzod ":lfs-client &lfs-client-action [threadid=~ [%request-upload ~dopzod ~]]" "ENTER"; sleep 0.5
+	tmux send-keys -t dopzod ":lfs-client &lfs-client-action [threadid=~ [%request-upload ~zod ~]]" "ENTER"; sleep 0.5
 
 .PHONY: dopzod-deep-clean dopzod-clean
 
@@ -50,7 +47,7 @@ zod-clean-deep:
 	tmux send-keys -t zod ":lfs-provider &lfs-provider-command "; sleep 2;
 	tmux send-keys -t zod "[%connect-server loopback=\"http://localhost:8080\" fileserver=\"http://localhost:8000\" token=\"hunter2\"]"; sleep 0.5; tmux send-keys -t zod "ENTER"; sleep 0.5
 	tmux send-keys -t zod ":lfs-provider &lfs-provider-command ";
-	tmux send-keys -t zod "[%add-rule justification=[%ship ships=~[~zod]] size=1.000.000]"; sleep 0.5; tmux send-keys -t zod "ENTER"; sleep 0.5
+	tmux send-keys -t zod "[%add-rule justification=[%ship ships=~[~zod ~dopzod]] size=1.000.000]"; sleep 0.5; tmux send-keys -t zod "ENTER"; sleep 0.5
 	sleep 4;
 	tmux send-keys -t zod ":lfs-client &lfs-client-action [threadid=~ %add-provider ~zod]"; sleep 0.5; tmux send-keys -t zod "ENTER"; sleep 0.5
 	tmux send-keys -t zod ":lfs-client &lfs-client-action [threadid=~ %request-upload ~zod ~]"; sleep 0.5; tmux send-keys -t zod "ENTER"; sleep 0.5
