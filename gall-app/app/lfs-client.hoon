@@ -188,7 +188,7 @@
              cards
            %got-url
              ~&  >  "client tells {<messenger>} to upload with : {url.response.resp}"
-             :_  this
+             :_  this(state state(pending-requests q.split-reqs))
              cards
            ==
         ==
