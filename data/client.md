@@ -1,7 +1,6 @@
 ## Client Operating Manual
 
 The client app includes an html interface to upload files to any configured providers.
-
 ### How to install
 
 
@@ -66,7 +65,14 @@ The client can be operated by poking the gall app with `action`s defined in `/ap
 ~your-ship:dojo> :lfs-client &lfs-client-action [threadid=~ %request-upload ~zod ~]
 ```
 
-The list of actions is found at [/app/sur/lfs-client.hoon`](https://github.com/aquarial/urbit-lfs-filehosting/blob/master/gall-app/sur/lfs-client.hoon#L4)
+The list of actions is found at [/app/sur/lfs-client.hoon`](https://github.com/aquarial/urbit-lfs-filehosting/blob/master/gall-app/sur/lfs-client.hoon)
+
+
+You can view the current state of the client using the dbug:
+
+```
+~your-ship:dojo> :lfs-client +dbug
+```
 
 ### HTTP Controls
 
