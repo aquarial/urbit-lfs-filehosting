@@ -32,11 +32,11 @@ If you get an error message while building that mentions nightly compiler, run `
 :lfs-provider &lfs-provider-command [%connect-server loopback="https://provider.urbit.domain.tdl" fileserver="https://fileserver.domain.tld" token="M*?>RymGOdTP0&as(E5!$o(O65#"]
 
 :: setup file storage permissions
-:lfs-provider [%add-rule [justification=[%ship ships=~[~zod]] size=1.000.000]]
-:lfs-provider [%add-rule [justification=[%group 'groupname'] size=3.000]]
+:lfs-provider &lfs-provider-command [%add-rule justification=[%ship ships=~[~zod]] size=1.000.000]
+:lfs-provider &lfs-provider-command [%add-rule justification=[%group 'groupname'] size=3.000]
 
-:lfs-provider %list-rules
-:lfs-provider [%remove-rule 0]
+:lfs-provider &lfs-provider-command [%list-rules ~]
+:lfs-provider &lfs-provider-command [%remove-rule 0]
 ```
 
 Replace the `loopback` parameter with the current address/port of ~zod.
