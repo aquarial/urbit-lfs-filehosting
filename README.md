@@ -10,43 +10,10 @@
 
 ## How to run
 
-#### Start fileserver
+## [Client Operating Manual](./data/client.md)
 
-Run `make start-fileserver` which runs: `cd ./fileserver && ROCKET_PORT=8000 cargo run -- --UNSAFE_DEBUG_AUTH`
+## [Provider Operating Manual](./data/provider.md)
 
-The provider controls the fileserver using a password printed when it starts up. With the debug flag it will
-be be `hunter2`
-
-If you get an error message while building that mentions nightly compiler, run `rustup override set nightly`
-
-#### Setup provider
-
-```
-# startup ~zod and
-|mount %
-:: copy app onto ship
-|commit %home
-|start %lfs-provider
-|start %lfs-client
-:lfs-provider &lfs-provider-command [%connect-server loopback="http://localhost:8081" fileserver="http://localhost:8000" token="hunter2"]
-:lfs-provider &lfs-provider-command [%connect-server loopback="https://provider.urbit.domain.tdl" fileserver="https://fileserver.domain.tld" token="M*?>RymGOdTP0&as(E5!$o(O65#"]
-
-:: setup file storage permissions
-:lfs-provider &lfs-provider-command [%add-rule justification=[%ship ships=~[~zod]] size=1.000.000]
-:lfs-provider &lfs-provider-command [%add-rule justification=[%group 'groupname'] size=3.000]
-
-:lfs-provider &lfs-provider-command [%list-rules ~]
-:lfs-provider &lfs-provider-command [%remove-rule 0]
-```
-
-Replace the `loopback` parameter with the current address/port of ~zod.
-
-
-#### Upload files
-
-Go to `http://localhost:8081/~filemanager` for a simple html interface
-
-![demo ui](./data/interface.png)
 
 ## TODO
 
