@@ -152,26 +152,14 @@
          });
      });
 
-     httpGetAsync("/~/scry/lfs-client/providers.json" + disableCache(),
-       function(xmlhttp) {
-         let resp = JSON.parse(xmlhttp.response)
-         uploadProviderList.textContent = "[" + resp.join(", ") + "]"
-         resp.forEach(key => {
-           let opt = document.createElement("option");
-           opt.text = key;
-           uploadProvider.add(opt);
-         });
-         uploadSubmit.disabled = uploadProvider.value == "" || uploadFile.files.length == 0;
-       },
-       function() {
-         console.error("Getting providers ran into some kind of error?");
-       }
-     );
      httpGetAsync("/~/scry/lfs-client/all-storage-info.json" + disableCache(),
        function(xmlhttp) {
          let resp = JSON.parse(xmlhttp.response)
-         console.log("add info:", resp);
+
+         uploadProviderList.textContent = "[" + Object.keys(resp).join(", ") + "]"
+
          Object.keys(resp).forEach(provider => {
+
            let storage = resp[provider];
            let h3 = document.createElement("h3");
            h3.textContent = "" + provider + " using " + hoonFormatNumber(storage.used) + " of " + hoonFormatNumber(storage.storage) + " bytes";
@@ -199,7 +187,12 @@
              let br = document.createElement("br")
              storageDiv.appendChild(br);
            });
+
+           let opt = document.createElement("option");
+           opt.text = provider;
+           uploadProvider.add(opt);
          });
+         uploadSubmit.disabled = uploadProvider.value == "" || uploadFile.files.length == 0;
        },
        function() {
          console.error("Getting storageinfo ran into some kind of error?");
