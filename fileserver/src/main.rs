@@ -96,8 +96,9 @@ fn upload_new(_tok: AuthToken, state: State<Info>, key: String, space: u64) -> &
 fn options_handler<'a>(_key: String) -> Response<'a> {
     Response::build()
         .raw_header("Access-Control-Allow-Origin", "*")
-        .raw_header("Access-Control-Allow-Methods", "OPTIONS, POST")
-        .raw_header("Access-Control-Allow-Headers", "Content-Type")
+        .raw_header("Access-Control-Allow-Methods", "OPTIONS,POST,GET")
+        .raw_header("Access-Control-Allow-Headers", "*")
+        .raw_header("Access-Control-Allow-Credentials", "true")
         .finalize()
 }
 
@@ -214,7 +215,7 @@ fn main() {
     std::fs::create_dir_all("./files/").unwrap();
     rocket::ignite()
         .manage(Info::new())
-        .mount("/", routes![default, upload_new, upload_file, upload_remove, download_file, setup_provider, options_handler])
         .attach(cors::CORS())
+        .mount("/", routes![default, upload_new, upload_file, upload_remove, download_file, setup_provider, options_handler])
         .launch();
 }
