@@ -345,7 +345,7 @@
   |=  [=justification size=@ud]
   ?-  -.justification
   %group
-    =/  ginfo  .^((unit group:group) %gx /(scot %p our.bowl)/group-store/(scot %da now.bowl)/groups/ship/[host.justification]/[name.justification]/noun)
+    =/  ginfo  .^((unit group:group) %gx /(scot %p our.bowl)/group-store/(scot %da now.bowl)/groups/ship/(scot %p host.justification)/[name.justification]/noun)
     ?&  ?!  ?=   %pawn  (clan:title ship)
         ?!  =(ginfo ~)
         ?|  (~(has in members:+<:ginfo) ship)
