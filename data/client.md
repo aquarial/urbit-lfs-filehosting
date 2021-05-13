@@ -57,7 +57,7 @@ For now, errors are only printed to the browser console. Open the console by rig
 
 Other messages are printed to the dojo terminal window.
 
-### Commandline Controls
+### Commandline Controls (optional)
 
 The client can be operated by poking the gall app with `action`s defined in `/app/lfs-client.hoon`.
 
@@ -75,7 +75,7 @@ You can view the current state of the client using the dbug:
 ~your-ship:dojo> :lfs-client +dbug
 ```
 
-### HTTP Controls
+### HTTP Controls (optional)
 
 The html interface uses scrys and threads to communicate with the gall app.
 
@@ -86,7 +86,8 @@ HTTP/1.1 204 ok
 Connection: keep-alive
 Server: urbit/vere-1.3
 set-cookie: urbauth-~zod=0v28s.023pe.24lcn.q0fnu; Path=/; Max-Age=604800
-
+#           ^                                  ^
+#            \___  send this as a cookie  ____/
 
 # use cookie to get client state
 user@computer:~$ curl --header "Content-Type: application/json" \
