@@ -2,11 +2,13 @@
 
 ## Overview
 
-`./webserver/` is a HTTP REST fileserver
+`/fileserver/` rust HTTP fileserver. stores files in `/fileserver/files/`
 
-`./src/app/lfs-provider.hoon` manages access to the webserver through pokes and subscriptions
+`/gall-app/app/lfs-provider.hoon` manages access to the webserver through pokes and subscriptions
 
-`./src/app/lfs-client.hoon` can subscribe to a provider and request an upload url
+`/gall-app/app/lfs-client.hoon` can subscribe to a provider and request an upload url
+
+`/data/` assorted stuff
 
 ## How to run
 
