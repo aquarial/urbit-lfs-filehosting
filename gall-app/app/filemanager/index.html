@@ -38,6 +38,7 @@
 
     <br/> <br/>
 
+    <h4>Log Console<h4/>
     <textarea rows="10" cols="80" id="log" placeholder="logs are printed here"></textarea>
 
     <script>
@@ -130,11 +131,12 @@
                httpPostAsync("/spider/noun/lfs-client-action/json.json" + disableCache(),
                  JSON.stringify(["request-delete", provider, fileid]),
                  function(xmlhttp) {
-                   console.log("Request delete response is:", xmlhttp.response);
+                   log("deleting file response: " + xmlhttp.response);
                    refresh()
                  },
-                 function() {
-                   console.error("Request delete failed?");
+                 function(xmlhttp) {
+                   console.log("error", xmlhttp)
+                   log("deleting file encountered http error code " + xmlhttp.status + ": \"" + xmlhttp.response + "\"");
                });
              });
              storageDiv.appendChild(input);
@@ -169,27 +171,24 @@
        httpPostAsync("/spider/noun/lfs-client-action/json.json" + disableCache(),
          JSON.stringify(["add-provider", providerNew.value]),
          function(xmlhttp) {
-           console.log("Add Provder response is:", xmlhttp.response);
            log("adding " + providerNew.value + " as a provider: " + xmlhttp.response);
            refresh()
          },
          function(xmlhttp) {
-           log("http error: " + xmlhttp);
-           console.error("Add provider failed?");
+           log("adding provider encountered http error code " + xmlhttp.status + ": \"" + xmlhttp.response + "\"");
+           console.error("adding provider", xmlhttp);
        });
      });
      providerSubmitRemove.addEventListener("click", function() {
        httpPostAsync("/spider/noun/lfs-client-action/json.json" + disableCache(),
          JSON.stringify(["remove-provider", providerNew.value]),
          function(xmlhttp) {
-           console.log("Remove Provder response is:", xmlhttp.response);
            log("removing " + providerNew.value + " as a provider: " + xmlhttp.response);
            refresh()
          },
          function(xmlhttp) {
-           console.error("RFemove provider failed?");
-           log("http error: " + xmlhttp);
-           console.log("aaaaaaaaaaaaaaaaaaaaaaa", xmlhttp);
+           console.error("removing provider", xmlhttp);
+           log("removing provider encountered http error code " + xmlhttp.status + ": \"" + xmlhttp.response + "\"");
          });
      });
 
@@ -213,18 +212,20 @@
            if (resp.url !== undefined) {
              httpPostAsync(resp.url, file,
                async function(xmlhttp) {
-                 console.log("uploading file got:", xmlhttp.response);
+                 log("uploading " + file.name + " succeeded");
                  refresh()
                },
                function(xmlhttp) {
-                 console.error("uploading file got an error?", xmlhttp.response);
+                 console.error("uploading file got an error", xmlhttp);
+                 log("uploading file encountered http error code " + xmlhttp.status + ": \"" + xmlhttp.response + "\"");
                  refresh()
                }
              );
            };
          },
-         function() {
+         function(xmlhttp) {
            console.error("Request upload failed?");
+           log("2222uploading file encountered http error code " + xmlhttp.status + ": \"" + xmlhttp.response + "\"");
          });
      });
 
