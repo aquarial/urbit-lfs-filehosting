@@ -25,7 +25,7 @@ Authorized Header is aosdivj)(*jOIgs0gjipaox-v*)
 ```
 
 
-### How to setup NGINX (based off https://subject.network/posts/urbit-nginx-letsencrypt/)
+### How to setup NGINX for ship (based off https://subject.network/posts/urbit-nginx-letsencrypt/)
 
 Once the provider ship is running and the fileserver is running, you will need to make them world-accessable through https. Both the ship and the fileserver must be public.
 
@@ -49,6 +49,11 @@ server {
         }
 }
 
+```
+
+Now add an entry for the fileserver
+
+```
 
 user@computer:~$ cat /etc/nginx/sites-enabled/fileserver
 server {
@@ -67,6 +72,11 @@ user@computer:~$ cerbot    # apt install nginx certbot python3-certbot-nginx
 ```
 
 
+#### NGINX will block requests around a Megabyte in size
+
+The client UI uploads directly because I can't figure out how to stream javascript uploads. (Uploading with curl works fine)
+
+Edit `/etc/nginx/nginx.conf` and add `client_max_body_size 5M;` to raise the limit to whatever you prefer. Similar advice for apache.
 
 ### Connect Provider to fileserver
 
