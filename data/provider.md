@@ -103,3 +103,37 @@ Other things to do with rules are list them, and remove them:
 
 ~your-ship:dojo> :lfs-provider &lfs-provider-command [%remove-rule 0]
 ```
+
+### Debugging
+
+```
+~your-ship:dojo> :lfs-provider +dbug
+```
+
+State stores the following:
+
+```
+    storage
+store=(map ship storageinfo)
+    storageinfo=[storage=@ud used=@ud files=(map id=tape fileinfo)]
+    fileinfo=[download-url=tape size=@ud]
+
+    current uploads available, by subscriber
+active-urls=(map ship tape)
+
+    one request at a time. usually empty
+pending=(list [src=ship action=action:lfs-provider])
+
+    storage space rules
+=upload-rules
+
+    networking
+=fileserver-status
+loopback=tape
+fileserver=tape
+fileserverauth=tape
+```
+
+Save/Load cycling (restarting the ship) will clear the active-urls on the provider and the fileserver. Should reconnect to fileserver as well.
+
+If you need to poke into the guts to fix something, add a `%noun` poke to `/app/lfs-provider.hoon` to modify the state using any code you want.
