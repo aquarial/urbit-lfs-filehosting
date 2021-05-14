@@ -5,8 +5,6 @@
     <title>File Manager</title>
   </head>
   <body>
-    <p>Wait for a reload after clicking any buttons. Errors are printed to the console</p>
-
     <div id="providers">
       <input type="text" id="provider-new" name="auth" value="~">
       <input type="submit" id="provider-submit-add" value="add provider">
@@ -38,6 +36,9 @@
     </div>
     <br/>
 
+    <br/> <br/>
+
+    <textarea rows="10" cols="80" id="log" placeholder="logs are printed here"></textarea>
 
     <script>
      function sleep(ms) {
@@ -93,16 +94,87 @@
 
      let storageDiv = document.getElementById("files");
 
-     uploadSubmit.disabled = true;
+     let logtextwindow = document.getElementById("log");
+     function log(t) {
+       let c = logtextwindow.textContent.split("\n").splice(-100, 100).filter(x => x != "")
+       c.push(t);
+       logtextwindow.textContent = c.join("\n\n");
+       logtextwindow.scrollTop = logtextwindow.scrollHeight
+     }
+
+
+     function refresh() {
+       uploadSubmit.disabled = true;
+       providerSubmit.disabled = true;
+       providerSubmitRemove.disabled = true;
+     httpGetAsync("/~/scry/lfs-client/all-storage-info.json" + disableCache(),
+       function(xmlhttp) {
+         let resp = JSON.parse(xmlhttp.response)
+
+         uploadProviderList.textContent = "[" + Object.keys(resp).join(", ") + "]"
+         while (storageDiv.lastChild) { storageDiv.removeChild(storageDiv.lastChild) }
+         while (uploadProvider.lastChild) { uploadProvider.remove(uploadProvider.lastChild) }
+
+         Object.keys(resp).forEach(provider => {
+
+           let storage = resp[provider];
+           let h3 = document.createElement("h3");
+           h3.textContent = "" + provider + " using " + hoonFormatNumber(storage.used) + " of " + hoonFormatNumber(storage.storage) + " bytes";
+           storageDiv.appendChild(h3);
+
+           Object.keys(storage.files).forEach(fileid => {
+             let file = storage.files[fileid];
+             let input = document.createElement("input");
+             input.type = "submit"; input.value="X";
+             input.addEventListener("click", function() {
+               httpPostAsync("/spider/noun/lfs-client-action/json.json" + disableCache(),
+                 JSON.stringify(["request-delete", provider, fileid]),
+                 function(xmlhttp) {
+                   console.log("Request delete response is:", xmlhttp.response);
+                   refresh()
+                 },
+                 function() {
+                   console.error("Request delete failed?");
+               });
+             });
+             storageDiv.appendChild(input);
+             let link = document.createElement("a")
+             link.target="_blank"; link.href = file['download-url']; link.textContent = "  " + provider + " / " + fileid + "  (" + hoonFormatNumber(file.size) + " bytes)";
+             storageDiv.appendChild(link);
+             let br = document.createElement("br")
+             storageDiv.appendChild(br);
+           });
+
+           let opt = document.createElement("option");
+           opt.text = provider;
+           uploadProvider.add(opt);
+         });
+         uploadSubmit.disabled = uploadProvider.value == "" || uploadFile.files.length == 0;
+         uploadSubmit.disabled = false;
+         providerSubmit.disabled = false;
+         providerSubmitRemove.disabled = false;
+       },
+       function() {
+         console.error("Getting storageinfo ran into some kind of error?");
+         uploadSubmit.disabled = uploadProvider.value == "" || uploadFile.files.length == 0;
+         uploadSubmit.disabled = false;
+         providerSubmit.disabled = false;
+         providerSubmitRemove.disabled = false;
+       }
+     );
+     }
+
 
      providerSubmit.addEventListener("click", function() {
        httpPostAsync("/spider/noun/lfs-client-action/json.json" + disableCache(),
          JSON.stringify(["add-provider", providerNew.value]),
          function(xmlhttp) {
            console.log("Add Provder response is:", xmlhttp.response);
-           window.location.reload();
+           log("adding " + providerNew.value + " as a provider: " + xmlhttp.response);
+           refresh()
          },
-         function() {
+         function(xmlhttp) {
+           log("http error: " + xmlhttp);
            console.error("Add provider failed?");
        });
      });
@@ -111,10 +183,13 @@
          JSON.stringify(["remove-provider", providerNew.value]),
          function(xmlhttp) {
            console.log("Remove Provder response is:", xmlhttp.response);
-           window.location.reload();
+           log("removing " + providerNew.value + " as a provider: " + xmlhttp.response);
+           refresh()
          },
-         function() {
+         function(xmlhttp) {
            console.error("RFemove provider failed?");
+           log("http error: " + xmlhttp);
+           console.log("aaaaaaaaaaaaaaaaaaaaaaa", xmlhttp);
          });
      });
 
@@ -139,11 +214,11 @@
              httpPostAsync(resp.url, file,
                async function(xmlhttp) {
                  console.log("uploading file got:", xmlhttp.response);
-                 window.location.reload();
+                 refresh()
                },
                function(xmlhttp) {
                  console.error("uploading file got an error?", xmlhttp.response);
-                 window.location.reload();
+                 refresh()
                }
              );
            };
@@ -153,52 +228,7 @@
          });
      });
 
-     httpGetAsync("/~/scry/lfs-client/all-storage-info.json" + disableCache(),
-       function(xmlhttp) {
-         let resp = JSON.parse(xmlhttp.response)
-
-         uploadProviderList.textContent = "[" + Object.keys(resp).join(", ") + "]"
-
-         Object.keys(resp).forEach(provider => {
-
-           let storage = resp[provider];
-           let h3 = document.createElement("h3");
-           h3.textContent = "" + provider + " using " + hoonFormatNumber(storage.used) + " of " + hoonFormatNumber(storage.storage) + " bytes";
-           storageDiv.appendChild(h3);
-
-           Object.keys(storage.files).forEach(fileid => {
-             let file = storage.files[fileid];
-             let input = document.createElement("input");
-             input.type = "submit"; input.value="X";
-             input.addEventListener("click", function() {
-               httpPostAsync("/spider/noun/lfs-client-action/json.json" + disableCache(),
-                 JSON.stringify(["request-delete", provider, fileid]),
-                 function(xmlhttp) {
-                   console.log("Request delete response is:", xmlhttp.response);
-                   window.location.reload();
-                 },
-                 function() {
-                   console.error("Request delete failed?");
-               });
-             });
-             storageDiv.appendChild(input);
-             let link = document.createElement("a")
-             link.target="_blank"; link.href = file['download-url']; link.textContent = "  " + provider + " / " + fileid + "  (" + hoonFormatNumber(file.size) + " bytes)";
-             storageDiv.appendChild(link);
-             let br = document.createElement("br")
-             storageDiv.appendChild(br);
-           });
-
-           let opt = document.createElement("option");
-           opt.text = provider;
-           uploadProvider.add(opt);
-         });
-         uploadSubmit.disabled = uploadProvider.value == "" || uploadFile.files.length == 0;
-       },
-       function() {
-         console.error("Getting storageinfo ran into some kind of error?");
-       }
-     );
+     refresh();
 
     </script>
   </body>
