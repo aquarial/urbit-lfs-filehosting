@@ -28,7 +28,7 @@ user@computer:~$ rm keyfile
 user@computer:~$ ./binaries/urbit ./some-long-your-ship
 ```
 
-Wait until running `+trouble` shows the same base hash on the moon as your main ship. Give it a minute.
+Wait until running `+trouble` shows the same base hash on the moon as your main ship. Give it a minute. Use the `|ames-verb %rcv` command to view ota progress.
 
 #### Install the gall app
 
