@@ -208,16 +208,22 @@
          async function(xmlhttp) {
            uploadFile.value = uploadFile.defaultValue;
            let resp = JSON.parse(xmlhttp.response)
-           console.log("request upload response uploading ", resp);
-           if (resp.url !== undefined) {
+           if (resp.url == undefined) {
+             console.log("faaaa", resp);
+             log("uploading  file: " + resp);
+           } else {
              httpPostAsync(resp.url, file,
-               async function(xmlhttp) {
-                 log("uploading " + file.name + " succeeded");
+               function(xmlhttp) {
+                 log("uploaded file: \"" + file.name + "\"");
                  refresh()
                },
                function(xmlhttp) {
-                 console.error("uploading file got an error", xmlhttp);
-                 log("uploading file encountered http error code " + xmlhttp.status + ": \"" + xmlhttp.response + "\"");
+                 console.error("uploading file got an error because I can't figure out CORS", xmlhttp);
+                 if (xmlhttp.status == 0) {
+                   log("uploaded file: \"" + file.name + "\"")
+                 } else {
+                   log("uploading file encountered http error code " + xmlhttp.status + ": \"" + xmlhttp.response + "\"");
+                 }
                  refresh()
                }
              );
@@ -225,7 +231,7 @@
          },
          function(xmlhttp) {
            console.error("Request upload failed?");
-           log("2222uploading file encountered http error code " + xmlhttp.status + ": \"" + xmlhttp.response + "\"");
+           log("uploading file encountered http error code " + xmlhttp.status + ": \"" + xmlhttp.response + "\"");
          });
      });
 
