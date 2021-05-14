@@ -13,12 +13,12 @@ First need to setup the rust HTTP fileserver. You will need to install [rustup](
 The steps to run it look like
 
 ```bash
-cd ./urbit-lfs/fileserver/ 
+cd ./urbit-lfs/fileserver/
 rustup override set nightly  # http fileserver requires newest versions
 ROCKET_PORT=8000 cargo run --release
 ```
 
-Every time the fileserver starts up, it generates a new secret key to communicate with the provider. This key makes sure only the provider ship can authorize actions on the fileserver. 
+Every time the fileserver starts up, it generates a new secret key to communicate with the provider. This key makes sure only the provider ship can authorize actions on the fileserver.
 
 ```
 Authorized Header is aosdivj)(*jOIgs0gjipaox-v*)
@@ -32,7 +32,7 @@ Once the provider ship is running and the fileserver is running, you will need t
 Start with:
 
 ```
-user@computer:~$ cat /etc/nginx/sites-enabled/ship.urbit 
+user@computer:~$ cat /etc/nginx/sites-enabled/ship.urbit
 server {
         server_name your-ship.domain.tdl;            # CHANGE TO YOUR DOMAIN
 
