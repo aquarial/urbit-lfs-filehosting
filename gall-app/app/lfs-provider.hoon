@@ -102,6 +102,11 @@
     ==
   %noun
      ?+  +.vase  `this
+  :: :: example
+  :: %custom-command
+  ::    =+  !<([%custom-command index=@ud] vase)
+  ::    ~&  "modifiying state with {<index>}"
+  ::    `this
      %bowl
         ~&  "{<bowl>}"
        `this
