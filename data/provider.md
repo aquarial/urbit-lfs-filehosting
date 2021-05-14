@@ -1,6 +1,6 @@
 ## Provider Operating Manual
 
-The provider is complicated to setup and manage. You will need a domain and server to run the fileserver & provider ship on.
+The provider is complicated to setup and manage. You will need a domain and https for both the provider ship and an http fileserver.
 
 ### How to install
 
