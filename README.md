@@ -30,22 +30,25 @@
 - [x] client uses scrys+threads instead of pokes
 - [x] http upload interface
 - [x] demo html+js UI
+- [x] on-save on-load
+- [x] provider confirms upload url is open before telling the client
+- [x] uses threads to connect IO
+- [x] moons count to parent storage
+- [x] send updated storage limits when the rules change
+- [x] state/marks are stable, lots of changes in provider&fileserver
+- [x] re-subscribe on kick (keep )
 - [ ] gall app restores webserver state on reboot
-- [ ] provider confirms upload url is open before telling the client
-- [ ] uses threads to connect IO
 - [ ] provider can export & restore state
 - [ ] behn fileserver status check
 - [ ] transactions either succeed or can be safely retried
-
-Considerations
-
+- [ ] garbage collect unused files on fileserver if something goes wrong
+- [ ] collect stats on users
+- [ ] ratelimiting
+- [ ] rust fileserver /upload/file path after things are cleared
+- [ ] full JSON communciation between fileserver/provider
 - [ ] match client/provider versioning
-- [ ] moons count to parent storage?
 - [ ] ensure provider is safe even if clients are modified
 - [ ] handle deleting a group
-- [ ] what to do when client unsubscribes?
-
-
 
 
 ## Useful commands
