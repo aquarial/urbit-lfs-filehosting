@@ -68,9 +68,9 @@ cargo run -- --UNSAFE_DEBUG_AUTH
 :lfs-provider +dbug
 
 :lfs-provider %bowl
-:lfs-provider [%add-rule [justification=[%ship ships=~[~zod]] size=1.000]]
-:lfs-provider [%add-rule [justification=[%group group='asdf'] size=30]]
-:lfs-provider &lfs-provider-action [%connect-server loopback="localhost:8081" fileserver="localhost:8000" token="hunter2"]
+:lfs-provider &lfs-provider-command [%add-rule justification=[%ship ships=~[~zod]] size=1.000]
+:lfs-provider &lfs-provider-command [%add-rule justification=[%group group='asdf'] size=30]
+:lfs-provider &lfs-provider-command [%connect-server loopback="http://localhost:8081" fileserver="http://localhost:8000" token="hunter2"]
 
 :lfs-client %bowl
 :lfs-client &lfs-client-action [threadid=~ %list-files ~]
@@ -123,8 +123,9 @@ curl --header "Content-Type: application/json" \
 curl --header "Content-Type: application/json" \
      --cookie "$(curl -i localhost:8081/~/login -X POST -d "password=lidlut-tabwed-pillex-ridrup" | rg set-cookie | sed 's/set-cookie..//' | sed 's/;.*//')" \
      --request POST \
-     --data '2' \
-     http://localhost:8081/spider/noun/lfs-upload-url/json.json
+     --data '["request-upload", "~zod", "filename.txt"]' \
+     http://localhost:8080/spider/noun/lfs-client-action/json.json
+
 
 curl --header "Content-Type: application/json" \
      --cookie "$(curl -i localhost:8081/~/login -X POST -d "password=lidlut-tabwed-pillex-ridrup" | rg set-cookie | sed 's/set-cookie..//' | sed 's/;.*//')" \
