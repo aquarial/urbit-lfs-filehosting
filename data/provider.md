@@ -59,6 +59,14 @@ user@computer:~$ cat /etc/nginx/sites-enabled/fileserver
 server {
         server_name fileserver.domain.tld;           # YOUR DOMAIN
 
+        location /upload/file/ {
+                proxy_pass http://127.0.0.1:8000;    # ACTUAL PORT OF FILESERVER
+                add_header Access-Control-Allow-Origin * always;
+                add_header Access-Control-Allow-Methods OPTIONS,POST always;
+                add_header Access-Control-Allow-Headers * always;
+                add_header Access-Control-Allow-Credentials true always;
+
+        }
         location / {
                 proxy_pass http://127.0.0.1:8000;    # ACTUAL PORT OF FILESERVER
         }
