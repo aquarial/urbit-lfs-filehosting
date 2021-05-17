@@ -66,6 +66,16 @@
          if (xmlHttp.readyState == 4 && (xmlHttp.status != 200 && xmlHttp.status != 204))
            errHandle(xmlHttp);
        }
+       xmlHttp.addEventListener('progress', function(e) {
+         var done = e.position || e.loaded, total = e.totalSize || e.total;
+         console.log('xmlHttp progress: ' + (Math.floor(done/total*1000)/10) + '%');
+       }, false);
+       if ( xmlHttp.upload ) {
+         xmlHttp.upload.onprogress = function(e) {
+           var done = e.position || e.loaded, total = e.totalSize || e.total;
+           console.log('xmlHttp.upload progress: ' + done + ' / ' + total + ' = ' + (Math.floor(done/total*1000)/10) + '%');
+         };
+       }
        xmlHttp.open("POST", theUrl, true); // true for asynchronous
        xmlHttp.send(body);
      }
