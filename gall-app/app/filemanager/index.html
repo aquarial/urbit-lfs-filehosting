@@ -17,6 +17,8 @@
       <select name="provider" id="upload-provider"></select>
       <input type="file" id="upload-file" name="myfile">
       <br/>
+      <label for="">upload progress: </label>
+      <progress id="progress" max="100" value="0"> </progress>
     </div>
     <br/>
     <br/>
@@ -63,14 +65,10 @@
          if (xmlHttp.readyState == 4 && (xmlHttp.status != 200 && xmlHttp.status != 204))
            errHandle(xmlHttp);
        }
-       xmlHttp.addEventListener('progress', function(e) {
-         var done = e.position || e.loaded, total = e.totalSize || e.total;
-         console.log('xmlHttp progress: ' + (Math.floor(done/total*1000)/10) + '%');
-       }, false);
-       if ( xmlHttp.upload ) {
+       if (xmlHttp.upload) {
          xmlHttp.upload.onprogress = function(e) {
-           var done = e.position || e.loaded, total = e.totalSize || e.total;
-           console.log('xmlHttp.upload progress: ' + done + ' / ' + total + ' = ' + (Math.floor(done/total*1000)/10) + '%');
+           let done = e.position || e.loaded; let total = e.totalSize || e.total;
+           progress.value = done / total * 100;
          };
        }
        xmlHttp.open("POST", theUrl, true); // true for asynchronous
@@ -98,6 +96,7 @@
      let uploadSubmit = document.getElementById("upload-submit");
      let uploadProvider = document.getElementById("upload-provider");
      let uploadFile = document.getElementById("upload-file");
+     let progress = document.getElementById("progress");
 
      let storageDiv = document.getElementById("files");
 
@@ -114,6 +113,7 @@
        uploadSubmit.disabled = true;
        providerSubmit.disabled = true;
        providerSubmitRemove.disabled = true;
+       progress.value = 0;
      httpGetAsync("/~/scry/lfs-client/all-storage-info.json" + disableCache(),
        function(xmlhttp) {
          let resp = JSON.parse(xmlhttp.response)
