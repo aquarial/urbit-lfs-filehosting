@@ -17,9 +17,6 @@
       <select name="provider" id="upload-provider"></select>
       <input type="file" id="upload-file" name="myfile">
       <br/>
-      <label for="">(available providers: </label>
-      <label id="upload-provider-list" for="">[]</label>
-      <label for="">)</label>
     </div>
     <br/>
     <br/>
@@ -100,7 +97,6 @@
 
      let uploadSubmit = document.getElementById("upload-submit");
      let uploadProvider = document.getElementById("upload-provider");
-     let uploadProviderList = document.getElementById("upload-provider-list");
      let uploadFile = document.getElementById("upload-file");
 
      let storageDiv = document.getElementById("files");
@@ -122,7 +118,6 @@
        function(xmlhttp) {
          let resp = JSON.parse(xmlhttp.response)
 
-         uploadProviderList.textContent = "[" + Object.keys(resp).join(", ") + "]"
          while (storageDiv.lastChild) { storageDiv.removeChild(storageDiv.lastChild) }
          while (uploadProvider.lastChild) { uploadProvider.remove(uploadProvider.lastChild) }
 
