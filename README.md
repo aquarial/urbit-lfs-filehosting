@@ -133,6 +133,3 @@ curl --header "Content-Type: application/json" \
      http://localhost:8081/~/scry/lfs-client/list-files.json
 ```
 
-## Thoughts
-
-how to ratelimit threads?
