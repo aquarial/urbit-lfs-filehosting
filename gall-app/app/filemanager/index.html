@@ -17,7 +17,6 @@
       <select name="provider" id="upload-provider"></select>
       <input type="file" id="upload-file" name="myfile">
       <br/>
-      <label for="">upload progress: </label>
       <progress id="progress" max="100" value="0"> </progress>
     </div>
     <br/>
@@ -67,6 +66,7 @@
        }
        if (xmlHttp.upload) {
          xmlHttp.upload.onprogress = function(e) {
+           progress.hidden = false;
            let done = e.position || e.loaded; let total = e.totalSize || e.total;
            progress.value = done / total * 100;
          };
@@ -113,7 +113,7 @@
        uploadSubmit.disabled = true;
        providerSubmit.disabled = true;
        providerSubmitRemove.disabled = true;
-       progress.value = 0;
+       progress.value = 0; progress.hidden = true;
      httpGetAsync("/~/scry/lfs-client/all-storage-info.json" + disableCache(),
        function(xmlhttp) {
          let resp = JSON.parse(xmlhttp.response)
