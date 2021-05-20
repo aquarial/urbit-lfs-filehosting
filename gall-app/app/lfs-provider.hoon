@@ -371,6 +371,10 @@
   :: can be called from anywhere, don't use src.bowl
   :: no assertions here because crashing loses progress
   ?-  -.action
+  %request-cache-update
+     =/  storage  (~(got by store.state) src)
+     :_  state
+     :~  [%give %fact ~[(subscriber-path src)] %lfs-provider-server-update !>([%storageinfo storage])]  ==
   %request-delete
     ?.  server-accepting-upload
       :_  state

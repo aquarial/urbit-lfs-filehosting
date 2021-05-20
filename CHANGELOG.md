@@ -1,3 +1,16 @@
+## 2020/05/19
+
+#### Added a new type to actions a client can request
+
+**Affects**: provider state
+
+**Why**: clients can get out of sync if they miss subscription updates
+
+**What to do**:
+
+- update provider file
+
+
 ## 2020/05/17
 
 #### Changed CORs handling

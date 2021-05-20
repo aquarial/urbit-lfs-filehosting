@@ -9,6 +9,7 @@
 +$  action
   $%  [%request-upload filename=(unit tape) id=@uv]
       [%request-delete fileid=tape id=@uv]
+      [%request-cache-update ~]
   ==
 +$  fileserver-status
   $%  %online
