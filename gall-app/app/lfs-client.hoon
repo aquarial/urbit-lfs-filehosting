@@ -8,7 +8,6 @@
 +$  request-src
   $%  [%local-poke ~]
       [%thread id=@ta]
-  ::  [%http-request =connection] todo
   ==
 :: TODO only allow one reqeust, don't send id
 +$  state-0  [%0 pending-requests=(list [id=@uv =request-src]) store=(map ship storageinfo:lfs-provider)]
