@@ -215,7 +215,8 @@
            let resp = JSON.parse(xmlhttp.response)
            if (resp.url == undefined) {
              console.log("faaaa", resp);
-             log("uploading  file: " + resp);
+             log("uploading file: " + JSON.stringify(resp));
+             refresh()
            } else {
              httpPostAsync(resp.url, file,
                function(xmlhttp) {
