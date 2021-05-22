@@ -35,7 +35,15 @@
   ^-  (quip card _this)
   =/  prev  !<(versioned-state old-state)
   ?-  -.prev
-  %0  `this(state prev)
+      :: remove pending-requests in on-load
+      :: stop leftover threads
+  %0  :_  this(state prev(pending-requests [~]))
+      =/  tocard  |=  =request-src
+                  ^-  (unit card)
+                  ?:  ?=(%local-poke -.request-src)  ~
+                  (some [%pass /thread-stop/[(scot %da now.bowl)] %agent [our.bowl %spider] %poke %spider-stop !>([id.request-src %.y])])
+      =/  rs=(list request-src)  (turn pending-requests.prev |=([id=@uv =request-src] request-src))
+      (murn rs tocard)
   ==
 ++  on-poke
   |=  [=mark =vase]
