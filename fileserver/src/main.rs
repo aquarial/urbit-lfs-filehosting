@@ -2,9 +2,11 @@
 
 #[macro_use] extern crate rocket;
 
+pub mod cors;
+
 use std::io::Read;
 use std::fs::File;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::sync::{Mutex, RwLock};
 
 use lazy_static::lazy_static;
@@ -193,9 +195,11 @@ fn upload_remove(_tok: AuthToken, state: State<Info>, key: String) -> &'static s
 }
 
 fn main() {
+    let args: HashSet<String> = std::env::args().map(|s| s.to_ascii_lowercase()).collect();
+
     {
         let mut key = AUTH_KEY.write().unwrap();
-        if std::env::args().any(|arg| arg == "--UNSAFE_DEBUG_AUTH") {
+        if args.contains("--unsafe_debug_auth") {
             *key = "hunter2".into()
         } else {
             *key = generate_password(60);
@@ -207,5 +211,6 @@ fn main() {
     rocket::ignite()
         .manage(Info::new())
         .mount("/", routes![default, upload_new, upload_file, upload_remove, download_file, setup_provider, options_handler])
+        .attach(cors::CORS { enabled: args.contains("--add-cors-headers")})
         .launch();
 }
