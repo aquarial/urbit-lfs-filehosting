@@ -16,6 +16,9 @@
 
 ## [Provider Operating Manual](./data/provider.md)
 
+## [Locahost debugging Operating Manual](./data/debugging.md)
+
+
 
 ## TODO
 

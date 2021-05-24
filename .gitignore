@@ -3,3 +3,4 @@ data/*
 !data/interface.png
 !data/client.md
 !data/provider.md
+!data/debugging.md
