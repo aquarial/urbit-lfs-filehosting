@@ -128,6 +128,7 @@
            h3.textContent = "" + provider + " using " + hoonFormatNumber(storage.used) + " of " + hoonFormatNumber(storage.storage) + " bytes";
            storageDiv.appendChild(h3);
 
+           let clutter = /^[0-9a-z\.]+-/;
            Object.keys(storage.files).forEach(fileid => {
              let file = storage.files[fileid];
              let input = document.createElement("input");
@@ -146,7 +147,7 @@
              });
              storageDiv.appendChild(input);
              let link = document.createElement("a")
-             link.target="_blank"; link.href = file['download-url']; link.textContent = "  " + provider + " / " + fileid + "  (" + hoonFormatNumber(file.size) + " bytes)";
+             link.target="_blank"; link.href = file['download-url']; link.textContent = "  " + provider + " / " + fileid.replace(clutter, "") + "  (" + hoonFormatNumber(file.size) + " bytes)";
              storageDiv.appendChild(link);
              let br = document.createElement("br")
              storageDiv.appendChild(br);
