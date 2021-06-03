@@ -180,7 +180,17 @@
 ++  on-leave
   |=  =path
   `this
-++  on-peek   on-peek:default
+++  on-peek
+  |=  pax=path
+  ^-  (unit (unit cage))
+  ?+    pax  (on-peek:default pax)
+  [%x %store ~]
+      =/  json-fileinfo  |=  [fileid=tape download-url=tape size=@ud]  [(crip fileid) [%o (my ~[['download-url' [%s (crip download-url)]] ['size' [%n (crip (format-number:hc size))]]])]]
+      =/  json-storage  |=  =storageinfo  [%o (my ~[['storage' [%n (crip (format-number:hc storage.storageinfo))]] ['used' [%n (crip (format-number:hc used.storageinfo))]] ['files' [%o ((map @ta json) (transform-map:hc files.storageinfo json-fileinfo))]]])]
+      =/  topair  |=  [=ship =storageinfo]  [(scot %p ship) (json-storage storageinfo)]
+      ``json+!>([%o ((map @ta json) (transform-map:hc store.state topair))])
+      :: store=(map ship storageinfo)
+  ==
 ++  on-agent
   |=  [=wire =sign:agent:gall]
   ~&  "provider on-agent got {<-.sign>} from {<dap.bowl>} on wire {<wire>}"
@@ -309,6 +319,9 @@
   %-  json-response:gen:srv
   %-  pairs
   :~  [%status [%s status]]  ==
+++  transform-map
+  |*  [m=(map * *) f=gate]
+  (~(gas by *(map * *)) (turn ~(tap by m) f))
 ++  format-number
   |=  n=@ud
   :: 1.234 -> "1234"
