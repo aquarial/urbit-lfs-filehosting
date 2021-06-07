@@ -184,6 +184,17 @@
   |=  pax=path
   ^-  (unit (unit cage))
   ?+    pax  (on-peek:default pax)
+  [%x %upload-rules ~]
+    =/  json-justification  |=  =justification
+        ?-  -.justification
+        %group  [%o (my ~[['type' [%s 'group']] ['host' [%s (scot %p host.justification)]] ['name' [%s name.justification]]])]
+        %ship  [%o (my ~[['type' [%s 'ship']] ['ships' [%a (turn ships.justification |=(=ship [%s (scot %p ship)]))]]])]
+        %kids  [%o (my ~[['type' [%s 'kids']]])]
+        ==
+    =/  json-rule  |=  [=justification size=@ud]
+        [%o (my ~[['justification' (json-justification justification)] ['size' [%n (crip (format-number:hc size))]]])]
+    =/  rules  (turn upload-rules.state json-rule)
+    ``json+!>([%a rules])
   [%x %store ~]
     =/  json-fileinfo  |=  [fileid=tape download-url=tape size=@ud]  [(crip fileid) [%o (my ~[['download-url' [%s (crip download-url)]] ['size' [%n (crip (format-number:hc size))]]])]]
     =/  json-storage  |=  =storageinfo  [%o (my ~[['storage' [%n (crip (format-number:hc storage.storageinfo))]] ['used' [%n (crip (format-number:hc used.storageinfo))]] ['files' [%o ((map @ta json) (transform-map:hc files.storageinfo json-fileinfo))]]])]
