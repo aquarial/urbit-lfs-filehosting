@@ -1,5 +1,5 @@
 /-  *lfs-client, lfs-provider
-/+  srv=server, default-agent, dbug
+/+  *lfs-utils, srv=server, default-agent, dbug
 |%
 +$  card  card:agent:gall
 +$  versioned-state
@@ -131,10 +131,10 @@
       ``json+!>([%a (turn subs |=([wire=* =ship term=*] [%s (crip "{<ship>}")]))])
   ::
   [%x %all-storage-info ~]
-      =/  json-fileinfo  |=  [fileid=tape download-url=tape size=@ud]  [(crip fileid) [%o (my ~[['download-url' [%s (crip download-url)]] ['size' [%n (crip (format-number:hc size))]]])]]
-      =/  json-storage  |=  =storageinfo:lfs-provider  [%o (my ~[['storage' [%n (crip (format-number:hc storage.storageinfo))]] ['used' [%n (crip (format-number:hc used.storageinfo))]] ['files' [%o ((map @ta json) (transform-map:hc files.storageinfo json-fileinfo))]]])]
+      =/  json-fileinfo  |=  [fileid=tape download-url=tape size=@ud]  [(crip fileid) [%o (my ~[['download-url' [%s (crip download-url)]] ['size' [%n (crip (format-number size))]]])]]
+      =/  json-storage  |=  =storageinfo:lfs-provider  [%o (my ~[['storage' [%n (crip (format-number storage.storageinfo))]] ['used' [%n (crip (format-number used.storageinfo))]] ['files' [%o ((map @ta json) (transform-map files.storageinfo json-fileinfo))]]])]
       =/  json-storage-map  |=  [=ship =storageinfo:lfs-provider]  [(crip "{<ship>}") (json-storage storageinfo)]
-      ``json+!>([%o ((map @ta json) (transform-map:hc store.state json-storage-map))])
+      ``json+!>([%o ((map @ta json) (transform-map store.state json-storage-map))])
   [%x %list-files ~]
       =/  files=(list [ship tape])  (zing (turn ~(tap by store.state) |=([=ship =storageinfo:lfs-provider] (turn ~(tap by files.storageinfo) |=([fid=tape =fileinfo:lfs-provider] [ship fid])))))
       =/  jsonfiles  (turn files |=([=ship id=tape] [%o (my ~[['provider' [%s (crip "{<ship>}")]] ['fileid' [%s (crip id)]]])]))
@@ -211,18 +211,13 @@
 ::
 ::  helper core
 |_  =bowl:gall
-++  format-number
-  |=  n=@ud
-  :: 1.234 -> "1234"
-  (tape (skim ((list @tD) "{<n>}") |=(c=@tD ?!(=(c '.')))))
-++  transform-map
-  |*  [m=(map * *) f=gate]
-  (~(gas by *(map * *)) (turn ~(tap by m) f))
+++  subscriber-name
+  |=  =ship
+  ?:  ?=(%earl (clan:title ship))
+    (sein:title our.bowl now.bowl ship)
+  ship
 ++  subscriber-path
   |=  =ship
   :: moons count as the planet
-  =/  new-ship  ?:  ?=(%earl (clan:title ship))
-                  (sein:title our.bowl now.bowl ship)
-                 ship
-  /uploader/(scot %p new-ship)
+  /uploader/(scot %p (subscriber-name ship))
 --
