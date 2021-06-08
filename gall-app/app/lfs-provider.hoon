@@ -138,7 +138,7 @@
        :_  this(state state(upload-rules new-rules, store new-store))
        (turn ~(tap by new-store) update)
     %disconnect-server
-    ~&  >  "provider offline"
+      ~&  >  "provider offline"
       `this(state state(fileserver-status %offline, loopback "", fileserver "", fileserverauth ""))
     %connect-server
       :: TODO send update for fileserver url to all clients?
