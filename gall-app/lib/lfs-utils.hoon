@@ -1,3 +1,4 @@
+/-  lfs-provider, lfs-client
 |%
 ++  transform-map
   |*  [m=(map * *) f=gate]
@@ -20,4 +21,30 @@
   |=  in=tape
   ^-  tape
   (swag [0 40] (turn in sanitize-char))
+::
+:: JSON
+::
+++  json-justification
+    |=  =justification:lfs-provider
+    ?-  -.justification
+    %group  [%o (my ~[['type' [%s 'group']] ['host' [%s (scot %p host.justification)]] ['name' [%s name.justification]]])]
+    %ship  [%o (my ~[['type' [%s 'ship']] ['ships' [%a (turn ships.justification |=(=ship [%s (scot %p ship)]))]]])]
+    %kids  [%o (my ~[['type' [%s 'kids']]])]
+    ==
+::
+++  json-rule
+  |=  [=justification:lfs-provider size=@ud]
+  [%o (my ~[['justification' (json-justification justification)] ['size' [%n (crip (format-number size))]]])]
+::
+++  json-fileinfo
+  |=  [fileid=tape download-url=tape size=@ud]
+  [(crip fileid) [%o (my ~[['download-url' [%s (crip download-url)]] ['size' [%n (crip (format-number size))]]])]]
+::
+++  json-storage
+  |=  =storageinfo:lfs-provider
+  [%o (my ~[['storage' [%n (crip (format-number storage.storageinfo))]] ['used' [%n (crip (format-number used.storageinfo))]] ['files' [%o ((map @ta json) (transform-map files.storageinfo json-fileinfo))]]])]
+::
+++  json-storage-map
+  |=  [=ship =storageinfo:lfs-provider]
+  [(scot %p ship) (json-storage storageinfo)]
 --

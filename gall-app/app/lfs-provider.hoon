@@ -187,22 +187,10 @@
   ^-  (unit (unit cage))
   ?+    pax  (on-peek:default pax)
   [%x %upload-rules ~]
-    =/  json-justification  |=  =justification
-        ?-  -.justification
-        %group  [%o (my ~[['type' [%s 'group']] ['host' [%s (scot %p host.justification)]] ['name' [%s name.justification]]])]
-        %ship  [%o (my ~[['type' [%s 'ship']] ['ships' [%a (turn ships.justification |=(=ship [%s (scot %p ship)]))]]])]
-        %kids  [%o (my ~[['type' [%s 'kids']]])]
-        ==
-    =/  json-rule  |=  [=justification size=@ud]
-        [%o (my ~[['justification' (json-justification justification)] ['size' [%n (crip (format-number size))]]])]
     =/  rules  (turn upload-rules.state json-rule)
     ``json+!>([%a rules])
   [%x %store ~]
-    =/  json-fileinfo  |=  [fileid=tape download-url=tape size=@ud]  [(crip fileid) [%o (my ~[['download-url' [%s (crip download-url)]] ['size' [%n (crip (format-number size))]]])]]
-    =/  json-storage  |=  =storageinfo  [%o (my ~[['storage' [%n (crip (format-number storage.storageinfo))]] ['used' [%n (crip (format-number used.storageinfo))]] ['files' [%o ((map @ta json) (transform-map files.storageinfo json-fileinfo))]]])]
-    =/  topair  |=  [=ship =storageinfo]  [(scot %p ship) (json-storage storageinfo)]
-    ``json+!>([%o ((map @ta json) (transform-map store.state topair))])
-    :: store=(map ship storageinfo)
+    ``json+!>([%o ((map @ta json) (transform-map store.state json-storage-map))])
   ==
 ++  on-agent
   |=  [=wire =sign:agent:gall]
