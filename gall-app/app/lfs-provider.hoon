@@ -137,6 +137,8 @@
            [%give %fact ~[(subscriber-path:hc ship)] %lfs-provider-server-update !>([%storage-rules-changed newsize=storage.storageinfo])]
        :_  this(state state(upload-rules new-rules, store new-store))
        (turn ~(tap by new-store) update)
+    %overwrite-store
+      `this(state state(store newstore.command))
     %disconnect-server
       ~&  >  "provider offline"
       `this(state state(fileserver-status %offline, loopback "", fileserver "", fileserverauth ""))

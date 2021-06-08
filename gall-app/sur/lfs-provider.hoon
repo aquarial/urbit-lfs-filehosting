@@ -5,6 +5,7 @@
       [%list-rules ~]
       [%remove-rule index=@ud]
       [%add-rule =justification size=@ud]
+      [%overwrite-store newstore=(map ship storageinfo)]
   ==
 +$  action
   $%  [%request-upload filename=(unit tape) id=@uv]
