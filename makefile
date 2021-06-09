@@ -45,9 +45,9 @@ zod-clean-deep:
 	tmux send-keys -t zod "|start %lfs-provider" "ENTER"; sleep 3
 	tmux send-keys -t zod "|start %lfs-client" "ENTER"; sleep 3
 	tmux send-keys -t zod ":lfs-provider &lfs-provider-command "; sleep 2;
-	tmux send-keys -t zod "[%connect-server loopback=\"http://localhost:8080\" fileserver=\"http://localhost:8000\" token=\"hunter2\"]"; sleep 0.5; tmux send-keys -t zod "ENTER"; sleep 0.5
+	tmux send-keys -t zod "[threadid=~ %connect-server loopback=\"http://localhost:8080\" fileserver=\"http://localhost:8000\" token=\"hunter2\"]"; sleep 0.5; tmux send-keys -t zod "ENTER"; sleep 0.5
 	tmux send-keys -t zod ":lfs-provider &lfs-provider-command ";
-	tmux send-keys -t zod "[%add-rule justification=[%ship ships=~[~zod ~dopzod]] size=1.000.000.000]"; sleep 0.5; tmux send-keys -t zod "ENTER"; sleep 0.5
+	tmux send-keys -t zod "[threadid=~ %add-rule justification=[%ship ships=~[~zod ~dopzod]] size=1.000.000.000]"; sleep 0.5; tmux send-keys -t zod "ENTER"; sleep 0.5
 	sleep 4;
 	tmux send-keys -t zod ":lfs-client &lfs-client-action [threadid=~ %add-provider ~zod]"; sleep 0.5; tmux send-keys -t zod "ENTER"; sleep 0.5
 	tmux send-keys -t zod ":lfs-client &lfs-client-action [threadid=~ %request-upload ~zod ~]"; sleep 0.5; tmux send-keys -t zod "ENTER"; sleep 0.5

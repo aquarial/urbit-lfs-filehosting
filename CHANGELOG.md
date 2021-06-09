@@ -1,3 +1,16 @@
+## 2020/06/09
+
+### Changed provider command type, added 
+
+**Affects**: provider operations
+
+**Why**: provider needs to respond to a thread request
+
+**What to do**
+
+- update provider.hoon
+- update client.hoon
+
 ## 2020/05/19
 
 #### Added a new type to actions a client can request

@@ -91,7 +91,7 @@ Edit `/etc/nginx/nginx.conf` and add `client_max_body_size 5M;` to raise the lim
 In the provider dojo connect using:
 
 ```
-~your-ship:dojo> :lfs-provider &lfs-provider-command [%connect-server loopback="https://your-ship.domain.tld" fileserver="https://fileserver.domain.tdl" token="aosdivj)(*jOIgs0gjipaox-v*)"]
+~your-ship:dojo> :lfs-provider &lfs-provider-command [threadid=~ %connect-server loopback="https://your-ship.domain.tld" fileserver="https://fileserver.domain.tdl" token="aosdivj)(*jOIgs0gjipaox-v*)"]
 >=
 "provider on-arvo /setup"
 "provider on-arvo setup response code 200"
@@ -103,11 +103,11 @@ To allow users to upload you add 'justifications' for storage space. If multiple
 The three types of rules:
 
 ```
-~your-ship:dojo> :lfs-provider &lfs-provider-command [%add-rule justification=[%ship ships=~[~zod ~dopzod]] size=1.000.000]
+~your-ship:dojo> :lfs-provider &lfs-provider-command [threadid=~ %add-rule justification=[%ship ships=~[~zod ~dopzod]] size=1.000.000]
 
-~your-ship:dojo> :lfs-provider &lfs-provider-command [%add-rule justification=[%group host=~middev name=%the-forge] size=500.000]
+~your-ship:dojo> :lfs-provider &lfs-provider-command [threadid=~ %add-rule justification=[%group host=~middev name=%the-forge] size=500.000]
 
-~your-ship:dojo> :lfs-provider &lfs-provider-command [%add-rule justification=[%kids ~] size=200]
+~your-ship:dojo> :lfs-provider &lfs-provider-command [threadid=~ %add-rule justification=[%kids ~] size=200]
 ```
 
 
@@ -115,11 +115,11 @@ Other things to do with rules are list them, and remove them:
 
 ```
 
-~your-ship:dojo> :lfs-provider &lfs-provider-command [%list-rules ~]]
+~your-ship:dojo> :lfs-provider &lfs-provider-command [threadid=~ %list-rules ~]]
 >=
 "rules are: ~[[justification=[%ship ships=~[~zod ~dopzod]] size=1.000.000] [justification=[%group host=~middev name=%the-forge] size=1.000.000]]"
 
-~your-ship:dojo> :lfs-provider &lfs-provider-command [%remove-rule 0]
+~your-ship:dojo> :lfs-provider &lfs-provider-command [threadid=~ %remove-rule 0]
 ```
 
 ### Debugging

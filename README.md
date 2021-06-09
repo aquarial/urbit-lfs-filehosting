@@ -71,9 +71,9 @@ cargo run -- --UNSAFE_DEBUG_AUTH
 :lfs-provider +dbug
 
 :lfs-provider %bowl
-:lfs-provider &lfs-provider-command [%add-rule justification=[%ship ships=~[~zod]] size=1.000]
-:lfs-provider &lfs-provider-command [%add-rule justification=[%group group='asdf'] size=30]
-:lfs-provider &lfs-provider-command [%connect-server loopback="http://localhost:8081" fileserver="http://localhost:8000" token="hunter2"]
+:lfs-provider &lfs-provider-command [threadid=~ %add-rule justification=[%ship ships=~[~zod]] size=1.000]
+:lfs-provider &lfs-provider-command [threadid=~ %add-rule justification=[%group group='asdf'] size=30]
+:lfs-provider &lfs-provider-command [threadid=~ %connect-server loopback="http://localhost:8081" fileserver="http://localhost:8000" token="hunter2"]
 
 :lfs-client %bowl
 :lfs-client &lfs-client-action [threadid=~ %list-files ~]
