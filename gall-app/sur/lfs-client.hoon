@@ -1,7 +1,7 @@
 |%
 +$  action
-  [threadid=(unit @ta) payload]
-+$  payload
+  [threadid=(unit @ta) action-payload]
++$  action-payload
   $%  [%add-provider =ship]
       [%remove-provider =ship]
       [%request-upload =ship filename=(unit tape)]

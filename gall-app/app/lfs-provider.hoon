@@ -118,7 +118,7 @@
   %lfs-provider-command
     ?>  (team:title [our src]:bowl)
     =/  command  !<(command vase)
-    ?-  -.command
+    ?-  +<.command
     %overwrite-store
       :: TODO use rules to recompute storage for everyone
       `this(state state(store newstore.command))

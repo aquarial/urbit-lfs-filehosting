@@ -1,11 +1,18 @@
 |%
 +$  command
+  [threadid=(unit @ta) command-payload]
++$  command-payload
   $%  [%connect-server loopback=tape fileserver=tape token=tape]
       [%disconnect-server ~]
       [%list-rules ~]
       [%remove-rule index=@ud]
       [%add-rule =justification size=@ud]
       [%overwrite-store newstore=(map ship storageinfo)]
+  ==
++$  provider-command-response
+  $%  [%success ~]
+      [%failure reason=tape]
+      [%rules =upload-rules]
   ==
 +$  action
   $%  [%request-upload filename=(unit tape) id=@uv]
