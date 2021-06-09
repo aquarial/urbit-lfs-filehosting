@@ -52,7 +52,7 @@
             (on-poke:default mark vase)
   %noun
      ?+  +.vase  `this
-     :: add cases as needed
+     :: add debugging pokes as necessary
      %bowl
         ~&  "{<bowl>}"
        `this
@@ -62,7 +62,7 @@
     ?>  (team:title [our src]:bowl)
     =/  action  !<(action vase)
     ~&  "client does {<action>}"
-    =/  request-src=request-src  ?:  =(threadid.action ~)  [%local-poke ~]  [%thread id=(need threadid.action)]
+    =/  request-src=request-src  ?:  ?=(~ threadid.action)  [%local-poke ~]  [%thread id=u.threadid.action]
     ?-  +<.action
     %list-files
       =/  files=(list [ship tape])  (zing (turn ~(tap by store.state) |=([=ship =storageinfo:lfs-provider] (turn ~(tap by files.storageinfo) |=([fid=tape =fileinfo:lfs-provider] [ship fid])))))
@@ -72,7 +72,7 @@
       ?:  (~(has by wex.bowl) [wire=/lfs ship=ship.action term=%lfs-provider])
         ~&  >  "client already subscribed to {<ship.action>}"
         ?~  threadid.action  `this
-        =/  tid  (need threadid.action)
+        =/  tid  u.threadid.action
         :_  this
         :~  [%pass /thread/[tid] %agent [our.bowl %spider] %poke %spider-input !>([tid %client-action-response !>([%updated-providers ~])])]
         ==
@@ -80,7 +80,7 @@
       ?~  threadid.action
       :~  [%pass /lfs %agent [ship.action %lfs-provider] %watch (subscriber-path:hc our:bowl)]  ==
       ::
-      =/  tid  (need threadid.action)
+      =/  tid  u.threadid.action
       :~  [%pass /lfs %agent [ship.action %lfs-provider] %watch (subscriber-path:hc our:bowl)]
           [%pass /thread/[tid] %agent [our.bowl %spider] %poke %spider-input !>([tid %client-action-response !>([%updated-providers ~])])]
       ==
@@ -89,7 +89,7 @@
       ?~  threadid.action
         ~&  >  "client unsubscribing from {<ship.action>}"
         :~  [%pass /lfs %agent [ship.action %lfs-provider] %leave ~]  ==
-        =/  tid  (need threadid.action)
+        =/  tid  u.threadid.action
         :~  [%pass /lfs %agent [ship.action %lfs-provider] %leave ~]
             [%pass /thread/[tid] %agent [our.bowl %spider] %poke %spider-input !>([tid %client-action-response !>([%updated-providers ~])])]
         ==
@@ -102,7 +102,7 @@
       ::
       ~&  >  "client won't request upload to {<ship.action>} because we are not subscribed to them"
       ?~  threadid.action  `this
-      =/  tid  (need threadid.action)
+      =/  tid  u.threadid.action
       :_  this
       :~  [%pass /thread/[tid] %agent [our.bowl %spider] %poke %spider-input !>([tid %client-action-response !>([%failure reason="not subscribed to {<ship.action>}"])])]  ==
     %request-delete
@@ -114,7 +114,7 @@
       ::
       ~&  >  "not subscribed to {<ship.action>}!"
       ?~  threadid.action  `this
-      =/  tid  (need threadid.action)
+      =/  tid  u.threadid.action
       :_  this
       :~  [%pass /thread/[tid] %agent [our.bowl %spider] %poke %spider-input !>([tid %client-action-response !>([%failure reason="not subscribed to {<ship.action>}"])])]  ==
     ==
