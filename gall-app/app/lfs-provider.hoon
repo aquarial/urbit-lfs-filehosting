@@ -118,13 +118,20 @@
   %lfs-provider-command
     ?>  (team:title [our src]:bowl)
     =/  command  !<(command vase)
+    =/  add-resp  |=  [b=provider-command-response a=(list card)]
+        ^-  (list card)
+        ?:  ?=(~ threadid.command)  a
+        =/  tid  u.threadid.command
+        (snoc a [%pass /thread/[tid] %agent [our.bowl %spider] %poke %spider-input !>([tid %provider-command-response !>(b)])])
     ?-  +<.command
     %overwrite-store
       :: TODO use rules to recompute storage for everyone
-      `this(state state(store newstore.command))
+      :_  this(state state(store newstore.command))
+      (add-resp [%success ~] ~)
     %list-rules
        ~&  "rules are: {<upload-rules.state>}"
-       `this
+       :_  this
+       (add-resp [%rules upload-rules.state] ~)
     :: TODO remove/add almost exactly the same, combine?
     %remove-rule
        =/  new-rules  (oust [index.command 1] upload-rules.state)
@@ -132,17 +139,18 @@
        =/  update  |=  [=ship =storageinfo]
            [%give %fact ~[(subscriber-path:hc ship)] %lfs-provider-server-update !>([%storage-rules-changed newsize=storage.storageinfo])]
        :_  this(state state(upload-rules new-rules, store new-store))
-       (turn ~(tap by new-store) update)
+       (add-resp [%rules upload-rules.state] (turn ~(tap by new-store) update))
     %add-rule
        =/  new-rules  (snoc upload-rules.state [justification.command size.command])
        =/  new-store  (~(gas by store.state) (turn ~(tap by store.state) (compute-ship-storage:hc new-rules)))
        =/  update  |=  [=ship =storageinfo]
            [%give %fact ~[(subscriber-path:hc ship)] %lfs-provider-server-update !>([%storage-rules-changed newsize=storage.storageinfo])]
        :_  this(state state(upload-rules new-rules, store new-store))
-       (turn ~(tap by new-store) update)
+       (add-resp [%rules upload-rules.state] (turn ~(tap by new-store) update))
     %disconnect-server
       ~&  >  "provider offline"
-      `this(state state(fileserver-status %offline, loopback "", fileserver "", fileserverauth ""))
+      :_  this(state state(fileserver-status %offline, loopback "", fileserver "", fileserverauth ""))
+      (add-resp [%success ~] ~)
     %connect-server
       :: TODO send update for fileserver url to all clients?
       ?.  &((is-safe-url fileserver.command) (is-safe-url loopback.command))
@@ -151,7 +159,9 @@
       =/  setup-url  "{fileserver.command}/setup"
       =/  body  (some (as-octt:mimes:html "{loopback.command}"))
       :_  this(state state(loopback loopback.command, fileserver fileserver.command, fileserverauth token.command))
-      :~  [%pass /setup %arvo %i %request [%'POST' (crip setup-url) ~[['authtoken' (crip token.command)]] body] *outbound-config:iris]  ==
+      :: send command-response in http handler
+      =/  tid  `@tas`(fall threadid.command ~)
+      :~  [%pass /setup/[tid] %arvo %i %request [%'POST' (crip setup-url) ~[['authtoken' (crip token.command)]] body] *outbound-config:iris]  ==
     ==
   ::
   %lfs-provider-action
