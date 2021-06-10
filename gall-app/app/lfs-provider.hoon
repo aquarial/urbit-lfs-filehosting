@@ -247,15 +247,20 @@
     ::   headers=~[[key='content-type' value='text/plain; charset=utf-8'] [key='server' value='Rocket']
     ::   [key='content-length' value='19'] [key='date' value='Tue, 16 Mar 2021 01:23:34 GMT']]]
     ::   full-file=[~ [type='text/plain; charset=utf-8' data=[p=19 q=231.846.086.356.972.333.783.885.125.050.632.381.030.756.469]]]]
-  [%setup ~]
+  [%setup @ta ~]
+    =/  tid  &2:wire
     ?>  ?=(%finished -.client-response.sign-arvo)
     ~&  "provider on-arvo setup response code {<status-code.response-header.client-response.sign-arvo>}"
     ?:  =(200 status-code.response-header.client-response.sign-arvo)
       ~&  "provider connected to {fileserver.state}"
       :: TODO ensure received url matches the sent loopback server url?
-      `this(state state(fileserver-status %online, active-urls [~]))
+      :_  this(state state(fileserver-status %online, active-urls [~]))
+      ?:  ?=(~ tid)  [~]
+      ~[[%pass /thread/[tid] %agent [our.bowl %spider] %poke %spider-input !>([tid %provider-command-response !>([%success ~])])]]
     ~&  >>  "provider error connecting {fileserver.state}: {<status-code.response-header.client-response.sign-arvo>}"
-    `this(state state(fileserver-status %offline))
+    :_  this(state state(fileserver-status %offline))
+    ?:  ?=(~ tid)  [~]
+    ~[[%pass /thread/[tid] %agent [our.bowl %spider] %poke %spider-input !>([tid %provider-command-response !>([%failure "err"])])]]
   [%upload @ta @ta @ta @ta ~]
     ?>  ?=(%finished -.client-response.sign-arvo)
     =/  action-type  &2:wire   =/  src  (slav %p &3:wire)  =/  id  (slav %uv &4:wire)  =/  pass  (trip &5:wire)
