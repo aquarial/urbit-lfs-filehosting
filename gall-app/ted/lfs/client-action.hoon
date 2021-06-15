@@ -5,26 +5,26 @@
 ++  parse-action
   |=  arg=*
   ?+  arg  ~
-  [* [~ [%a [%s %add-provider] [%s @ud] %.0]]]
-     =/  target  (slaw %p `@t`+>+>->:arg)
+  [* ~ %a [%s %add-provider] [%s @t] %.0]
+     =/  target  (slaw %p +:&5:arg)
      ?:  ?=(~ target)  ~
      (some [%add-provider u.target])
   ::
-  [* [~ [%a [%s %remove-provider] [%s @ud] %.0]]]
-     =/  target  (slaw %p `@t`+>+>->:arg)
+  [* ~ %a [%s %remove-provider] [%s @t] %.0]
+     =/  target  (slaw %p +:&5:arg)
      ?:  ?=(~ target)  ~
      (some [%remove-provider u.target])
   ::
-  [* [~ [%a [%s %request-upload] [%s @ud] [%s @ud] %.0]]]
-     =/  target  (slaw %p `@t`+>+>->:arg)
+  [* ~ %a [%s %request-upload] [%s @t] [%s @t] %.0]
+     =/  target  (slaw %p +:&5:arg)
      ?:  ?=(~ target)  ~
-     =/  filename  (trip `@t`+>+>+<+:arg)
+     =/  filename  (trip +:&6:arg)
      (some [%request-upload u.target (some filename)])
   ::
-  [* [~ [%a [%s %request-delete] [%s @ud] [%s @ud] %.0]]]
-      =/  target  (slaw %p `@t`+>+>->:arg)
+  [* ~ %a [%s %request-delete] [%s @t] [%s @t] %.0]
+      =/  target  (slaw %p +:&5:arg)
      ?:  ?=(~ target)  ~
-      =/  fileid  (trip `@t`+>+>+<+:arg)
+      =/  fileid  (trip +:&5:arg)
      (some [%request-delete ship=u.target fileid=fileid])
   ==
 --
