@@ -24,27 +24,27 @@
 ++  parse-command
   |=  arg=*
   ?+  arg  ~
-  [* ~ %a [%s %connect-server] [%s @t] [%s @t] [%s @t] %.0]
-     =/  loopback  (trip +:&5:arg)
-     =/  fileserver  (trip +:&5:arg)
+  [%a [%s %connect-server] [%s @t] [%s @t] [%s @t] %.0]
+     =/  loopback  (trip +:&3:arg)
+     =/  fileserver  (trip +:&4:arg)
      =/  token  (trip +:&5:arg)
      (some [%connect-server loopback fileserver token])
   ::
-  [* ~ %a [%s %disconnect-server] %.0]
+  [%a [%s %disconnect-server] %.0]
      (some [%disconnect-server ~])
   ::
-  [* ~ %a [%s %list-rules] %.0]
+  [%a [%s %list-rules] %.0]
      (some [%list-rules ~])
   ::
-  [* ~ %a [%s %remove-rule] [%s @t] %.0]
-     =/  index  (slaw %ud +:&5:arg)
+  [%a [%s %remove-rule] [%s @t] %.0]
+     =/  index  (slaw %ud +:&3:arg)
      ?:  ?=(~ index)  ~
      (some [%remove-rule u.index])
   ::
-  [* ~ %a [%s %add-rule] * [%s @t] %.0]
-     =/  just  (parse-justification +:&5:arg)
+  [%a [%s %add-rule] * [%s @t] %.0]
+     =/  just  (parse-justification +:&3:arg)
      ?:  ?=(~ just)  ~
-     =/  size  (slaw %ud +:&6:arg)
+     =/  size  (slaw %ud +:&4:arg)
      ?:  ?=(~ size)  ~
      (some [%add-rule u.just u.size])
   ::
@@ -56,7 +56,7 @@
 =/  m  (strand ,vase)
 ^-  form:m
 ;<  =bowl:spider  bind:m  get-bowl:strandio
-=/  command  (parse-command arg)
+=/  command  (parse-command +>:arg)
 ?~  command  (pure:m !>([%o (my ~[['success' [%b %.n]] ['reason' [%s (crip "failed to parse input")]]])]))
 ::
 (pure:m !>([%s (crip "finished with {<command>}")]))
