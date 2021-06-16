@@ -121,21 +121,20 @@
          while (storageDiv.lastChild) { storageDiv.removeChild(storageDiv.lastChild) }
          while (uploadProvider.lastChild) { uploadProvider.remove(uploadProvider.lastChild) }
 
-         Object.keys(resp).forEach(provider => {
-
-           let storage = resp[provider];
+         console.log("got resp", resp)
+         resp.forEach(r => {
            let h3 = document.createElement("h3");
-           h3.textContent = "" + provider + " using " + hoonFormatNumber(storage.used) + " of " + hoonFormatNumber(storage.storage) + " bytes";
+           h3.textContent = "" + r.ship + " using " + hoonFormatNumber(r.storageinfo.used) + " of " + hoonFormatNumber(r.storageinfo.storage) + " bytes";
            storageDiv.appendChild(h3);
 
            let clutter = /^[0-9a-z\.]+-/;
-           Object.keys(storage.files).forEach(fileid => {
-             let file = storage.files[fileid];
+           console.log(r.storageinfo)
+           r.storageinfo.files.forEach(file => {
              let input = document.createElement("input");
              input.type = "submit"; input.value="X";
              input.addEventListener("click", function() {
                httpPostAsync("/spider/noun/lfs-client-action/json.json" + disableCache(),
-                 JSON.stringify(["request-delete", provider, fileid]),
+                 JSON.stringify(["request-delete", r.ship, file.fileid]),
                  function(xmlhttp) {
                    log("deleting file response: " + xmlhttp.response);
                    refresh()
@@ -147,14 +146,14 @@
              });
              storageDiv.appendChild(input);
              let link = document.createElement("a")
-             link.target="_blank"; link.href = file['download-url']; link.textContent = "  " + provider + " / " + fileid.replace(clutter, "") + "  (" + hoonFormatNumber(file.size) + " bytes)";
+             link.target="_blank"; link.href = file['download-url']; link.textContent = "  " + r.ship + " / " + file.fileid.replace(clutter, "") + "  (" + hoonFormatNumber(file.size) + " bytes)";
              storageDiv.appendChild(link);
              let br = document.createElement("br")
              storageDiv.appendChild(br);
            });
 
            let opt = document.createElement("option");
-           opt.text = provider;
+           opt.text = r.ship;
            uploadProvider.add(opt);
          });
          uploadSubmit.disabled = uploadProvider.value == "" || uploadFile.files.length == 0;
