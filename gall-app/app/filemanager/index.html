@@ -146,7 +146,8 @@
              });
              storageDiv.appendChild(input);
              let link = document.createElement("a")
-             link.target="_blank"; link.href = file['download-url']; link.textContent = "  " + r.ship + " / " + file.fileid.replace(clutter, "") + "  (" + hoonFormatNumber(file.size) + " bytes)";
+             // r.ship
+             link.target="_blank"; link.href = file['download-url']; link.textContent = "  " + file.fileid.replace(clutter, "") + "  (" + hoonFormatNumber(file.size) + " bytes)";
              storageDiv.appendChild(link);
              let br = document.createElement("br")
              storageDiv.appendChild(br);
