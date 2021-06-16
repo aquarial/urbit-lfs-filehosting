@@ -201,7 +201,7 @@
     =/  rules  (turn upload-rules.state json-rule)
     ``json+!>([%a rules])
   [%x %store ~]
-    ``json+!>([%o ((map @ta json) (transform-map store.state json-storage-map))])
+    ``json+!>([%a (turn ~(tap by store.state) json-storage-map)])
   ==
 ++  on-agent
   |=  [=wire =sign:agent:gall]

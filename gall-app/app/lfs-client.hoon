@@ -131,7 +131,8 @@
       ``json+!>([%a (turn subs |=([wire=* =ship term=*] [%s (crip "{<ship>}")]))])
   ::
   [%x %all-storage-info ~]
-      ``json+!>([%o ((map @ta json) (transform-map store.state json-storage-map))])
+      ``json+!>([%a (turn ~(tap by store.state) json-storage-map)])
+  ::
   [%x %list-files ~]
       =/  files=(list [ship tape])  (zing (turn ~(tap by store.state) |=([=ship =storageinfo:lfs-provider] (turn ~(tap by files.storageinfo) |=([fid=tape =fileinfo:lfs-provider] [ship fid])))))
       =/  jsonfiles  (turn files |=([=ship id=tape] [%o (my ~[['provider' [%s (crip "{<ship>}")]] ['fileid' [%s (crip id)]]])]))
