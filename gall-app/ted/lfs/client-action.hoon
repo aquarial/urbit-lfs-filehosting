@@ -24,7 +24,7 @@
   [* ~ %a [%s %request-delete] [%s @t] [%s @t] %.0]
       =/  target  (slaw %p +:&5:arg)
      ?:  ?=(~ target)  ~
-      =/  fileid  (trip +:&5:arg)
+      =/  fileid  (trip +:&6:arg)
      (some [%request-delete ship=u.target fileid=fileid])
   ==
 --
