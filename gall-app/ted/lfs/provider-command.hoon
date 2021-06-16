@@ -48,6 +48,13 @@
      ?:  ?=(~ size)  ~
      (some [%add-rule u.just u.size])
   ::
+  [%a [%s %overwrite-store] * %.0]
+     =/  newstore  &3:arg
+     ~&  "how to handle {<newstore>}"
+     :: newstore looks like: 
+     :: [%o  [%jkl %o [%b %n %11] 0 0] [[%asdf %o [%aa %s %a] 0 [%aaa %s %aaa] 0 0] 0 0] 0]
+     ~
+  ::
   ==
 --
 ::
