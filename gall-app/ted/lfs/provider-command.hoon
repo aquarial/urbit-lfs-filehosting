@@ -10,7 +10,7 @@
     =/  host  (slaw %p +:&3:arg)
     ?:  ?=(~ host)  ~
     =/  name  +:&4:arg
-    (some [%group host name])
+    (some [%group u.host name])
   ::
   [%a [%s %kids] %.0]
     (some [%kids ~])
