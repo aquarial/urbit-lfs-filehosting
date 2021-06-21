@@ -1,5 +1,5 @@
 /-  spider, lfs-provider, lfs-client
-/+  strandio
+/+  strandio, lfs-utils
 =,  strand=strand:spider
 |%
 ++  parse-justification
@@ -51,11 +51,9 @@
      (some [%add-rule u.just u.size])
   ::
   [%a [%s %overwrite-store] * %.0]
-     =/  newstore  &3:arg
-     ~&  "how to handle {<newstore>}"
-     :: newstore looks like: 
-     :: [%o  [%jkl %o [%b %n %11] 0 0] [[%asdf %o [%aa %s %a] 0 [%aaa %s %aaa] 0 0] 0 0] 0]
-     ~
+     =/  store  (json &3:arg)
+     =/  newstore  (to-store:from-json:lfs-utils (ship-metas:dejs:from-json:lfs-utils store))
+     (some [%overwrite-store newstore])
   ::
   ==
 --
