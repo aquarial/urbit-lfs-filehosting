@@ -58,6 +58,8 @@ reload-zod:
 	tmux send-keys -t zod "|commit %home" "ENTER"; sleep 1
 	#tmux send-keys -t zod "KP-"
 	#tmux send-keys -t zod "lfs-client-action" "ENTER"
+	#tmux send-keys -t zod "=parse -build-file %/lib/parse/hoon" "ENTER"
+	#tmux send-keys -t zod "a:parse" "ENTER"
 
 .PHONY: zod-deep-clean zod-clean reload-zod
 
