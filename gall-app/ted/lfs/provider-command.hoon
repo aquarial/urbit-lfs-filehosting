@@ -4,6 +4,7 @@
 |%
 ++  parse-justification
   |=  arg=*
+  ^-  (unit justification:lfs-provider)
   ?+  arg  ~
   [%a [%s %group] [%s @t] [%s @tas] %.0]
     =/  host  (slaw %p +:&3:arg)
@@ -23,6 +24,7 @@
   ==
 ++  parse-command
   |=  arg=*
+  ^-  (unit command-payload:lfs-provider)
   ?+  arg  ~
   [%a [%s %connect-server] [%s @t] [%s @t] [%s @t] %.0]
      =/  loopback  (trip +:&3:arg)
