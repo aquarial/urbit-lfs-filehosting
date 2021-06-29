@@ -48,8 +48,8 @@
      ?:  ?=(~ index)  ~
      (some [%remove-rule u.index])
   ::
-  [%a [%s %add-rule] * [%s @t] %.0]
-     =/  just  (parse-justification +:&3:arg)
+  [%a [%s %add-rule] * [%n @t] %.0]
+     =/  just  (parse-justification &3:arg)
      ?:  ?=(~ just)  ~
      =/  size  (slaw %ud +:&4:arg)
      ?:  ?=(~ size)  ~
