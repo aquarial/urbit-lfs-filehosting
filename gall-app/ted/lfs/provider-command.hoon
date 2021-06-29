@@ -2,6 +2,13 @@
 /+  strandio, lfs-utils
 =,  strand=strand:spider
 |%
+++  parse-str-ship
+  |=  arg=*
+  ^-  (unit ship)
+  ?+  arg  ~
+  [%s @ta]
+    (slaw %p +:arg)
+  ==
 ++  parse-justification
   |=  arg=*
   ^-  (unit justification:lfs-provider)
@@ -15,12 +22,10 @@
   [%a [%s %kids] %.0]
     (some [%kids ~])
   ::
-  :: TODO parse array of ships
-  :: [%a [%s %ship] [%s @t] %.0]
-  ::   =/  host  (slaw %p +:&3:arg)
-  ::   ?:  ?=(~ host)  ~
-  ::   =/  name  +:&4:arg
-  ::   (some [% host name])
+  [%a [%s %ship] [%a *] %.0]
+    =/  shps  ((list *) +:&3:arg)
+    =/  shiplst  (murn shps parse-str-ship)
+    (some [%ship ships=(murn shps parse-str-ship)])
   ==
 ++  parse-command
   |=  arg=*
