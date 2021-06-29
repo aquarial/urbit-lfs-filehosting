@@ -41,7 +41,7 @@
 - [x] state/marks are stable, lots of changes in provider&fileserver
 - [x] re-subscribe on kick (keep )
 - [ ] gall app restores webserver state on reboot
-- [ ] provider can export & restore state
+- [x] provider can export & restore state
 - [ ] behn fileserver status check
 - [ ] transactions either succeed or can be safely retried
 - [ ] garbage collect unused files on fileserver if something goes wrong
@@ -51,7 +51,7 @@
 - [ ] full JSON communciation between fileserver/provider
 - [ ] match client/provider versioning
 - [ ] ensure provider is safe even if clients are modified
-- [ ] handle deleting a group
+- [ ] ensure deleting a group doesn't break provider
 
 
 ## Useful commands
