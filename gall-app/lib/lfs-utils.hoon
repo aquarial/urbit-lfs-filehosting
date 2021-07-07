@@ -63,13 +63,15 @@
   ++  to-store-storageinfo
     |=  =storageinfo
     ^-  storageinfo:lfs-provider
-    [storage=storage:storageinfo used=used:storageinfo files=(~(gas by *(map tape fileinfo:lfs-provider)) (turn files:storageinfo to-store-files))]
+    [storage=storage:storageinfo used=used:storageinfo files=(~(gas by *(map tape fileinfo:lfs-provider)) (murn files:storageinfo to-store-files))]
   ++  to-store-files
     |=  =file
-    ^-  [id=tape fileinfo:lfs-provider]
-    [(trip id:file) (trip url:file) size:file `@da`upload-time:file]
+    ^-  (unit [id=tape fileinfo:lfs-provider])
+    =/  t  (slaw %da upload-time:file)
+    ?~  t  ~
+    (some [(trip id:file) (trip url:file) size:file u.t])
   +$  file
-    [id=@t url=@t size=@ud upload-time=@da]
+    [id=@t url=@t size=@ud upload-time=@t]
   +$  storageinfo
     [storage=@ud used=@ud files=(list file)]
   +$  ship-meta
@@ -99,7 +101,7 @@
       :~  [%fileid so]
           [%download-url so]
           [%size ni]
-          [%upload-date du:dejs:format]
+          [%upload-time so]
       ==
     --
   --
