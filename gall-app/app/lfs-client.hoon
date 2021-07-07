@@ -169,7 +169,7 @@
         %file-uploaded
           ~&  >  "client knows file upload {fileid.resp} succeeded!"
           =/  old=storageinfo:lfs-provider  (~(gut by store.state) src.bowl [storage=0 used=0 files=[~]])
-          =/  new=storageinfo:lfs-provider  old(used (add used.old filesize.resp), files (~(put by files.old) fileid.resp [download-url.resp filesize.resp]))
+          =/  new=storageinfo:lfs-provider  old(used (add used.old filesize.resp), files (~(put by files.old) fileid.resp [download-url.resp filesize.resp upload-time.resp]))
           `this(state state(store (~(put by store.state) src.bowl new)))
         %request-response
            =/  split-reqs  (skid pending-requests.state |=(r=[id=@uv =request-src] =(id.r id.resp)))

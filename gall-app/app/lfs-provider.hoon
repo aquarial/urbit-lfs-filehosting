@@ -87,11 +87,11 @@
         (give-simple-payload:app:srv id (handle-http-request:hc inbound-request 'failure'))
       =/  down-url  "{fileserver.state}/download/file/{fileid}"
       =/  ship=ship  (subscriber-name:hc p.i.src)
-      =/  client-card  [%give %fact ~[(subscriber-path:hc ship)] %lfs-provider-server-update !>([%file-uploaded fileid=fileid filesize=filesize download-url=down-url])]
+      =/  client-card  [%give %fact ~[(subscriber-path:hc ship)] %lfs-provider-server-update !>([%file-uploaded fileid=fileid filesize=filesize download-url=down-url time=now.bowl])]
       =/  cards  (snoc (give-simple-payload:app:srv id (handle-http-request:hc inbound-request %success)) client-card)
       ::
       =/  old=storageinfo  (~(got by store.state) ship)
-      =/  new=storageinfo  old(used (add used.old filesize), files (~(put by files.old) fileid [down-url filesize]))
+      =/  new=storageinfo  old(used (add used.old filesize), files (~(put by files.old) fileid `fileinfo`[down-url filesize now.bowl]))
       =/  newstate  state(active-urls (~(del by active-urls.state) ship), store (~(put by store.state) ship new))
       ::
       ?:  ?=(~ pending.state)

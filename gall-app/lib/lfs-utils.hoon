@@ -37,8 +37,8 @@
   [%o (my ~[['justification' (json-justification justification)] ['size' [%n (crip (format-number size))]]])]
 ::
 ++  json-fileinfo
-  |=  [fileid=tape download-url=tape size=@ud]
-  [%o (my ~[['fileid' [%s (crip fileid)]] ['download-url' [%s (crip download-url)]] ['size' [%n (crip (format-number size))]]])]
+  |=  [fileid=tape download-url=tape size=@ud upload-time=@da]
+  [%o (my ~[['fileid' [%s (crip fileid)]] ['download-url' [%s (crip download-url)]] ['size' [%n (crip (format-number size))]] ['upload-time' [%s (crip "{<upload-time>}")]]])]
 ::
 ++  json-storage
   |=  =storageinfo:lfs-provider
@@ -67,9 +67,9 @@
   ++  to-store-files
     |=  =file
     ^-  [id=tape fileinfo:lfs-provider]
-    [(trip id:file) (trip url:file) size:file]
+    [(trip id:file) (trip url:file) size:file `@da`upload-time:file]
   +$  file
-    [id=@t url=@t size=@ud]
+    [id=@t url=@t size=@ud upload-time=@da]
   +$  storageinfo
     [storage=@ud used=@ud files=(list file)]
   +$  ship-meta
@@ -99,6 +99,7 @@
       :~  [%fileid so]
           [%download-url so]
           [%size ni]
+          [%upload-date du:dejs:format]
       ==
     --
   --
