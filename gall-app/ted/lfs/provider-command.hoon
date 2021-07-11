@@ -72,8 +72,8 @@
 =/  argjson  !<([~ json] arg)
 =/  command  (parse-command (need argjson))
 ?~  command  (pure:m !>([%o (my ~[['success' [%b %.n]] ['reason' [%s (crip "failed to parse input")]]])]))
-;<  ~           bind:m  (poke:strandio [our.bowl %lfs-provider] %lfs-provider-command !>([threadid=(some tid.bowl) u.command]))
-;<  vmsg=vase     bind:m  (take-poke:strandio %provider-command-response)
+;<  ~          bind:m  (poke:strandio [our.bowl %lfs-provider] %lfs-provider-command !>([threadid=(some tid.bowl) u.command]))
+;<  vmsg=vase  bind:m  (take-poke:strandio %provider-command-response)
 =/  resp  !<(provider-command-response:lfs-provider vmsg)
 =/  msg
   ?-  -.resp
