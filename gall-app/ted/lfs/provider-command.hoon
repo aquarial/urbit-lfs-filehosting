@@ -57,8 +57,9 @@
   ::
   [%a [%s %overwrite-store] * %.0]
      =/  store  (json &3:arg)
-     =/  newstore  (to-store:from-json:lfs-utils (ship-metas:dejs:from-json:lfs-utils store))
-     (some [%overwrite-store newstore])
+     =/  newstore  (mule |.((to-store:from-json:lfs-utils (ship-metas:dejs:from-json:lfs-utils store))))
+     ?:  ?=([%.n *] newstore)  ~
+     (some [%overwrite-store p.newstore])
   ::
   ==
 --
