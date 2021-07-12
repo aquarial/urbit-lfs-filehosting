@@ -84,6 +84,10 @@ cargo run -- --UNSAFE_DEBUG_AUTH
 
 rsync -a --ignore-times ./src/ ./dst/
 
+# catch a crash
+(mule |.((dec 0)))
+[%.n p=~[[%leaf p="decrement-underflow"]]]
+
 =m (my [["a" 1] ["b" 2] ~])
 (~(rut by m) |=([name=tape age=@ud] 1))
 (~(get by m) "a")
@@ -93,17 +97,28 @@ rsync -a --ignore-times ./src/ ./dst/
 (en-json:html [%s 'asdf'])
 (de-json:html (crip (en-json:html [%n '13'])))
 
+((se:dejs:format %da) [%s '~2021.7.7..05.58.43..cea6'])
 ((se:dejs:format %uv) [%s '0vabcd'])
 ((se:dejs:format %uv) [%s '0vabcd'])
 
 =x (of:dejs:format ~[[%add-provider (su:dejs:format ;~(pfix sig fed:ag))] [%remove-provider (su:dejs:format ;~(pfix sig fed:ag))] [%request-upload (su:dejs:format ;~(pfix sig fed:ag))] [%list-files ul:dejs:format] [%request-delete (su:dejs:format ;~(pfix sig fed:ag)) (se:dejs:format %uv)]])
 
+
+  ++  b  (to-store a)
+  ++  a  (ship-metas:dejs json-ship-metas)
+  ++  ship-metas  '[{"ship":"~zod","storageinfo":{"storage":1000000000,"used":2813,"files":[{"fileid":"0vf.hgpcn.qo9iv.e2ogj.5apiq.fpuvr.lfe5h.1k3jd.psbor.8bjnu.mdnm4-bigfile","download-url":"http://localhost:8000/download/file/0vf.hgpcn.qo9iv.e2ogj.5apiq.fpuvr.lfe5h.1k3jd.psbor.8bjnu.mdnm4-bigfile","size":2500},{"fileid":"0v1o4.06u10.3il3p.kj22f.os8ai.rukjo.tq5pa.tufql.maq6t-other-file.txt","download-url":"http://localhost:8000/download/file/0v1o4.06u10.3il3p.kj22f.os8ai.rukjo.tq5pa.tufql.maq6t-other-file.txt","size":313}]}},{"ship":"~lapzod","storageinfo":{"storage":100000,"used":0,"files":[]}}]'
+  ++  json-ship-metas  (need (rush ship-metas apex:de-json:html))
+
+=json-rpc -build-file %/lib/json-rpc/hoon
+=parse -build-file %/lib/parse/hoon
 =srv -build-file %/lib/server/hoon
 =group -build-file %/sur/group/hoon
 .^((unit group:group) %gx /(scot %p our)/group-store/(scot %da now)/groups/ship/(scot %p our)/[%asdf]/noun)
 .^((unit group:group) %gx /=group-store=/groups/ship/~zod/bbbbbbbbb/noun)
 .^(* %gx /=group-store=/groups/ship/~zod/bbbbbbbbb/join/~zod/noun)
 .^(* %gx /=lfs-client=/all-storage-info/json)
+
+.^(* %gx /=lfs-provider=/store/json)
 
 .^((unit group:group) %gx /=lfs-client=/groups/ship/~zod/bbbbbbbbb/noun)
 
