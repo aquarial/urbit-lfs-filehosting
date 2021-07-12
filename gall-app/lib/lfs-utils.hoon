@@ -67,9 +67,8 @@
   ++  to-store-files
     |=  =file
     ^-  (unit [id=tape fileinfo:lfs-provider])
-    =/  t  (slaw %da upload-time:file)
-    ?~  t  ~
-    (some [(trip id:file) (trip url:file) size:file u.t])
+    =/  t  (slav %da upload-time:file)
+    (some [(trip id:file) (trip url:file) size:file t])
   +$  file
     [id=@t url=@t size=@ud upload-time=@t]
   +$  storageinfo
