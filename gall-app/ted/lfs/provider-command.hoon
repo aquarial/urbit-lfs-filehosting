@@ -3,14 +3,14 @@
 =,  strand=strand:spider
 |%
 ++  parse-str-ship
-  |=  arg=*
+  |=  arg=json
   ^-  (unit ship)
   ?+  arg  ~
   [%s @ta]
     (slaw %p +:arg)
   ==
 ++  parse-justification
-  |=  arg=*
+  |=  arg=json
   ^-  (unit justification:lfs-provider)
   ?+  arg  ~
   [%a [%s %group] [%s @t] [%s @tas] %.0]
@@ -23,12 +23,12 @@
     (some [%kids ~])
   ::
   [%a [%s %ship] [%a *] %.0]
-    =/  shps  ((list *) +:&3:arg)
+    =/  shps  ((list json) +:&3:arg)
     =/  shiplst  (murn shps parse-str-ship)
     (some [%ship ships=(murn shps parse-str-ship)])
   ==
 ++  parse-command
-  |=  arg=*
+  |=  arg=json
   ^-  (unit command-payload:lfs-provider)
   ?+  arg  ~
   [%a [%s %connect-server] [%s @t] [%s @t] [%s @t] %.0]
