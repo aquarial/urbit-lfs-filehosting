@@ -2,16 +2,12 @@
 
 #[macro_use] extern crate rocket;
 
-use std::io::Read;
-use std::fs::File;
 use std::collections::{HashMap, HashSet};
 
 use async_lock::{Mutex, RwLock};
 
 use rocket::{State, Data};
 use rocket::http::Status;
-use rocket::response::{Response};
-use rocket::response::status::NotFound;
 use rocket::request::{FromRequest, Request, Outcome};
 use rocket::data::ToByteUnit;
 use rocket::fs::{FileServer, relative};
@@ -67,7 +63,7 @@ fn default() -> &'static str {
 }
 
 #[get("/secure")]
-fn default_secure(tok: AuthToken) -> &'static str {
+fn default_secure(_tok: AuthToken) -> &'static str {
     "fileserver secure\n"
 }
 
@@ -206,6 +202,6 @@ fn rocket() -> _ {
     std::fs::create_dir_all("./files/").unwrap();
     rocket::build()
         .manage(Info::new())
-        .mount("/", routes![default, default_secure, upload_new, upload_file, upload_remove, download_file, setup_provider, options_handler])
+        .mount("/", routes![default, default_secure, upload_new, upload_file, upload_remove, setup_provider, options_handler])
         .mount("/download/file", FileServer::from(relative!("files")))
 }
