@@ -91,70 +91,71 @@ async fn upload_new(_tok: AuthToken, state: &State<Info>, key: String, space: u6
 }
 
 
-// #[options("/upload/file/<_key>")]
-// fn options_handler<'a>(_key: String) -> &'static str {
-//     ""
-// }
-// 
-// #[post("/upload/file/<key>", data = "<data>")]
-// fn upload_file(state: &State<Info>, key: String, data: Data) -> &'static str {
-//     if key.contains("..") {
-//         return "invalid key\n";
-//     }
-//     let mut ups = state.upload_paths.write().unwrap();
-//     match ups.remove(&key) {
-//         Some(size) => {
-//             // TODO handle file-system errors
-//             let mut f = File::create(format!("./files/{}", key)).unwrap();
-//             let written = data.open(size.bytes()).stream_precise_to(&mut f).unwrap();
-//             f.sync_all().unwrap();
-// 
-//             let url = state.provider_url.lock().unwrap();
-//             let auth: &str = &*AUTH_KEY.read().unwrap();
-//             let url2: String = format!("{}/~lfs/completed/{}/{}/padding", (*url).as_ref().unwrap(), key, hoon_format_num(written));
-//             println!("curling to {}", url2);
-//             let res = state.client
-//                 .post(url2)
-//                 .header("authtoken", auth)
-//                 .send();
-// 
-//             match res {
-//                 Ok(res) => {
-//                     println!("Got resposne: {:?}", res);
-//                     if res.status() == 200 {
-//                         println!("uploaded file {}", key);
-//                         std::mem::drop(ups);
-//                         return "uploaded\n";
-//                     } else {
-//                         println!("Error uploading {}", key);
-//                         ups.insert(key, size);
-//                     }
-//                 },
-//                 Err(err) => {
-//                     println!("Error uploading {}: {:?}", key, err);
-//                     ups.insert(key, size);
-//                 }
-//             }
-//             return "could not confirm upload with provider. try again when it's online\n"
-//         }
-//         None => {
-//             println!("no path to upload {}", key);
-//             return "no such path\n";
-//         }
-//     }
-// }
-// 
-// fn hoon_format_num(n: u64) -> String {
-//     if n >= 1000 {
-//         let mut s = hoon_format_num(n / 1000);
-//         s.push_str(&format!(".{:0>3}", n % 1000));
-//         s
-//     } else {
-//         format!("{}", n)
-//     }
-// }
-// 
-// 
+#[options("/upload/file/<_key>")]
+async fn options_handler<'a>(_key: String) -> &'static str {
+    ""
+}
+
+#[post("/upload/file/<key>", data = "<data>")]
+async fn upload_file(state: &State<Info>, key: String, data: Data<'_>) -> &'static str {
+    if key.contains("..") {
+        return "invalid key\n";
+    }
+    let mut ups = state.upload_paths.write().await;
+    match ups.remove(&key) {
+        Some(size) => {
+            // TODO handle file-system errors
+            let thefile = data.open(size.bytes()).into_file(format!("./files/{}", key)).await.unwrap();
+            thefile.sync_all().await.unwrap();
+            let written = thefile.metadata().await.unwrap().len();
+
+            let url = state.provider_url.lock().await;
+            let auth: &str = unsafe { &AUTH_KEY };
+            let url2: String = format!("{}/~lfs/completed/{}/{}/padding", (*url).as_ref().unwrap(), key, hoon_format_num(written));
+            println!("curling to {}", url2);
+            let res = state.client
+                .post(url2)
+                .header("authtoken", auth)
+                .send()
+                .await;
+
+            match res {
+                Ok(res) => {
+                    println!("Got resposne: {:?}", res);
+                    if res.status() == 200 {
+                        println!("uploaded file {}", key);
+                        std::mem::drop(ups);
+                        return "uploaded\n";
+                    } else {
+                        println!("Error uploading {}", key);
+                        ups.insert(key, size);
+                    }
+                },
+                Err(err) => {
+                    println!("Error uploading {}: {:?}", key, err);
+                    ups.insert(key, size);
+                }
+            }
+            return "could not confirm upload with provider. try again when it's online\n"
+        }
+        None => {
+            println!("no path to upload {}", key);
+            return "no such path\n";
+        }
+    }
+}
+
+fn hoon_format_num(n: u64) -> String {
+    if n >= 1000 {
+        let mut s = hoon_format_num(n / 1000);
+        s.push_str(&format!(".{:0>3}", n % 1000));
+        s
+    } else {
+        format!("{}", n)
+    }
+}
+
+
 // #[get("/download/file/<key>")]
 // fn download_file(key: String) -> Result<NamedFile, NotFound<String>> {
 //     // TODO: any other security concerns?
@@ -214,6 +215,6 @@ fn rocket() -> _ {
     std::fs::create_dir_all("./files/").unwrap();
     rocket::build()
         .manage(Info::new())
-        .mount("/", routes![default, default_secure, setup_provider, upload_new])
+        .mount("/", routes![default, default_secure, setup_provider, upload_new, upload_file])
     //  .mount("/", routes![default, upload_new, upload_file, upload_remove, download_file, setup_provider, options_handler])
 }
