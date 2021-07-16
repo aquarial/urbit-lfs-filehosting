@@ -97,7 +97,7 @@ async fn upload_new(_tok: AuthToken, state: &State<Info>, key: String, space: u6
 // }
 // 
 // #[post("/upload/file/<key>", data = "<data>")]
-// fn upload_file(state: State<Info>, key: String, data: Data) -> &'static str {
+// fn upload_file(state: &State<Info>, key: String, data: Data) -> &'static str {
 //     if key.contains("..") {
 //         return "invalid key\n";
 //     }
@@ -183,7 +183,7 @@ fn generate_password(len: usize) -> String {
 }
 
 //#[delete("/upload/remove/<key>")]
-//fn upload_remove(_tok: AuthToken, state: State<Info>, key: String) -> &'static str {
+//fn upload_remove(_tok: AuthToken, state: &State<Info>, key: String) -> &'static str {
 //    if key.contains("..") {
 //        return "invalid key\n";
 //    }
