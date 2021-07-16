@@ -174,17 +174,17 @@ fn generate_password(len: usize) -> String {
     password
 }
 
-//#[delete("/upload/remove/<key>")]
-//fn upload_remove(_tok: AuthToken, state: &State<Info>, key: String) -> &'static str {
-//    if key.contains("..") {
-//        return "invalid key\n";
-//    }
-//    let mut ups = state.upload_paths.write().unwrap();
-//    println!("removing upload path to {}", key);
-//    ups.remove(&key);
-//    std::fs::remove_file(format!("./files/{}", key)).unwrap();
-//    "upload path removed\n"
-//}
+#[delete("/upload/remove/<key>")]
+async fn upload_remove(_tok: AuthToken, state: &State<Info>, key: String) -> &'static str {
+    if key.contains("..") {
+        return "invalid key\n";
+    }
+    let mut ups = state.upload_paths.write().await;
+    println!("removing upload path to {}", key);
+    ups.remove(&key);
+    std::fs::remove_file(format!("./files/{}", key)).unwrap();
+    "upload path removed\n"
+}
 
 #[launch]
 fn rocket() -> _ {
@@ -206,7 +206,6 @@ fn rocket() -> _ {
     std::fs::create_dir_all("./files/").unwrap();
     rocket::build()
         .manage(Info::new())
-        .mount("/", routes![default, default_secure, setup_provider, upload_new, upload_file])
-    //  .mount("/", routes![default, upload_new, upload_file, upload_remove, download_file, setup_provider, options_handler])
+        .mount("/", routes![default, default_secure, upload_new, upload_file, upload_remove, download_file, setup_provider, options_handler])
         .mount("/download/file", FileServer::from(relative!("files")))
 }
