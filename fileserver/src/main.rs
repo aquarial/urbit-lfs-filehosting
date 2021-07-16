@@ -80,17 +80,17 @@ async fn setup_provider(_tok: AuthToken, state: &State<Info>, data: Data<'_>) ->
     "setup provider\n"
 }
 
-// 
-// 
-// #[post("/upload/new/<key>/<space>")]
-// fn upload_new(_tok: AuthToken, state: State<Info>, key: String, space: u64) -> &'static str {
-//     let mut ups = state.upload_paths.write().unwrap();
-//     println!("available for uploading {} bytes with {}", space, key);
-//     ups.insert(key, space);
-//     "upload path active\n"
-// }
-// 
-// 
+
+
+#[post("/upload/new/<key>/<space>")]
+async fn upload_new(_tok: AuthToken, state: &State<Info>, key: String, space: u64) -> &'static str {
+    let mut ups = state.upload_paths.write().await;
+    println!("available for uploading {} bytes with {}", space, key);
+    ups.insert(key, space);
+    "upload path active\n"
+}
+
+
 // #[options("/upload/file/<_key>")]
 // fn options_handler<'a>(_key: String) -> &'static str {
 //     ""
@@ -214,6 +214,6 @@ fn rocket() -> _ {
     std::fs::create_dir_all("./files/").unwrap();
     rocket::build()
         .manage(Info::new())
-        .mount("/", routes![default, default_secure, setup_provider])
+        .mount("/", routes![default, default_secure, setup_provider, upload_new])
     //  .mount("/", routes![default, upload_new, upload_file, upload_remove, download_file, setup_provider, options_handler])
 }
