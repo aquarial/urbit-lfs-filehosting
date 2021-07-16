@@ -16,6 +16,7 @@ use rocket::http::Status;
 use rocket::response::{Response, NamedFile};
 use rocket::response::status::NotFound;
 use rocket::request::{FromRequest, Request, Outcome};
+use rocket::data::ToByteUnit;
 
 use reqwest::blocking::{Client};
 
@@ -73,7 +74,7 @@ fn default() -> &'static str {
 #[post("/setup", data = "<data>")]
 fn setup_provider(_tok: AuthToken, state: State<Info>, data: Data) -> &'static str {
     let mut provider = String::new();
-    data.open().take(1000).read_to_string(&mut provider).unwrap();
+    data.open(1000.bytes()).read_to_string(&mut provider).unwrap();
     let mut url = state.provider_url.lock().unwrap();
     *url = Some(provider);
     let mut ups = state.upload_paths.write().unwrap();
@@ -92,8 +93,8 @@ fn upload_new(_tok: AuthToken, state: State<Info>, key: String, space: u64) -> &
 
 
 #[options("/upload/file/<_key>")]
-fn options_handler<'a>(_key: String) -> Response<'a> {
-    Response::build().finalize()
+fn options_handler<'a>(_key: String) -> &'static str {
+    ""
 }
 
 #[post("/upload/file/<key>", data = "<data>")]
@@ -106,7 +107,7 @@ fn upload_file(state: State<Info>, key: String, data: Data) -> &'static str {
         Some(size) => {
             // TODO handle file-system errors
             let mut f = File::create(format!("./files/{}", key)).unwrap();
-            let written = std::io::copy(&mut data.open().take(size), &mut f).unwrap();
+            let written = data.open(size.bytes()).stream_precise_to(&mut f).unwrap();
             f.sync_all().unwrap();
 
             let url = state.provider_url.lock().unwrap();
@@ -208,9 +209,8 @@ fn main() {
     }
 
     std::fs::create_dir_all("./files/").unwrap();
-    rocket::ignite()
+    rocket::build()
         .manage(Info::new())
-        .mount("/", routes![default, upload_new, upload_file, upload_remove, download_file, setup_provider, options_handler])
         .attach(cors::CORS { enabled: args.contains("--add-cors-headers")})
-        .launch();
+        .mount("/", routes![default, upload_new, upload_file, upload_remove, download_file, setup_provider, options_handler]);
 }
