@@ -2,6 +2,8 @@
 
 #[macro_use] extern crate rocket;
 
+pub mod cors;
+
 use std::collections::{HashMap, HashSet};
 
 use async_lock::{Mutex, RwLock};
@@ -202,4 +204,5 @@ fn rocket() -> _ {
         .manage(Info::new())
         .mount("/", routes![default, default_secure, upload_new, upload_file, upload_remove, setup_provider, options_handler])
         .mount("/download/file", FileServer::from(relative!("files")))
+        .attach(cors::CORS { enabled: args.contains("--add-cors-headers")})
 }
