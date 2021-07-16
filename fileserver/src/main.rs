@@ -5,7 +5,8 @@
 use std::io::Read;
 use std::fs::File;
 use std::collections::{HashMap, HashSet};
-use std::sync::{Mutex, RwLock};
+
+use async_lock::{Mutex, RwLock};
 
 use rocket::{State, Data};
 use rocket::http::Status;
@@ -14,7 +15,7 @@ use rocket::response::status::NotFound;
 use rocket::request::{FromRequest, Request, Outcome};
 use rocket::data::ToByteUnit;
 
-use reqwest::blocking::{Client};
+use reqwest::Client;
 
 static mut AUTH_KEY: String = String::new();
 
@@ -51,10 +52,10 @@ impl Info {
     fn new() -> Self {
         Info {
             upload_paths: RwLock::new(HashMap::new()),
-            // TODO allow adding alternate paths to download a file?
-            //download_paths: RwLock::new(HashMap::new()),
             provider_url: Mutex::new(None),
             client: Client::new(),
+            // TODO allow adding alternate paths to download a file?
+            //download_paths: RwLock::new(HashMap::new()),
         }
     }
 }
@@ -69,16 +70,16 @@ fn default_secure(tok: AuthToken) -> &'static str {
     "fileserver secure\n"
 }
 
-// #[post("/setup", data = "<data>")]
-// fn setup_provider(_tok: AuthToken, state: State<Info>, data: Data) -> &'static str {
-//     let mut provider = String::new();
-//     data.open(1000.bytes()).read_to_string(&mut provider).unwrap();
-//     let mut url = state.provider_url.lock().unwrap();
-//     *url = Some(provider);
-//     let mut ups = state.upload_paths.write().unwrap();
-//     ups.clear();
-//     "setup provider\n"
-// }
+#[post("/setup", data = "<data>")]
+async fn setup_provider(_tok: AuthToken, state: &State<Info>, data: Data<'_>) -> &'static str {
+    let provider = data.open(1000.bytes()).into_string().await.unwrap().into_inner();
+    let mut url = state.provider_url.lock().await;
+    *url = Some(provider);
+    let mut ups = state.upload_paths.write().await;
+    ups.clear();
+    "setup provider\n"
+}
+
 // 
 // 
 // #[post("/upload/new/<key>/<space>")]
@@ -212,7 +213,7 @@ fn rocket() -> _ {
 
     std::fs::create_dir_all("./files/").unwrap();
     rocket::build()
-        //.manage(Info::new())
-        .mount("/", routes![default, default_secure])
+        .manage(Info::new())
+        .mount("/", routes![default, default_secure, setup_provider])
     //  .mount("/", routes![default, upload_new, upload_file, upload_remove, download_file, setup_provider, options_handler])
 }
