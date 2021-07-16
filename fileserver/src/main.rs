@@ -2,8 +2,6 @@
 
 #[macro_use] extern crate rocket;
 
-pub mod cors;
-
 use std::io::Read;
 use std::fs::File;
 use std::collections::{HashMap, HashSet};
