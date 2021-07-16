@@ -118,13 +118,11 @@ async fn upload_file(state: &State<Info>, key: String, data: Data<'_>) -> &'stat
 
             match res {
                 Ok(res) => {
-                    println!("Got resposne: {:?}", res);
                     if res.status() == 200 {
                         println!("uploaded file {}", key);
-                        std::mem::drop(ups);
                         return "uploaded\n";
                     } else {
-                        println!("Error uploading {}", key);
+                        println!("Error uploading {}: {:?}", key, res);
                         ups.insert(key, size);
                     }
                 },
