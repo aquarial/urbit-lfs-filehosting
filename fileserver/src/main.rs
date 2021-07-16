@@ -14,6 +14,7 @@ use rocket::response::{Response};
 use rocket::response::status::NotFound;
 use rocket::request::{FromRequest, Request, Outcome};
 use rocket::data::ToByteUnit;
+use rocket::fs::{FileServer, relative};
 
 use reqwest::Client;
 
@@ -156,16 +157,6 @@ fn hoon_format_num(n: u64) -> String {
 }
 
 
-// #[get("/download/file/<key>")]
-// fn download_file(key: String) -> Result<NamedFile, NotFound<String>> {
-//     // TODO: any other security concerns?
-//     if key.contains("..") || key.contains("/") {
-//         return Err(NotFound("invalid path".into()));
-//     }
-//     NamedFile::open(&format!("./files/{}", key)).map_err(|e| NotFound(e.to_string()))
-// }
-
-
 /// https://rust-lang-nursery.github.io/rust-cookbook/algorithms/randomness.html
 fn generate_password(len: usize) -> String {
     use rand::Rng;
@@ -217,4 +208,5 @@ fn rocket() -> _ {
         .manage(Info::new())
         .mount("/", routes![default, default_secure, setup_provider, upload_new, upload_file])
     //  .mount("/", routes![default, upload_new, upload_file, upload_remove, download_file, setup_provider, options_handler])
+        .mount("/download/file", FileServer::from(relative!("files")))
 }
