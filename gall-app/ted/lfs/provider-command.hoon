@@ -57,9 +57,8 @@
   ::
   [%a [%s %overwrite-store] * %.0]
      =/  store  (json &3:arg)
-     =/  newstore  (mule |.((to-store:from-json:lfs-utils (ship-metas:dejs:from-json:lfs-utils store))))
-     ?:  ?=([%.n *] newstore)  ~
-     (some [%overwrite-store p.newstore])
+     =/  newstore  (to-store:from-json:lfs-utils (ship-metas:dejs:from-json:lfs-utils store))
+     (some [%overwrite-store newstore])
   ::
   ==
 --
@@ -70,9 +69,8 @@
 =/  m  (strand ,vase)
 ^-  form:m
 ;<  =bowl:spider  bind:m  get-bowl:strandio
-=/  argjson  (mule |.(!<([~ json] arg)))
-?:  ?=([%n *] argjson)  (pure:m !>([%o (my ~[['success' [%b %.n]] ['reason' [%s (crip "input was not json")]]])]))
-=/  command  (parse-command u.p.argjson)
+=/  argjson  !<([~ json] arg)
+=/  command  (parse-command +.argjson)
 ?~  command  (pure:m !>([%o (my ~[['success' [%b %.n]] ['reason' [%s (crip "failed to parse input")]]])]))
 ;<  ~          bind:m  (poke:strandio [our.bowl %lfs-provider] %lfs-provider-command !>([threadid=(some tid.bowl) u.command]))
 ;<  vmsg=vase  bind:m  (take-poke:strandio %provider-command-response)
