@@ -48,6 +48,7 @@
      ?:  ?=(~ index)  ~
      (some [%remove-rule u.index])
   ::
+  :: TODO allow adding multiple rules at once
   [%a [%s %add-rule] * [%n @t] %.0]
      =/  just  (parse-justification &3:arg)
      ?:  ?=(~ just)  ~
