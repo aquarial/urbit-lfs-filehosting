@@ -314,7 +314,7 @@
 ++  subscriber-path
   |=  =ship
   :: moons count as the planet
-  /uploader/(scot %p (subscriber-name ship))
+  (path /uploader/(scot %p (subscriber-name ship)))
 ++  src-is-subscriber
   =/  subscribers  ~(val by sup.bowl)
   =/  src-subscriber  [p=src.bowl q=(subscriber-path src.bowl)]

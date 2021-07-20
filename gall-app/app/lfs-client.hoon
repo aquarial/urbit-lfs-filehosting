@@ -217,5 +217,5 @@
 ++  subscriber-path
   |=  =ship
   :: moons count as the planet
-  /uploader/(scot %p (subscriber-name ship))
+  (path /uploader/(scot %p (subscriber-name ship)))
 --
