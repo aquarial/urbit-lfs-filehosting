@@ -104,6 +104,13 @@ rsync -a --ignore-times ./src/ ./dst/
 =x (of:dejs:format ~[[%add-provider (su:dejs:format ;~(pfix sig fed:ag))] [%remove-provider (su:dejs:format ;~(pfix sig fed:ag))] [%request-upload (su:dejs:format ;~(pfix sig fed:ag))] [%list-files ul:dejs:format] [%request-delete (su:dejs:format ;~(pfix sig fed:ag)) (se:dejs:format %uv)]])
 
 
+# what a bowl looks like
+[[our=~zod src=~zod dap=%lfs-provider]
+ [wex=\{[p=[wire=/groups ship=~zod term=%group-store] q=[acked=%.y path=/groups]]}
+  sup=\{[p=~[/gall/use/lfs-client/0w3.T7wtB/out/~zod/lfs-provider/lfs /dill //term/1] q=[p=~zod q=/uploader/~zod]]}]
+ act=11 eny=0v2jm now=~2021.7.20 byk=[p=~zod q=%home r=[%da p=~2021.7.20]]]
+
+
   ++  b  (to-store a)
   ++  a  (ship-metas:dejs json-ship-metas)
   ++  ship-metas  '[{"ship":"~zod","storageinfo":{"storage":1000000000,"used":2813,"files":[{"fileid":"0vf.hgpcn.qo9iv.e2ogj.5apiq.fpuvr.lfe5h.1k3jd.psbor.8bjnu.mdnm4-bigfile","download-url":"http://localhost:8000/download/file/0vf.hgpcn.qo9iv.e2ogj.5apiq.fpuvr.lfe5h.1k3jd.psbor.8bjnu.mdnm4-bigfile","size":2500},{"fileid":"0v1o4.06u10.3il3p.kj22f.os8ai.rukjo.tq5pa.tufql.maq6t-other-file.txt","download-url":"http://localhost:8000/download/file/0v1o4.06u10.3il3p.kj22f.os8ai.rukjo.tq5pa.tufql.maq6t-other-file.txt","size":313}]}},{"ship":"~lapzod","storageinfo":{"storage":100000,"used":0,"files":[]}}]'
