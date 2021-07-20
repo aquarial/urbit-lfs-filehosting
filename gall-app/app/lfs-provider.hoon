@@ -125,14 +125,20 @@
         (snoc a [%pass /thread/[tid] %agent [our.bowl %spider] %poke %spider-input !>([tid %provider-command-response !>(b)])])
     ?-  +<.command
     %overwrite-store
-      :: TODO use rules to recompute storage for everyone
-      :_  this(state state(store newstore.command))
-      (add-resp [%success ~] ~)
+      =/  to-kick=(list ship)  ~(tap in (~(dif in ~(key by store.state)) ~(key by newstore.command)))
+      =/  kicks=(list card)  (turn to-kick |=(=ship [%give %kick ~[(subscriber-path:hc ship)] ~]))
+      ::
+      =/  store-with-rules  (~(gas by newstore.command) (turn ~(tap by newstore.command) (compute-ship-storage:hc upload-rules.state)))
+      =/  give-update  |=  [=ship =storageinfo]
+                       [%give %fact ~[(subscriber-path:hc ship)] [%lfs-provider-server-update !>([%storageinfo storageinfo])]]
+      =/  updates=(list card)  (turn ~(tap by newstore.command) give-update)
+      ::
+      :_  this(state state(store store-with-rules))
+      (add-resp [%success ~] (weld kicks updates))
     %list-rules
        ~&  "rules are: {<upload-rules.state>}"
        :_  this
        (add-resp [%rules upload-rules.state] ~)
-    :: TODO remove/add almost exactly the same, combine?
     %remove-rule
        =/  new-rules  (oust [index.command 1] upload-rules.state)
        =/  new-store  (~(gas by store.state) (turn ~(tap by store.state) (compute-ship-storage:hc new-rules)))
