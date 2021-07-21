@@ -160,7 +160,7 @@
           `this
         %storage-rules-changed
           ~&  "client was notified that provider updated our storage updated to {<newsize.resp>}"
-          =/  old  (~(gut by store.state) src.bowl [storage=0 used=0 files=[~]])
+          =/  old  (~(gut by store.state) src.bowl [current-state=0 storage=0 used=0 files=[~]])
           =/  new  old(storage newsize.resp)
           `this(state state(store (~(put by store.state) src.bowl new)))
         %storageinfo
@@ -168,7 +168,7 @@
           `this(state state(store (~(put by store.state) src.bowl storageinfo.resp)))
         %file-uploaded
           ~&  >  "client knows file upload {fileid.resp} succeeded!"
-          =/  old=storageinfo:lfs-provider  (~(gut by store.state) src.bowl [storage=0 used=0 files=[~]])
+          =/  old=storageinfo:lfs-provider  (~(gut by store.state) src.bowl [current-state=0 storage=0 used=0 files=[~]])
           =/  new=storageinfo:lfs-provider  old(used (add used.old filesize.resp), files (~(put by files.old) fileid.resp [download-url.resp filesize.resp upload-time.resp]))
           `this(state state(store (~(put by store.state) src.bowl new)))
         %request-response
@@ -186,7 +186,7 @@
              cards
            %file-deleted
              ~&  >  "client tells {<messenger>} that we deleted : {key.response.resp}"
-             =/  old=storageinfo:lfs-provider  (~(gut by store.state) src.bowl [storage=0 used=0 files=[~]])
+             =/  old=storageinfo:lfs-provider  (~(gut by store.state) src.bowl [current-state=0 storage=0 used=0 files=[~]])
              =/  size  size:(~(got by files.old) key.response.resp)
              =/  new=storageinfo:lfs-provider  old(used (sub used.old size), files (~(del by files.old) key.response.resp))
              :_  this(state state(pending-requests q.split-reqs, store (~(put by store.state) src.bowl new)))

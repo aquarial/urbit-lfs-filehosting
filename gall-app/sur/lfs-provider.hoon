@@ -24,7 +24,7 @@
       %offline
   ==
 +$  server-update
-  $%  [%heartbeat fileserver-status]
+  $%  [%heartbeat current-state=@ud fileserver-status]
       [%file-uploaded fileid=tape filesize=@ud download-url=tape upload-time=@da]
       [%request-response id=@uv response=request-response]
       [%storageinfo =storageinfo]
@@ -36,7 +36,7 @@
       [%ship ships=(list ship)]
       [%kids ~]
   ==
-+$  storageinfo  [storage=@ud used=@ud files=(map tape fileinfo)]
++$  storageinfo  [current-state=@ud storage=@ud used=@ud files=(map tape fileinfo)]
 +$  fileinfo  [download-url=tape size=@ud upload-time=@da]
 
 +$  request-response

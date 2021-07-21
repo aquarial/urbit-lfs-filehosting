@@ -42,7 +42,7 @@
 ::
 ++  json-storage
   |=  =storageinfo:lfs-provider
-  [%o (my ~[['storage' [%n (crip (format-number storage.storageinfo))]] ['used' [%n (crip (format-number used.storageinfo))]] ['files' [%a (turn ~(tap by files.storageinfo) json-fileinfo)]]])]
+  [%o (my ~[['current-state' [%n (crip (format-number current-state.storageinfo))]] ['storage' [%n (crip (format-number storage.storageinfo))]] ['used' [%n (crip (format-number used.storageinfo))]] ['files' [%a (turn ~(tap by files.storageinfo) json-fileinfo)]]])]
 ::
 ++  json-storage-map
   |=  [=ship =storageinfo:lfs-provider]
@@ -63,7 +63,10 @@
   ++  to-store-storageinfo
     |=  =storageinfo
     ^-  storageinfo:lfs-provider
-    [storage=storage:storageinfo used=used:storageinfo files=(~(gas by *(map tape fileinfo:lfs-provider)) (murn files:storageinfo to-store-files))]
+    =/  c  current-state:storageinfo
+    =/  s  storage:storageinfo
+    =/  u  used:storageinfo
+    [current-state=c storage=s used=u files=(~(gas by *(map tape fileinfo:lfs-provider)) (murn files:storageinfo to-store-files))]
   ++  to-store-files
     |=  =file
     ^-  (unit [id=tape fileinfo:lfs-provider])
@@ -72,7 +75,7 @@
   +$  file
     [id=@t url=@t size=@ud upload-time=@t]
   +$  storageinfo
-    [storage=@ud used=@ud files=(list file)]
+    [current-state=@ud storage=@ud used=@ud files=(list file)]
   +$  ship-meta
     [=ship =storageinfo]
   ++  dejs
@@ -90,7 +93,8 @@
     ++  storageinfo
       ^-  $-(json ^storageinfo)
       %-  ot
-      :~  [%storage ni]
+      :~  [%current-state ni]
+          [%storage ni]
           [%used ni]
           [%files (ar file)]
       ==

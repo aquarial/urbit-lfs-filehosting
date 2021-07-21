@@ -192,7 +192,7 @@
   ?>  =((subscriber-path:hc src.bowl) path)
   ~&  "provider on-watch subscription from {<src.bowl>} on path: {<path>}"
   :: need to store files under the subscriber name (only different for moons)
-  =/  updated  ((compute-ship-storage:hc upload-rules.state) [src.bowl (~(gut by store.state) (subscriber-name:hc src.bowl) [storage=0 used=0 files=[~]])])
+  =/  updated  ((compute-ship-storage:hc upload-rules.state) [src.bowl (~(gut by store.state) (subscriber-name:hc src.bowl) [current-state=0 storage=0 used=0 files=[~]])])
   ?>  (gth storage.storageinfo.updated 0)
   :_  this(state state(store (~(gas by store.state) ~[updated])))
   :~  [%give %fact ~[(subscriber-path:hc src.bowl)] [%lfs-provider-server-update !>([%storageinfo storageinfo=storageinfo.updated])]]  ==
