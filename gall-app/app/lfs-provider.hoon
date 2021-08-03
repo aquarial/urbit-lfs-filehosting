@@ -259,7 +259,6 @@
     ~&  "provider on-arvo setup response code {<status-code.response-header.client-response.sign-arvo>}"
     ?:  =(200 status-code.response-header.client-response.sign-arvo)
       ~&  "provider connected to {fileserver.state}"
-      :: TODO ensure received url matches the sent loopback server url?
       :_  this(state state(fileserver-status %online, active-urls [~]))
       ?:  ?=(~ tid)  [~]
       ~[[%pass /thread/[tid] %agent [our.bowl %spider] %poke %spider-input !>([tid %provider-command-response !>([%success ~])])]]
