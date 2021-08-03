@@ -344,13 +344,14 @@
   :~  [%status [%s status]]  ==
 ++  compute-ships-to-store
   |=  ships=(set ship)
+  ^-  (map ship storageinfo)
   :: called when groups update, ships might not be subscribers
   =/  pair-with-storageinfo
       |=  =ship
       ((lift |=(=storageinfo [ship storageinfo])) (~(get by store.state) (subscriber-name ship)))
   =/  updated  (turn (murn ~(tap in ships) pair-with-storageinfo) (compute-ship-storage upload-rules.state))
   =/  store  (~(gas by store.state) updated)
-  store.state
+  store
 ++  compute-ship-storage
   |=  rules=(list [=justification size=@ud])
   |=  [=ship =storageinfo]
