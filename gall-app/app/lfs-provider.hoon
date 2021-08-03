@@ -218,6 +218,8 @@
     :: %watch-ack
     :: %poke-ack
     %fact
+      =/  give-update  |=  [=ship =storageinfo]
+          [%give %fact ~[(subscriber-path:hc ship)] %lfs-provider-server-update !>([%storage-rules-changed newsize=storage.storageinfo])]
       ?+  p.cage.sign  (on-agent:default wire sign)
       %group-update-0
         =/  resp  !<(update:group-store q.cage.sign)
@@ -229,11 +231,18 @@
           =/  groups  ~(val by groups.resp)
           =/  ship-sets  (turn groups |=(g=group:group members.g))
           =/  ships  (roll ship-sets |=([s1=(set ship) s2=(set ship)] (~(uni in s1) s2)))
-          `this(state state(store (compute-ships-to-store:hc ships)))
+          ::
+          =/  newstore  (compute-ships-to-store:hc ships)
+          :_  this(state state(store newstore))
+          (turn ~(tap by newstore) give-update)
         %add-members
-          `this(state state(store (compute-ships-to-store:hc ships.resp)))
+          =/  newstore  (compute-ships-to-store:hc ships.resp)
+          :_  this(state state(store newstore))
+          (turn ~(tap by newstore) give-update)
         %remove-members
-          `this(state state(store (compute-ships-to-store:hc ships.resp)))
+          =/  newstore  (compute-ships-to-store:hc ships.resp)
+          :_  this(state state(store newstore))
+          (turn ~(tap by newstore) give-update)
         ==
       ==
     ==
