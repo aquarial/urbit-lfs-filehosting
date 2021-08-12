@@ -75,6 +75,8 @@
     ?>  =(value.i.-.auth (crip fileserverauth.state))
     =/  url  (parse-request-line:srv url.request.inbound-request)
     ?+  site.url  `this
+    :: fileserver telling us a file was uploaded
+    :: figure out who and update store
     [%'~lfs' %completed @t @t * ~]
       :: extra param * needed because parse-request-line remoes trailing ".stuff"
       =/  fileid=tape  (trip &3:site.url)
