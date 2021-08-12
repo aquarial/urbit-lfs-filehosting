@@ -56,7 +56,7 @@
       =/  setup-url  "{fileserver.prev}/setup"
       =/  body  (some (as-octt:mimes:html "{loopback.prev}"))
       :_  this(state prev(fileserver-status %offline, active-urls [~]))
-      :~  [%pass /setup %arvo %i %request [%'POST' (crip setup-url) ~[['authtoken' (crip fileserverauth.prev)]] body] *outbound-config:iris]  ==
+      :~  [%pass /setup/[%$] %arvo %i %request [%'POST' (crip setup-url) ~[['authtoken' (crip fileserverauth.prev)]] body] *outbound-config:iris]  ==
   ==
 ++  on-poke
   |=  [=mark =vase]
