@@ -1,6 +1,4 @@
 data/*
 !data/*.sh
-!data/interface.png
-!data/client.md
-!data/provider.md
-!data/debugging.md
+!data/*.png
+!data/*.md
