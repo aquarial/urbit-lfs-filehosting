@@ -131,25 +131,25 @@ Other things to do with rules are list them, and remove them:
 State stores the following:
 
 ```
-    storage
-store=(map ship storageinfo)
+storage
+    store=(map ship storageinfo)
     storageinfo=[storage=@ud used=@ud files=(map id=tape fileinfo)]
     fileinfo=[download-url=tape size=@ud]
 
-    current uploads available, by subscriber
-active-urls=(map ship tape)
+current uploads available, by subscriber
+    active-urls=(map ship tape)
 
-    one request at a time. usually empty
-pending=(list [src=ship action=action:lfs-provider])
+one request at a time. usually empty
+    pending=(list [src=ship action=action:lfs-provider])
 
-    storage space rules
-=upload-rules
+storage space rules
+    =upload-rules
 
-    networking
-=fileserver-status
-loopback=tape
-fileserver=tape
-fileserverauth=tape
+networking
+    =fileserver-status
+    loopback=tape
+    fileserver=tape
+    fileserverauth=tape
 ```
 
 Save/Load cycling (restarting the ship) will clear the active-urls on the provider and the fileserver. Should reconnect to fileserver as well.
