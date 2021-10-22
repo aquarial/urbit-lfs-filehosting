@@ -4,11 +4,11 @@ The provider is complicated to setup and manage. You will need a domain and http
 
 ### How to install
 
-Similar to the client instructions, but run `|start %lfs-provider` at the end.
+Similar to [the client instructions](./client.md), but run `|start %lfs-provider` at the end.
 
 ### How to setup fileserver
 
-First need to setup the rust HTTP fileserver. You will need to install [rustup](https://rustup.rs/) rust manager. A dockerfile is in the works.
+First need to setup the rust HTTP fileserver. You will need to install [rustup](https://rustup.rs/) rust manager. There is no dockerfile yet.
 
 The steps to run it look like
 
