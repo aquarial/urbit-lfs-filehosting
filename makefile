@@ -1,8 +1,8 @@
 # NOTE
 #
-# create ./data/urbit -F dopzod
+# create ./data/ignored/urbit -F dopzod
 # on ship run  "|mount %"
-# mv ./dopzod ./data/old.dopzod
+# mv ./dopzod ./data/ignored/old.dopzod
 
 
 # dopzod is only the client. run zod for provider&client
@@ -13,11 +13,11 @@ dopzod-clean-deep:
 	tmux send-keys -t dopzod "C-z"; sleep 0.3
 	tmux send-keys -t dopzod "C-c"; sleep 0.3
 	tmux send-keys -t dopzod "cd $$(pwd)" "ENTER"
-	rsync -a --delete ./data/old.dopzod/ ./data/dopzod
-	tmux send-keys -t dopzod "./data/urbit -L ./data/dopzod" "ENTER"
+	rsync -a --delete ./data/ignored/old.dopzod/ ./data/ignored/dopzod
+	tmux send-keys -t dopzod "./data/ignored/urbit -L ./data/ignored/dopzod" "ENTER"
 	sleep 1.5 # startup eats ''enter keys'
 	tmux send-keys -t dopzod "C-l"; sleep 0.4
-	rsync -a --ignore-times ./gall-app/ ./data/dopzod/home/
+	rsync -a --ignore-times ./gall-app/ ./data/ignored/dopzod/home/
 	tmux send-keys -t dopzod "|commit %home" "ENTER"; sleep 1
 	tmux send-keys -t dopzod "|start %lfs-client" "ENTER"; sleep 2
 	tmux send-keys -t dopzod ":lfs-client &lfs-client-action [threadid=~ [%add-provider ~zod]]" "ENTER"; sleep 0.5
@@ -36,11 +36,11 @@ zod-clean-deep:
 	tmux send-keys -t zod "C-z"; sleep 0.3
 	tmux send-keys -t zod "C-c"; sleep 0.3
 	tmux send-keys -t zod "cd $$(pwd)" "ENTER"
-	rsync -a --delete ./data/old.zod/ ./data/zod
-	tmux send-keys -t zod "./data/urbit -L ./data/zod" "ENTER"
+	rsync -a --delete ./data/ignored/old.zod/ ./data/ignored/zod
+	tmux send-keys -t zod "./data/ignored/urbit -L ./data/ignored/zod" "ENTER"
 	sleep 1.5 # startup eats ''enter keys'
 	tmux send-keys -t zod "C-l"; sleep 0.4
-	rsync -a --ignore-times ./gall-app/ ./data/zod/home/
+	rsync -a --ignore-times ./gall-app/ ./data/ignored/zod/home/
 	tmux send-keys -t zod "|commit %home" "ENTER"; sleep 1
 	tmux send-keys -t zod "|start %lfs-provider" "ENTER"; sleep 3
 	tmux send-keys -t zod "|start %lfs-client" "ENTER"; sleep 3
@@ -54,7 +54,7 @@ zod-clean-deep:
 
 reload-zod:
 	tmux send-keys -t zod "C-l";
-	rsync -a --ignore-times ./gall-app/ ./data/zod/home/; sleep 0.3
+	rsync -a --ignore-times ./gall-app/ ./data/ignored/zod/home/; sleep 0.3
 	tmux send-keys -t zod "|commit %home" "ENTER"; sleep 1
 	#tmux send-keys -t zod "KP-"
 	#tmux send-keys -t zod "lfs-client-action" "ENTER"
@@ -78,12 +78,12 @@ demo:
 	tmux send-keys -t zod "C-z"; sleep 0.3
 	tmux send-keys -t zod "C-c"; sleep 0.3
 	tmux send-keys -t zod "cd $$(pwd)" "ENTER"
-	rsync -a --delete ./data/old.zod/ ./data/zod
-	tmux send-keys -t zod "./data/urbit -L ./data/zod" "ENTER"
+	rsync -a --delete ./data/ignored/old.zod/ ./data/ignored/zod
+	tmux send-keys -t zod "./data/ignored/urbit -L ./data/ignored/zod" "ENTER"
 	sleep 1.5 # startup eats ''enter keys'
 	tmux send-keys -t zod "C-l"; sleep 0.4
 	#
-	rsync -a --ignore-times ./gall-app/ ./data/zod/home/
+	rsync -a --ignore-times ./gall-app/ ./data/ignored/zod/home/
 	tmux send-keys -t zod "|commit %home" "ENTER"; sleep 1
 	tmux send-keys -t zod "|start %lfs-provider" "ENTER"; sleep 3
 	#
@@ -94,10 +94,10 @@ demo:
 	tmux send-keys -t dopzod "C-z"; sleep 0.3
 	tmux send-keys -t dopzod "C-c"; sleep 0.3
 	tmux send-keys -t dopzod "cd $$(pwd)" "ENTER"
-	rsync -a --delete ./data/old.dopzod/ ./data/dopzod
-	tmux send-keys -t dopzod "./data/urbit -L ./data/dopzod" "ENTER"
+	rsync -a --delete ./data/ignored/old.dopzod/ ./data/ignored/dopzod
+	tmux send-keys -t dopzod "./data/ignored/urbit -L ./data/ignored/dopzod" "ENTER"
 	sleep 1.5 # startup eats ''enter keys'
 	tmux send-keys -t dopzod "C-l"; sleep 0.4
-	rsync -a --ignore-times ./gall-app/ ./data/dopzod/home/
+	rsync -a --ignore-times ./gall-app/ ./data/ignored/dopzod/home/
 	tmux send-keys -t dopzod "|commit %home" "ENTER"; sleep 1
 	tmux send-keys -t dopzod "|start %lfs-client" "ENTER"; sleep 2

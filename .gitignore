@@ -1,4 +1,1 @@
-data/*
-!data/*.sh
-!data/*.png
-!data/*.md
+data/ignored/*
