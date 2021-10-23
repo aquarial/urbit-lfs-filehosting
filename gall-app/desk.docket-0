@@ -1,0 +1,10 @@
+:~  title+'LFS'
+    info+'Large File Storage'
+    color+0xf9.88c9
+    image+'https://media.urbit.org/docs/userspace/dist/wut.svg'
+    base+'lfs'
+    glob-ames+[~zod 0v0]
+    version+[0 0 1]
+    website+'https://github.com/aquarial/urbit-lfs-filehosting'
+    license+'MIT'
+==
