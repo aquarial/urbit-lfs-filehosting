@@ -130,23 +130,23 @@ rsync -a --ignore-times ./src/ ./dst/
 .^((unit group:group) %gx /=lfs-client=/groups/ship/~zod/bbbbbbbbb/noun)
 
 
-curl -i localhost:8081/~/login -X POST -d "password=hunter2"
+curl -i localhost:8080/~/login -X POST -d "password=hunter2"
 
 curl --header "Content-Type: application/json" \
      --cookie "COOKIE_FROM_PREVIOUS_COMMMAND" \
      --request PUT \
      --data '[{"id":1,"action":"poke","ship":"your-ship-name-here","app":"hood","mark":"helm-hi","json":"Opening airlock"}]' \
-     http://localhost:8081/\~/channel/1601844290-ae45b
+     http://localhost:8080/\~/channel/1601844290-ae45b
 
 curl --header "Content-Type: application/json" \
      --cookie "COOKIE_FROM_PREVIOUS_COMMMAND" \
      --request PUT \
      --data @'hooncard.pdf' \
-     http://localhost:8081/~upload
+     http://localhost:8080/~upload
 
 
 curl --header "Content-Type: application/json" \
-     --cookie "$(curl -i localhost:8081/~/login -X POST -d "password=lidlut-tabwed-pillex-ridrup" | rg set-cookie | sed 's/set-cookie..//' | sed 's/;.*//')" \
+     --cookie "$(curl -i localhost:8080/~/login -X POST -d "password=lidlut-tabwed-pillex-ridrup" | rg set-cookie | sed 's/set-cookie..//' | sed 's/;.*//')" \
      --request POST \
      --data '["request-upload", "~zod", "filename.txt"]' \
      http://localhost:8080/spider/noun/lfs-client-action/json.json
@@ -158,8 +158,8 @@ curl --header "Content-Type: application/json" \
 
 
 curl --header "Content-Type: application/json" \
-     --cookie "$(curl -i localhost:8081/~/login -X POST -d "password=lidlut-tabwed-pillex-ridrup" | rg set-cookie | sed 's/set-cookie..//' | sed 's/;.*//')" \
+     --cookie "$(curl -i localhost:8080/~/login -X POST -d "password=lidlut-tabwed-pillex-ridrup" | rg set-cookie | sed 's/set-cookie..//' | sed 's/;.*//')" \
      --request GET \
-     http://localhost:8081/~/scry/lfs-client/list-files.json
+     http://localhost:8080/~/scry/lfs-client/list-files.json
 ```
 
