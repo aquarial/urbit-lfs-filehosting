@@ -1,5 +1,5 @@
 /-  *lfs-client, lfs-provider
-/+  *lfs-utils, srv=server, default-agent, dbug
+/+  *lfs-utils, default-agent, dbug
 |%
 +$  card  card:agent:gall
 +$  versioned-state
@@ -23,10 +23,7 @@
 ::
 ++  on-init
   ^-  (quip card _this)
-  =/  private-filea  [%file-server-action !>([%serve-dir /'~filemanager' /app/filemanager %.n %.n])]
-  :_  this
-  :~  [%pass /srv %agent [our.bowl %file-server] %poke private-filea]
-  ==
+  `this
 ++  on-save
   ^-  vase
   !>(state)
