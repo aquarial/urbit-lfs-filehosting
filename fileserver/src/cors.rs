@@ -1,7 +1,6 @@
 use rocket::{Request, Response};
 use rocket::fairing::{Fairing, Info, Kind};
-use rocket::http::{Header, ContentType, Method};
-use std::io::Cursor;
+use rocket::http::{Header, Method};
 
 
 // https://github.com/SergioBenitez/Rocket/issues/25#issuecomment-313895086
