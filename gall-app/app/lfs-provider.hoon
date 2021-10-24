@@ -41,7 +41,7 @@
 ++  on-init
   ^-  (quip card _this)
   :_  this
-  :~  [%pass /bind %arvo %e %connect [~ /'~lfs'] %lfs-provider]
+  :~  [%pass /bind %arvo %e %connect [~ /'~lfs-provider'] %lfs-provider]
       [%pass /groups %agent [our.bowl %group-store] %watch /groups]
   ==
 ++  on-save
@@ -65,7 +65,7 @@
   %handle-http-request
     =+  !<([id=@ta =inbound-request:eyre] vase)
     ::  [authenticated=%.n secure=%.n address=[%ipv4 .127.0.0.1]
-    ::   request=[method=%'POST' url='/~lfs/completed/0v1a.42hat'
+    ::   request=[method=%'POST' url='/~lfs-provider/completed/0v1a.42hat'
     ::       header-list=~[[key='host' value='localhost:8081'] [key='authtoken' value='hunter2']
     ::                 [key='accept' value='*/*']]
     ::       body=~ ]
@@ -77,7 +77,7 @@
     ?+  site.url  `this
     :: fileserver telling us a file was uploaded
     :: figure out who and update store
-    [%'~lfs' %completed @t @t * ~]
+    [%'~lfs-provider' %completed @t @t * ~]
       :: extra param * needed because parse-request-line remoes trailing ".stuff"
       =/  fileid=tape  (trip &3:site.url)
       =/  filesize=@ud  (slav %ud &4:site.url)

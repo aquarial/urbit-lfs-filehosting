@@ -108,7 +108,7 @@ async fn upload_file(state: &State<Info>, key: String, data: Data<'_>) -> &'stat
 
             let url = state.provider_url.lock().await;
             let auth: &str = unsafe { &AUTH_KEY };
-            let url2: String = format!("{}/~lfs/completed/{}/{}/padding", (*url).as_ref().unwrap(), key, hoon_format_num(written));
+            let url2: String = format!("{}/~lfs-provider/completed/{}/{}/padding", (*url).as_ref().unwrap(), key, hoon_format_num(written));
             println!("curling to {}", url2);
             let res = state.client
                 .post(url2)
