@@ -149,7 +149,7 @@ curl --header "Content-Type: application/json" \
      --cookie "$(curl -i localhost:8080/~/login -X POST -d "password=lidlut-tabwed-pillex-ridrup" | rg set-cookie | sed 's/set-cookie..//' | sed 's/;.*//')" \
      --request POST \
      --data '["request-upload", "~zod", "filename.txt"]' \
-     http://localhost:8080/spider/noun/lfs-client-action/json.json
+     http://localhost:8080/spider/lfs-client/noun/lfs-client-action/json.json
 
 curl --header "Content-Type: application/json" \
      --cookie "$(curl -i localhost:8080/~/login -X POST -d "password=lidlut-tabwed-pillex-ridrup" | rg set-cookie | sed 's/set-cookie..//' | sed 's/;.*//')" \

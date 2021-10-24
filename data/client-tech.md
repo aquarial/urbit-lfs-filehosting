@@ -59,7 +59,7 @@ user@computer:~$ curl --header "Content-Type: application/json" \
                       --cookie "urbauth-~zod=0v28s.023pe.24lcn.q0fnu" \
                       --request POST \
                       -d '["request-upload", "~zod", "filename.txt"]' \
-                      http://localhost:8080/spider/noun/lfs-client-action/json.json
+                      http://localhost:8080/spider/lfs-client/noun/lfs-client-action/json.json
 {
   "key": "0vp.g3kr8.hq2c2-filename.txt",
   "url": "http://localhost:8000/upload/file/0vp.g3kr8.hq2c2-filename.txt",
