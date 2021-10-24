@@ -140,7 +140,9 @@
   ?+   wire  ~&  "client on-agent got {<-.sign>} from {<dap.bowl>} on wire {<wire>}"
              `this
   [%lfs ~]
-    ?+  -.sign  (on-agent:default wire sign)
+    ?+  -.sign
+          ~&  "client on-agent got unknown {<-.sign>}" on {<wire>}"
+          (on-agent:default wire sign)
     :: %watch-ack
     %kick
       ~&  >  "client was kicked from provider: {<src.bowl>}"
