@@ -133,7 +133,7 @@
              let input = document.createElement("input");
              input.type = "submit"; input.value="X";
              input.addEventListener("click", function() {
-               httpPostAsync("/spider/noun/lfs-client-action/json.json" + disableCache(),
+               httpPostAsync("/spider/lfs-client/noun/lfs-client-action/json.json" + disableCache(),
                  JSON.stringify(["request-delete", r.ship, file.fileid]),
                  function(xmlhttp) {
                    log("deleting file response: " + xmlhttp.response);
@@ -174,7 +174,7 @@
 
 
      providerSubmit.addEventListener("click", function() {
-       httpPostAsync("/spider/noun/lfs-client-action/json.json" + disableCache(),
+       httpPostAsync("/spider/lfs-client/noun/lfs-client-action/json.json" + disableCache(),
          JSON.stringify(["add-provider", providerNew.value]),
          function(xmlhttp) {
            log("adding " + providerNew.value + " as a provider: " + xmlhttp.response);
@@ -186,7 +186,7 @@
        });
      });
      providerSubmitRemove.addEventListener("click", function() {
-       httpPostAsync("/spider/noun/lfs-client-action/json.json" + disableCache(),
+       httpPostAsync("/spider/lfs-client/noun/lfs-client-action/json.json" + disableCache(),
          JSON.stringify(["remove-provider", providerNew.value]),
          function(xmlhttp) {
            log("removing " + providerNew.value + " as a provider: " + xmlhttp.response);
@@ -209,7 +209,7 @@
 
      uploadSubmit.addEventListener("click", function() {
        let file = uploadFile.files[0];
-       httpPostAsync("/spider/noun/lfs-client-action/json.json" + disableCache(),
+       httpPostAsync("/spider/lfs-client/noun/lfs-client-action/json.json" + disableCache(),
          JSON.stringify(["request-upload", uploadProvider.value, file.name]),
          async function(xmlhttp) {
            uploadFile.value = uploadFile.defaultValue;
