@@ -43,13 +43,16 @@
      function sleep(ms) {
        return new Promise(resolve => setTimeout(resolve, ms));
      }
+     function goodStatus(status) {
+       return 200 <= status || status < 300;
+     }
      // https://stackoverflow.com/questions/247483/http-get-request-in-javascript
      function httpGetAsync(theUrl, callback, errHandle) {
        var xmlHttp = new XMLHttpRequest();
        xmlHttp.onreadystatechange = function() {
-         if (xmlHttp.readyState == 4 && (xmlHttp.status == 200 || xmlHttp.status == 204))
+         if (xmlHttp.readyState == 4 && goodStatus(xmlHttp.status))
            callback(xmlHttp);
-         if (xmlHttp.readyState == 4 && (xmlHttp.status != 200 && xmlHttp.status != 204))
+         if (xmlHttp.readyState == 4 && !goodStatus(xmlHttp.status))
            errHandle();
        }
        xmlHttp.open("GET", theUrl, true); // true for asynchronous
@@ -59,10 +62,10 @@
      function httpPostAsync(theUrl, body, callback, errHandle) {
        var xmlHttp = new XMLHttpRequest();
        xmlHttp.onreadystatechange = function() {
-         if (xmlHttp.readyState == 4 && (xmlHttp.status == 200 || xmlHttp.status == 204))
+         if (xmlHttp.readyState == 4 && goodStatus(xmlHttp.status))
            callback(xmlHttp);
-         if (xmlHttp.readyState == 4 && (xmlHttp.status != 200 && xmlHttp.status != 204))
-           errHandle(xmlHttp);
+         if (xmlHttp.readyState == 4 && !goodStatus(xmlHttp.status))
+           errHandle();
        }
        if (xmlHttp.upload) {
          xmlHttp.upload.onprogress = function(e) {
@@ -107,7 +110,6 @@
        logtextwindow.textContent = c.join("\n\n");
        logtextwindow.scrollTop = logtextwindow.scrollHeight
      }
-
 
      function refresh() {
        uploadSubmit.disabled = true;
