@@ -40,11 +40,11 @@ zod-clean-deep:
 	tmux send-keys -t zod "./data/ignored/urbit -L ./data/ignored/zod" "ENTER"
 	sleep 1.5 # startup eats ''enter keys'
 	tmux send-keys -t zod "C-l"; sleep 0.4
-	tmux send-keys -t zod "|merge %lfs our %base" "ENTER"; sleep 1
-	tmux send-keys -t zod "|mount %lfs" "ENTER"; sleep 1
-	rsync -a --delete --ignore-times ./gall-app/ ./data/ignored/zod/lfs/; sleep 1
-	tmux send-keys -t zod "|commit %lfs" "ENTER"; sleep 1
-	tmux send-keys -t zod "|install our %lfs" "ENTER"; sleep 1
+	tmux send-keys -t zod "|merge %lfs-client our %base" "ENTER"; sleep 3
+	tmux send-keys -t zod "|mount %lfs-client" "ENTER"; sleep 1
+	rsync -a --delete --ignore-times ./gall-app/ ./data/ignored/zod/lfs-client/; sleep 1
+	tmux send-keys -t zod "|commit %lfs-client" "ENTER"; sleep 1
+	tmux send-keys -t zod "|install our %lfs-client" "ENTER"; sleep 1
 
 	#tmux send-keys -t zod "|commit %home" "ENTER"; sleep 1
 	#tmux send-keys -t zod "|start %lfs-provider" "ENTER"; sleep 3
