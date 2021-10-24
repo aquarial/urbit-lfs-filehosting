@@ -94,9 +94,9 @@ async fn options_handler<'a>(_key: String) -> &'static str {
 }
 
 #[post("/upload/file/<key>", data = "<data>")]
-async fn upload_file(state: &State<Info>, key: String, data: Data<'_>) -> &'static str {
+async fn upload_file(state: &State<Info>, key: String, data: Data<'_>) -> (Status, &'static str) {
     if key.contains("..") {
-        return "invalid key\n";
+        return (Status::Conflict, "invalid key\n");
     }
     let mut ups = state.upload_paths.write().await;
     match ups.remove(&key) {
@@ -120,7 +120,7 @@ async fn upload_file(state: &State<Info>, key: String, data: Data<'_>) -> &'stat
                 Ok(res) => {
                     if res.status() == 200 {
                         println!("uploaded file {}", key);
-                        return "uploaded\n";
+                        return (Status::Accepted, "uploaded\n");
                     } else {
                         println!("Error uploading {}: {:?}", key, res);
                         ups.insert(key, size);
@@ -131,11 +131,11 @@ async fn upload_file(state: &State<Info>, key: String, data: Data<'_>) -> &'stat
                     ups.insert(key, size);
                 }
             }
-            return "could not confirm upload with provider. try again when it's online\n"
+            return (Status::Conflict, "could not confirm upload with provider. try again when it's online\n");
         }
         None => {
             println!("no path to upload {}", key);
-            return "no such path\n";
+            return (Status::Conflict, "no such path\n");
         }
     }
 }
