@@ -40,7 +40,7 @@ create-modified-zod:
 	cp -RL ../urbit-git/pkg/garden ./data/ignored/old.zod/
 	cp -RL ../urbit-git/pkg/webterm ./data/ignored/old.zod/
 	cp -RL ../urbit-git/pkg/landscape ./data/ignored/old.zod/
-	;#cp -RL ../urbit-git/pkg/base ./data/ignored/old.zod/
+	 # cp -RL ../urbit-git/pkg/base ./data/ignored/old.zod/
 	cp -RL ../urbit-git/pkg/bitcoin ./data/ignored/old.zod/
 	sleep 2;
 	tmux send-keys -t zod "|commit %garden" "ENTER"; sleep 0.3
@@ -64,14 +64,14 @@ zod-clean-deep:
 	tmux send-keys -t zod "./data/ignored/urbit -L ./data/ignored/zod" "ENTER"
 	sleep 1.5 # startup eats ''enter keys'
 	tmux send-keys -t zod "C-l"; sleep 0.4
-	tmux send-keys -t zod "|merge %lfs-client our %base" "ENTER"; sleep 3
-	;# update package
+	tmux send-keys -t zod "|merge %lfs-client our %base" "ENTER"; sleep 3;
+	 # update package
 	tmux send-keys -t zod "|mount %lfs-client" "ENTER"; sleep 2
 	rm -rf                              ./data/ignored/zod/lfs-client/*
 	cp -RL ../urbit-git/pkg/landscape/* ./data/ignored/zod/lfs-client/
 	cp -RL ../urbit-git/pkg/garden/*    ./data/ignored/zod/lfs-client/
 	rsync -a --ignore-times ./gall-app/ ./data/ignored/zod/lfs-client/; sleep 1
-	;#
+	 #
 	tmux send-keys -t zod "|commit %lfs-client" "ENTER"; sleep 3
 	tmux send-keys -t zod "|install our %lfs-client" "ENTER"; sleep 10
 	tmux send-keys -t zod "|rein %lfs-client [& %lfs-provider]" "ENTER"; sleep 5;
