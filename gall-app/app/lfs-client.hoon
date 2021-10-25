@@ -141,7 +141,7 @@
              `this
   [%lfs ~]
     ?+  -.sign
-          ~&  "client on-agent got unknown {<-.sign>}" on {<wire>}"
+          ~&  "client on-agent got unknown {<-.sign>} on {<wire>}"
           (on-agent:default wire sign)
     :: %watch-ack
     %kick
