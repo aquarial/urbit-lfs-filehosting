@@ -1,8 +1,10 @@
 # NOTE
 #
-# create ./data/ignored/urbit -F dopzod
-# on ship run  "|mount %"
-# mv ./dopzod ./data/ignored/old.dopzod
+# make create-new-clean-zod     # build old.untouched.zod from scratch
+#
+# make create-modified-zod      # re builds desks using up to date urbit source
+#
+# make zod-clean-deep           # build lfs-client onto zod
 
 .PHONY: choose
 choose:
@@ -50,8 +52,7 @@ create-modified-zod:
 	echo "setup for zod-clean-deep"
 
 
-# zod is both provider and client
-
+.PHONY: zod-deep-clean
 zod-clean-deep:
 	tmux has-session -t zod ||      \
 	    (echo "\n\nRUN: tmux new -s zod in other terminal"; exit 1)
@@ -64,11 +65,11 @@ zod-clean-deep:
 	sleep 1.5 # startup eats ''enter keys'
 	tmux send-keys -t zod "C-l"; sleep 0.4
 	tmux send-keys -t zod "|merge %lfs-client our %base" "ENTER"; sleep 3
-	;# update pacakge
+	;# update package
 	tmux send-keys -t zod "|mount %lfs-client" "ENTER"; sleep 2
-	rm -rf ./data/ignored/zod/lfs-client/*
+	rm -rf                              ./data/ignored/zod/lfs-client/*
 	cp -RL ../urbit-git/pkg/landscape/* ./data/ignored/zod/lfs-client/
-	cp -RL ../urbit-git/pkg/garden/* ./data/ignored/zod/lfs-client/
+	cp -RL ../urbit-git/pkg/garden/*    ./data/ignored/zod/lfs-client/
 	rsync -a --ignore-times ./gall-app/ ./data/ignored/zod/lfs-client/; sleep 1
 	;#
 	tmux send-keys -t zod "|commit %lfs-client" "ENTER"; sleep 3
@@ -82,6 +83,8 @@ zod-clean-deep:
 	tmux send-keys -t zod ":lfs-client &lfs-client-action [threadid=~ %add-provider ~zod]"; sleep 0.5; tmux send-keys -t zod "ENTER"; sleep 0.5
 	tmux send-keys -t zod ":lfs-client &lfs-client-action [threadid=~ %request-upload ~zod ~]"; sleep 0.5; tmux send-keys -t zod "ENTER"; sleep 0.5
 
+
+.PHONY: reload-zod
 reload-zod:
 	tmux send-keys -t zod "C-l";
 	rsync -a --ignore-times ./gall-app/ ./data/ignored/zod/home/; sleep 0.3
@@ -91,43 +94,8 @@ reload-zod:
 	#tmux send-keys -t zod "=parse -build-file %/lib/parse/hoon" "ENTER"
 	#tmux send-keys -t zod "a:parse" "ENTER"
 
-.PHONY: zod-deep-clean zod-clean reload-zod
 
-
+.PHONY: start-fileserver
 start-fileserver:
 	cd ./fileserver && ROCKET_PORT=8000 cargo run -- --UNSAFE_DEBUG_AUTH --add-cors-headers
 
-.PHONY: start-fileserver
-
-
-.PHONY: demo
-demo:
-	tmux has-session -t zod ||      \
-	    (echo "\n\nRUN: tmux new -s zod in other terminal"; exit 1)
-	tmux send-keys -t zod "C-c"; sleep 0.3
-	tmux send-keys -t zod "C-z"; sleep 0.3
-	tmux send-keys -t zod "C-c"; sleep 0.3
-	tmux send-keys -t zod "cd $$(pwd)" "ENTER"
-	rsync -a --delete ./data/ignored/old.zod/ ./data/ignored/zod
-	tmux send-keys -t zod "./data/ignored/urbit -L ./data/ignored/zod" "ENTER"
-	sleep 1.5 # startup eats ''enter keys'
-	tmux send-keys -t zod "C-l"; sleep 0.4
-	#
-	rsync -a --ignore-times ./gall-app/ ./data/ignored/zod/home/
-	tmux send-keys -t zod "|commit %home" "ENTER"; sleep 1
-	tmux send-keys -t zod "|start %lfs-provider" "ENTER"; sleep 3
-	#
-	#
-	tmux has-session -t dopzod ||      \
-	    (echo "\n\nRUN: tmux new -s dopzod in other terminal"; exit 1)
-	tmux send-keys -t dopzod "C-c"; sleep 0.3
-	tmux send-keys -t dopzod "C-z"; sleep 0.3
-	tmux send-keys -t dopzod "C-c"; sleep 0.3
-	tmux send-keys -t dopzod "cd $$(pwd)" "ENTER"
-	rsync -a --delete ./data/ignored/old.dopzod/ ./data/ignored/dopzod
-	tmux send-keys -t dopzod "./data/ignored/urbit -L ./data/ignored/dopzod" "ENTER"
-	sleep 1.5 # startup eats ''enter keys'
-	tmux send-keys -t dopzod "C-l"; sleep 0.4
-	rsync -a --ignore-times ./gall-app/ ./data/ignored/dopzod/home/
-	tmux send-keys -t dopzod "|commit %home" "ENTER"; sleep 1
-	tmux send-keys -t dopzod "|start %lfs-client" "ENTER"; sleep 2
