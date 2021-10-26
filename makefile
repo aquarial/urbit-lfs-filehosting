@@ -31,11 +31,12 @@ create-modified-zod:
 	tmux send-keys -t zod "cd $$(pwd)" "ENTER"
 	rsync -a --delete ./data/ignored/old.untouched.zod/ ./data/ignored/old.zod
 	tmux send-keys -t zod "./data/ignored/urbit ./data/ignored/old.zod" "ENTER"; sleep 1
-	tmux send-keys -t zod "|mount %garden" "ENTER"; sleep 0.3
-	tmux send-keys -t zod "|mount %webterm" "ENTER"; sleep 0.3
-	tmux send-keys -t zod "|mount %landscape" "ENTER"; sleep 0.3
-	tmux send-keys -t zod "|mount %base" "ENTER"; sleep 0.3
-	tmux send-keys -t zod "|mount %bitcoin" "ENTER"; sleep 0.3
+	tmux send-keys -t zod "|mount %garden" "ENTER"; sleep 0.8
+	tmux send-keys -t zod "|mount %webterm" "ENTER"; sleep 0.8
+	tmux send-keys -t zod "|mount %landscape" "ENTER"; sleep 0.8
+	 #tmux send-keys -t zod "|mount %base" "ENTER"; sleep 0.8
+	tmux send-keys -t zod "|mount %bitcoin" "ENTER"; sleep 0.8
+	sleep 3;
 	rm -rf ./data/ignored/old.zod/*
 	cp -RL ../urbit-git/pkg/garden ./data/ignored/old.zod/
 	cp -RL ../urbit-git/pkg/webterm ./data/ignored/old.zod/
@@ -46,7 +47,7 @@ create-modified-zod:
 	tmux send-keys -t zod "|commit %garden" "ENTER"; sleep 0.3
 	tmux send-keys -t zod "|commit %webterm" "ENTER"; sleep 0.3
 	tmux send-keys -t zod "|commit %landscape" "ENTER"; sleep 0.3
-	tmux send-keys -t zod "|commit %base" "ENTER"; sleep 0.3
+	 #tmux send-keys -t zod "|commit %base" "ENTER"; sleep 0.3
 	tmux send-keys -t zod "|commit %bitcoin" "ENTER"; sleep 0.3
 	tmux send-keys -t zod "C-d"; sleep 0.3
 	echo "setup for zod-clean-deep"
