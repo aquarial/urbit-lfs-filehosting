@@ -85,6 +85,14 @@ zod-clean-deep:
 	tmux send-keys -t zod ":lfs-client &lfs-client-action [threadid=~ %request-upload ~zod ~]"; sleep 0.5; tmux send-keys -t zod "ENTER"; sleep 0.5
 
 
+.PHONY: build-deploy
+build-deploy:
+	mkdir -p ./out/
+	rm -rf out/*
+	cp -RL ../urbit-git/pkg/landscape/* ./out/
+	cp -RL ../urbit-git/pkg/garden/*    ./out/
+	rsync -a --ignore-times ./gall-app/ ./out/
+
 .PHONY: reload-zod
 reload-zod:
 	tmux send-keys -t zod "C-l";
