@@ -61,7 +61,7 @@ zod-clean-deep:
 	tmux send-keys -t zod "C-z"; sleep 0.3
 	tmux send-keys -t zod "C-c"; sleep 0.3
 	tmux send-keys -t zod "cd $$(pwd)" "ENTER"
-	rsync -a --delete ./data/ignored/old.zod/ ./data/ignored/zod
+	rsync -a --delete --ignore-times ./data/ignored/old.zod/ ./data/ignored/zod
 	tmux send-keys -t zod "./data/ignored/urbit -L ./data/ignored/zod" "ENTER"
 	sleep 1.5 # startup eats ''enter keys'
 	tmux send-keys -t zod "C-l"; sleep 0.4
