@@ -67,7 +67,7 @@ zod-clean-deep:
 	tmux send-keys -t zod "C-l"; sleep 0.4
 	tmux send-keys -t zod "|merge %lfs-client our %base" "ENTER"; sleep 3;
 	 # update package
-	tmux send-keys -t zod "|mount %lfs-client" "ENTER"; sleep 2
+	tmux send-keys -t zod "|mount %lfs-client" "ENTER"; sleep 3
 	rm -rf                              ./data/ignored/zod/lfs-client/*
 	cp -RL ../urbit-git/pkg/landscape/* ./data/ignored/zod/lfs-client/
 	cp -RL ../urbit-git/pkg/garden/*    ./data/ignored/zod/lfs-client/
