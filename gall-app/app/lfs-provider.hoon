@@ -266,7 +266,7 @@
     ::   full-file=[~ [type='text/plain; charset=utf-8' data=[p=19 q=231.846.086.356.972.333.783.885.125.050.632.381.030.756.469]]]]
   [%setup @ta ~]
     =/  tid  &2:wire
-    ?>  ?=(%finished -.client-response.sign-arvo)
+    ?.  ?=(%finished -.client-response.sign-arvo)  `this
     ~&  "provider on-arvo setup response code {<status-code.response-header.client-response.sign-arvo>}"
     ?:  =(200 status-code.response-header.client-response.sign-arvo)
       ~&  "provider connected to {fileserver.state}"
