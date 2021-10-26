@@ -19,7 +19,7 @@ create-new-clean-zod:
 	rm -rf ./data/ignored/old.untouched.zod
 	tmux send-keys -t zod "cd $$(pwd)" "ENTER"
 	tmux send-keys -t zod "./data/ignored/urbit -F zod -c ./data/ignored/old.untouched.zod" "ENTER"
-	echo "\n\n wait until boot to run creat-modified-zod. will take a minute or two \n\n"
+	echo "\n\n wait until boot to run create-modified-zod . will take a minute or two \n\n"
 
 .PHONY: create-modified-zod
 create-modified-zod:
