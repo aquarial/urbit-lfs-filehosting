@@ -75,6 +75,10 @@ zod-clean-deep:
 	 #
 	tmux send-keys -t zod "|commit %lfs-client" "ENTER"; sleep 3
 	tmux send-keys -t zod "|install our %lfs-client" "ENTER"; sleep 10
+	 #
+	 # can't figure this out yet...
+	 #curl --cookie "$$(curl -i localhost:8080/~/login -X POST -d 'password=lidlut-tabwed-pillex-ridrup' | rg set-cookie | sed 's/set-cookie..//' | sed 's/;.*//')" --form "desk=lfs-client" --form "glob=<html-glob/index.html;filename=html-glob/index.html" http://localhost:8080/docket/upload
+	 # setup provider
 	tmux send-keys -t zod "|rein %lfs-client [& %lfs-provider]" "ENTER"; sleep 5;
 	tmux send-keys -t zod ":lfs-provider &lfs-provider-command "; sleep 2;
 	tmux send-keys -t zod "[threadid=~ %connect-server loopback=\"http://localhost:8080\" fileserver=\"http://localhost:8000\" token=\"hunter2\"]"; sleep 0.5; tmux send-keys -t zod "ENTER"; sleep 0.5
