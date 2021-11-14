@@ -95,6 +95,7 @@ build-deploy:
 	rm -rf out/*
 	cp -RL ../urbit-git/pkg/landscape/* ./out/
 	cp -RL ../urbit-git/pkg/garden/*    ./out/
+	rm ./out/desk.ship
 	rsync -a --ignore-times ./gall-app/ ./out/
 
 .PHONY: reload-zod
