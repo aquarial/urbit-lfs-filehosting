@@ -45,8 +45,7 @@ If `+vats` only shows `%base`, you will need to `|install` the other apps:
 
 Software distribution is HERE! Search for apps hosted by `~nilsud-walwyd-tabnus-fondeg` in the omnisearch bar. 
 
-You can uninstall with the 
-TODO: need to provide software-distribution instructions
+You can uninstall with the app tile menu (click in the top right hamburger menu)
 
 #### How to use
 
