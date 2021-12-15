@@ -22,6 +22,21 @@
 
 ## TODO
 
+- [ ] add fileserver config for static security code
+- [ ] allow configuring lfs-client debug levels
+- [ ] gall app restores webserver state on reboot
+- [ ] behn fileserver status check
+- [ ] transactions either succeed or can be safely retried
+- [ ] garbage collect unused files on fileserver if something goes wrong
+- [ ] collect stats on users
+- [ ] ratelimiting?
+- [ ] full JSON communciation between fileserver/provider
+- [ ] match client/provider versioning
+- [ ] ensure provider is safe even if clients are modified
+- [ ] ensure deleting a group doesn't break provider
+
+
+- [x] provider can export & restore state
 - [x] client subscribes to providers
 - [x] client `[%request-upload ~]` receives url response
 - [x] webserver authenticates lfs-provider
@@ -40,19 +55,6 @@
 - [x] send updated storage limits when the rules change
 - [x] state/marks are stable, lots of changes in provider&fileserver
 - [x] re-subscribe on kick (keep )
-- [ ] gall app restores webserver state on reboot
-- [x] provider can export & restore state
-- [ ] behn fileserver status check
-- [ ] transactions either succeed or can be safely retried
-- [ ] garbage collect unused files on fileserver if something goes wrong
-- [ ] collect stats on users
-- [ ] ratelimiting
-- [ ] rust fileserver /upload/file path after things are cleared
-- [ ] full JSON communciation between fileserver/provider
-- [ ] match client/provider versioning
-- [ ] ensure provider is safe even if clients are modified
-- [ ] ensure deleting a group doesn't break provider
-
 
 ## Useful commands
 
@@ -163,3 +165,14 @@ curl --header "Content-Type: application/json" \
      http://localhost:8080/~/scry/lfs-client/list-files.json
 ```
 
+curl 
+  'http://localhost:8080/docket/upload' -X POST 'Content-Type: multipart/form-data; boundary=---------------------------32444932976219641211511440319' --data-binary $'-----------------------------32444932976219641211511440319\r\nContent-Disposition: form-data; name="desk"\r\n\r\nlfs-client\r\n-----------------------------32444932976219641211511440319\r\nContent-Disposition: form-data; name="glob"; filename="html-glob/index.html"\r\nContent-Type: text/html\r\n\r\n-----------------------------32444932976219641211511440319--\r\n'
+  
+curl --header "Content-Type: application/json" \
+     --cookie "$(curl -i localhost:8080/~/login -X POST -d "password=lidlut-tabwed-pillex-ridrup" | rg set-cookie | sed 's/set-cookie..//' | sed 's/;.*//')" \
+     --request GET \
+     http://localhost:8080/~/scry/lfs-client/list-files.json
+
+curl --cookie "$(curl -i localhost:8080/~/login -X POST -d "password=lidlut-tabwed-pillex-ridrup" | rg set-cookie | sed 's/set-cookie..//' | sed 's/;.*//')" \
+     --form "desk=lfs-client" --form "glob=html-glob/index.html;filename=html-glob/index.html" \
+    http://localhost:8080/docket/upload
