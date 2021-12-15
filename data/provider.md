@@ -4,13 +4,13 @@ The provider is complicated to setup and manage. You will need a domain and http
 
 ### How to install
 
-Similar to [the client instructions](./client.md), but run `|start %lfs-provider` at the end.
+Use software distribution to install `%lfs-client` app. If you want to build from source, [leave a comment to let me know](https://github.com/aquarial/urbit-lfs-filehosting/issues/1). Otherwise follow the instructions below
 
 ### How to setup fileserver
 
 First need to setup the rust HTTP fileserver. You will need to install [rustup](https://rustup.rs/) rust manager. There is no dockerfile yet.
 
-The steps to run it look like
+The steps to run are
 
 ```bash
 cd ./urbit-lfs/fileserver/
@@ -18,12 +18,11 @@ ROCKET_PORT=8000 cargo run --release
 # works with stable rust
 ```
 
-Every time the fileserver starts up, it generates a new secret key to communicate with the provider. This key makes sure only the provider ship can authorize actions on the fileserver.
+Every time the fileserver starts up, it generates a new secret key to communicate with the provider. This key makes sure only the provider ship can authorize actions on the fileserver. (todo: allow configuring a static key)
 
 ```
 Authorized Header is aosdivj)(*jOIgs0gjipaox-v*)
 ```
-
 
 ### How to setup NGINX for ship (based off https://subject.network/posts/urbit-nginx-letsencrypt/)
 
@@ -86,12 +85,14 @@ The client UI uploads directly because I can't figure out how to stream javascri
 
 Edit `/etc/nginx/nginx.conf` and add `client_max_body_size 5M;` to raise the limit to whatever you prefer. Similar advice for apache.
 
-### Connect Provider to fileserver
+### Start Provider and connect to fileserver
 
 In the provider dojo connect using:
 
 ```
-~your-ship:dojo> :lfs-provider &lfs-provider-command [threadid=~ %connect-server loopback="https://your-ship.domain.tld" fileserver="https://fileserver.domain.tdl" token="aosdivj)(*jOIgs0gjipaox-v*)"]
+~your-ship:dojo> |rein %lfs-client [& %lfs-provider]
+
+~your-ship:dojo> :lfs-provider &lfs-provider-command [threadid=~ %connect-server loopback="https://your-ship.domain.tld" fileserver="https://fileserver.domain.tdl" token="THE_TOKEN_FROM_EARLIER"]
 >=
 "provider on-arvo /setup"
 "provider on-arvo setup response code 200"
