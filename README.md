@@ -22,18 +22,22 @@
 
 ## TODO
 
-- [ ] full JSON communciation between fileserver/provider
-    - hoon/fileserver comms are in url (`http:url/<key>/<bytes`), should be JSON
-    - need to fix before [restor webster state on reboot]
 - [ ] gall app restores webserver state on reboot
     - fileserver loses ram on reset (list of open upload paths). hoon should restore
+- [ ] full JSON communciation between fileserver/provider
+    - hoon/fileserver comms are in url (`http:url/<key>/<bytes`), should be JSON
+    - need to fix before [restoring state on reboot]
+- [ ] behn fileserver status check
+    - hoon should check fileserver status every X seconds
+    - allow restoring state on reboot
 - [ ] add fileserver config for static security code
     - rust code creates new key each run of server, requires manual hoon app reconnect
     - rust code should allow reading key from config file
+
+<br />
+
 - [ ] allow configuring lfs-client debug levels
     - hoon apps spew debug prints into console
-- [ ] behn fileserver status check
-    - hoon should check fileserver status every X seconds
 - [ ] transactions either succeed or can be safely retried
     - do some sanity checks that hoon is single-source-of-truth
 - [ ] garbage collect unused files on fileserver if something goes wrong
@@ -48,6 +52,7 @@
 - [ ] ensure provider is safe even if clients are modified
     - minor security check
 
+<br />
 
 - [x] provider can export & restore state
 - [x] client subscribes to providers
