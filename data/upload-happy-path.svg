@@ -7,97 +7,24 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="210mm"
-   height="297mm"
-   viewBox="0 0 210 297"
+   width="170.86787mm"
+   height="167.69849mm"
+   viewBox="0 0 170.86787 167.69849"
    version="1.1"
    id="svg8"
    inkscape:version="1.0.2 (e86c870879, 2021-01-15)"
-   sodipodi:docname="upload-happy-path.svg">
+   sodipodi:docname="upload-happy-path.svg"
+   inkscape:export-filename="/home/karl/programming/src-builds/urbit-stuff/github/urbit-lfs/data/upload-happy-path.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96">
   <defs
      id="defs2">
-    <marker
-       style="overflow:visible;"
-       id="Arrow1Send"
-       refX="0.0"
-       refY="0.0"
-       orient="auto"
-       inkscape:stockid="Arrow1Send"
-       inkscape:isstock="true">
-      <path
-         transform="scale(0.2) rotate(180) translate(6,0)"
-         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
-         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
-         id="path938" />
-    </marker>
-    <marker
-       style="overflow:visible;"
-       id="marker1265"
-       refX="0.0"
-       refY="0.0"
-       orient="auto"
-       inkscape:stockid="Arrow2Lend"
-       inkscape:isstock="true">
-      <path
-         transform="scale(1.1) rotate(180) translate(1,0)"
-         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
-         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round;stroke:#000000;stroke-opacity:1;fill:#000000;fill-opacity:1"
-         id="path1263" />
-    </marker>
-    <marker
-       style="overflow:visible;"
-       id="Arrow2Lend"
-       refX="0.0"
-       refY="0.0"
-       orient="auto"
-       inkscape:stockid="Arrow2Lend"
-       inkscape:isstock="true">
-      <path
-         transform="scale(1.1) rotate(180) translate(1,0)"
-         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
-         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round;stroke:#000000;stroke-opacity:1;fill:#000000;fill-opacity:1"
-         id="path944" />
-    </marker>
-    <marker
-       style="overflow:visible"
-       id="Arrow1Lstart"
-       refX="0.0"
-       refY="0.0"
-       orient="auto"
-       inkscape:stockid="Arrow1Lstart"
-       inkscape:isstock="true">
-      <path
-         transform="scale(0.8) translate(12.5,0)"
-         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
-         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
-         id="path923" />
-    </marker>
     <rect
        x="17.372519"
-       y="66.389757"
-       width="45.996969"
+       y="66.389755"
+       width="45.996967"
        height="22.049942"
        id="rect36" />
-    <rect
-       x="17.372519"
-       y="66.389757"
-       width="22.771367"
-       height="12.508211"
-       id="rect92" />
-    <marker
-       style="overflow:visible"
-       id="Arrow2Lend-3"
-       refX="0"
-       refY="0"
-       orient="auto"
-       inkscape:stockid="Arrow2Lend"
-       inkscape:isstock="true">
-      <path
-         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
-         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
-         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
-         id="path944-5" />
-    </marker>
     <marker
        style="overflow:visible"
        id="Arrow2Lend-3-2"
@@ -125,34 +52,6 @@
          d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
          style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
          id="path944-5-9-7" />
-    </marker>
-    <marker
-       style="overflow:visible"
-       id="Arrow2Lend-0"
-       refX="0"
-       refY="0"
-       orient="auto"
-       inkscape:stockid="Arrow2Lend"
-       inkscape:isstock="true">
-      <path
-         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
-         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
-         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
-         id="path944-6" />
-    </marker>
-    <marker
-       style="overflow:visible"
-       id="Arrow2Lend-3-26"
-       refX="0"
-       refY="0"
-       orient="auto"
-       inkscape:stockid="Arrow2Lend"
-       inkscape:isstock="true">
-      <path
-         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
-         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
-         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
-         id="path944-5-1" />
     </marker>
     <marker
        style="overflow:visible"
@@ -216,12 +115,6 @@
        width="45.996967"
        height="22.049942"
        id="rect36-6" />
-    <rect
-       x="17.372519"
-       y="66.389755"
-       width="45.996967"
-       height="22.049942"
-       id="rect347" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -230,18 +123,23 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.98994949"
-     inkscape:cx="290.97038"
-     inkscape:cy="316.32465"
+     inkscape:zoom="0.49497475"
+     inkscape:cx="301.79643"
+     inkscape:cy="263.12032"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
      showgrid="false"
-     inkscape:window-width="1674"
+     inkscape:window-width="1305"
      inkscape:window-height="941"
-     inkscape:window-x="96"
+     inkscape:window-x="53"
      inkscape:window-y="0"
-     inkscape:window-maximized="0" />
+     inkscape:window-maximized="0"
+     lock-margins="true"
+     fit-margin-top="5"
+     fit-margin-left="5"
+     fit-margin-right="5"
+     fit-margin-bottom="5" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -250,14 +148,15 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1">
+     id="layer1"
+     transform="translate(-25.945143,-4.3654957)">
     <rect
        style="fill:#5f8dd3;fill-rule:evenodd;stroke-width:0.202806"
        id="rect10"
