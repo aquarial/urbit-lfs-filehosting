@@ -16,7 +16,7 @@ A client can subscribe to multiple providers at once.
 3. Provider opens new url for upload on fileserver
 4. Provider informs client of private upload url
 
-![show the upload flow](./data/upload-happy-path.svg)
+![show the upload flow](./upload-happy-path.svg)
 
 5. Client curls to url to upload file
 6. Fileserver tells Provider the client has uploaded
