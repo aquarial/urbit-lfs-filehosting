@@ -1,7 +1,5 @@
 ## File Hosting on Urbit (WIP)
 
-## Top Level
-
 `/fileserver/` rust HTTP fileserver. stores files in `/fileserver/files/`
 
 `/gall-app/app/lfs-provider.hoon` manages access to the webserver through pokes and subscriptions
@@ -24,18 +22,31 @@
 
 ## TODO
 
-- [ ] add fileserver config for static security code
-- [ ] allow configuring lfs-client debug levels
-- [ ] gall app restores webserver state on reboot
-- [ ] behn fileserver status check
-- [ ] transactions either succeed or can be safely retried
-- [ ] garbage collect unused files on fileserver if something goes wrong
-- [ ] collect stats on users
-- [ ] ratelimiting?
 - [ ] full JSON communciation between fileserver/provider
+    - hoon/fileserver comms are in url (`http:url/<key>/<bytes`), should be JSON
+    - need to fix before [restor webster state on reboot]
+- [ ] gall app restores webserver state on reboot
+    - fileserver loses ram on reset (list of open upload paths). hoon should restore
+- [ ] add fileserver config for static security code
+    - rust code creates new key each run of server, requires manual hoon app reconnect
+    - rust code should allow reading key from config file
+- [ ] allow configuring lfs-client debug levels
+    - hoon apps spew debug prints into console
+- [ ] behn fileserver status check
+    - hoon should check fileserver status every X seconds
+- [ ] transactions either succeed or can be safely retried
+    - do some sanity checks that hoon is single-source-of-truth
+- [ ] garbage collect unused files on fileserver if something goes wrong
+    - if upload confirm fails, delete file
 - [ ] match client/provider versioning
-- [ ] ensure provider is safe even if clients are modified
+    - should payloads include a version num?
 - [ ] ensure deleting a group doesn't break provider
+    - sanity check
+- [ ] collect stats on users
+    - allow provider to view uploaders
+- [ ] ratelimiting?
+- [ ] ensure provider is safe even if clients are modified
+    - minor security check
 
 
 - [x] provider can export & restore state
