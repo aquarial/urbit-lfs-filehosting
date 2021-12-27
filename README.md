@@ -1,6 +1,6 @@
 ## File Hosting on Urbit (WIP)
 
-## Overview
+## Top Level
 
 `/fileserver/` rust HTTP fileserver. stores files in `/fileserver/files/`
 
@@ -10,13 +10,15 @@
 
 `/data/` assorted stuff
 
+### [Design Document](./data/design.md)
+
 ## How to run
 
-## [Client Operating Manual](./data/client.md)
+### [Client Operating Manual](./data/client.md)
 
-## [Provider Operating Manual](./data/provider.md)
+### [Provider Operating Manual](./data/provider.md)
 
-## [Locahost debugging Operating Manual](./data/debugging.md)
+### [Locahost debugging Operating Manual](./data/debugging.md)
 
 
 
