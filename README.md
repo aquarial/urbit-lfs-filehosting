@@ -29,7 +29,8 @@
         - fileserver loses ram on reset (list of open upload paths). hoon should restore
     - [ ] full JSON communciation between fileserver/provider
         - hoon/fileserver comms are in url (`http:url/<key>/<bytes`), should be JSON
-        - need to fix before [restoring state on reboot]
+        - needed to restore state
+        - example includes [https://github.com/aquarial/urbit-lfs-filehosting/commit/1fe17293ebf28dc2df524e020200dff717089005](this commit)
     - [ ] add fileserver config for static security code
         - rust code creates new key each run of server, requires manual hoon app reconnect
         - rust code should allow reading key from config file
