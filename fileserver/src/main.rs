@@ -2,6 +2,7 @@
 
 pub mod cors;
 
+use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
 
 use async_lock::{Mutex, RwLock};
@@ -11,6 +12,9 @@ use rocket::http::Status;
 use rocket::request::{FromRequest, Request, Outcome};
 use rocket::data::ToByteUnit;
 use rocket::fs::{FileServer, relative};
+
+use rocket::serde::{json::Json};
+use serde::{Deserialize};
 
 use reqwest::Client;
 
@@ -67,13 +71,17 @@ fn default_secure(_tok: AuthToken) -> &'static str {
     "fileserver secure\n"
 }
 
-#[post("/setup", data = "<data>")]
-async fn setup_provider(_tok: AuthToken, state: &State<Info>, data: Data<'_>) -> &'static str {
-    let provider = data.open(1000.bytes()).into_string().await.unwrap().into_inner();
+#[derive(Deserialize)]
+struct SetupProviderInfo<'r> {url: Cow<'r, str>}
+
+#[post("/setup", data = "<info>")]
+async fn setup_provider(_tok: AuthToken, state: &State<Info>, info: Json<SetupProviderInfo<'_>>) -> &'static str {
     let mut url = state.provider_url.lock().await;
-    *url = Some(provider);
+    *url = Some(info.url.to_string());
+
     let mut ups = state.upload_paths.write().await;
     ups.clear();
+
     "setup provider\n"
 }
 

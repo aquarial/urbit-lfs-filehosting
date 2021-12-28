@@ -167,7 +167,8 @@
         ~&  >>  "provider %connect-server urls must use 'https://domain' (http allowed: {<unsafe-allow-http>})"
         `this
       =/  setup-url  "{fileserver.command}/setup"
-      =/  body  (some (as-octt:mimes:html "{loopback.command}"))
+      =/  ob  [%o (my ~[['url' [%s (crip "{loopback.command}")]]])]
+      =/  body  (some (as-octt:mimes:html (en-json:html ob)))
       :_  this(state state(loopback loopback.command, fileserver fileserver.command, fileserverauth token.command))
       :: send command-response in http handler
       =/  tid  `@tas`(fall threadid.command ~)
