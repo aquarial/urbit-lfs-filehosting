@@ -73,7 +73,7 @@ zod-clean-deep:
 	tmux send-keys -t zod "./data/ignored/urbit -L ./data/ignored/zod" "ENTER"
 	sleep 1.5 # startup eats ''enter keys'
 	tmux send-keys -t zod "C-l"; sleep 0.4
-	tmux send-keys -t zod "|merge %lfs-client our %base" "ENTER"; sleep 3;
+	tmux send-keys -t zod "|merge %lfs-client our %webterm" "ENTER"; sleep 3;
 	 # update package
 	tmux send-keys -t zod "|mount %lfs-client" "ENTER"; sleep 3
 	rm -rf                              ./data/ignored/zod/lfs-client/*
