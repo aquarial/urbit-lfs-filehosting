@@ -1,10 +1,18 @@
-# NOTE
+# NOTE https://github.com/aquarial/urbit-lfs-filehosting/issues/1
 #
 # make create-new-clean-zod     # build old.untouched.zod from scratch
 #
 # make create-modified-zod      # re builds desks using up to date urbit source
 #
-# make zod-clean-deep           # build lfs-client onto zod
+# make zod-clean-deep           # build lfs-client onto modified zod
+#
+# make reload-zod               # reload lfs-client
+#
+
+
+# make build-deploy             # copy latest lfs-client + src packages into /out
+# make start-fileserver         # start debug fileserver
+
 
 .PHONY: choose
 choose:
