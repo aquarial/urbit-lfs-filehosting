@@ -22,33 +22,35 @@
 
 ## TODO
 
-- [ ] gall app restores webserver state on reboot
-    - fileserver loses ram on reset (list of open upload paths). hoon should restore
-- [ ] full JSON communciation between fileserver/provider
-    - hoon/fileserver comms are in url (`http:url/<key>/<bytes`), should be JSON
-    - need to fix before [restoring state on reboot]
-- [ ] behn fileserver status check
-    - hoon should check fileserver status every X seconds
-    - allow restoring state on reboot
-- [ ] add fileserver config for static security code
-    - rust code creates new key each run of server, requires manual hoon app reconnect
-    - rust code should allow reading key from config file
+- [ ] provider gall app is source of truth for events
+    - [ ] provider behn status check on fileserver
+        - hoon should check fileserver status every X seconds
+    - [ ] gall app restores fileserver state if it was out of date
+        - fileserver loses ram on reset (list of open upload paths). hoon should restore
+    - [ ] full JSON communciation between fileserver/provider
+        - hoon/fileserver comms are in url (`http:url/<key>/<bytes`), should be JSON
+        - need to fix before [restoring state on reboot]
+    - [ ] add fileserver config for static security code
+        - rust code creates new key each run of server, requires manual hoon app reconnect
+        - rust code should allow reading key from config file
+    - [ ] transactions either succeed or can be safely retried
+        - do some sanity checks that hoon is single-source-of-truth
+    - [ ] garbage collect unused files on fileserver if something goes wrong
+        - if upload confirm fails, delete file
+
+<br />
+
+- [ ] ratelimiting
+    - [ ] collect stats on how often users are uploading/deleting
 
 <br />
 
 - [ ] allow configuring lfs-client debug levels
     - hoon apps spew debug prints into console
-- [ ] transactions either succeed or can be safely retried
-    - do some sanity checks that hoon is single-source-of-truth
-- [ ] garbage collect unused files on fileserver if something goes wrong
-    - if upload confirm fails, delete file
 - [ ] match client/provider versioning
     - should payloads include a version num?
 - [ ] ensure deleting a group doesn't break provider
     - sanity check
-- [ ] collect stats on users
-    - allow provider to view uploaders
-- [ ] ratelimiting?
 - [ ] ensure provider is safe even if clients are modified
     - minor security check
 
