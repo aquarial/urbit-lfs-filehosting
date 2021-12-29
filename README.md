@@ -48,6 +48,7 @@
 
 - [ ] allow configuring lfs-client debug levels
     - hoon apps spew debug prints into console
+- [ ] provider can deactivate an upload-url after failure/behn timer
 - [ ] match client/provider versioning
     - should payloads include a version num?
 - [ ] ensure deleting a group doesn't break provider
