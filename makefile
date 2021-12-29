@@ -109,7 +109,7 @@ build-deploy:
 .PHONY: reload-zod
 reload-zod:
 	tmux send-keys -t zod "C-l";
-	rsync -a --ignore-times ./gall-app/ ./data/ignored/zod/home/; sleep 0.3
+	rsync -a --ignore-times ./gall-app/ ./data/ignored/zod/lfs-client/; sleep 0.3
 	tmux send-keys -t zod "|commit %lfs-client" "ENTER"; sleep 1
 	#tmux send-keys -t zod "KP-"
 	#tmux send-keys -t zod "lfs-client-action" "ENTER"
