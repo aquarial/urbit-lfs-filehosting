@@ -82,7 +82,7 @@ zod-clean-deep:
 	rsync -a --ignore-times ./gall-app/ ./data/ignored/zod/lfs-client/; sleep 1
 	 #
 	tmux send-keys -t zod "|commit %lfs-client" "ENTER"; sleep 3
-	tmux send-keys -t zod "|install our %lfs-client" "ENTER"; sleep 10
+	tmux send-keys -t zod "|install our %lfs-client" "ENTER"; sleep 7
 	 #
 	 # can't figure this out yet...
 	 #curl --cookie "$$(curl -i localhost:8080/~/login -X POST -d 'password=lidlut-tabwed-pillex-ridrup' | rg set-cookie | sed 's/set-cookie..//' | sed 's/;.*//')" --form "desk=lfs-client" --form "glob=<html-glob/index.html;filename=html-glob/index.html" http://localhost:8080/docket/upload
