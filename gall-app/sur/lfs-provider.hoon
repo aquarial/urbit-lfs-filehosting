@@ -22,6 +22,7 @@
 +$  fileserver-status
   $%  %online
       %offline
+      %connecting
   ==
 +$  server-update
   $%  [%heartbeat current-state=@ud fileserver-status]

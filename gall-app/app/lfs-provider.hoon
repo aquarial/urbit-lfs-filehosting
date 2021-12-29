@@ -163,13 +163,18 @@
       (add-resp [%success ~] ~)
     %connect-server
       :: TODO send update for fileserver url to all clients?
+      ?:  =(fileserver-status.state %connecting)
+        ~&  >>  "provider %connect-server already connecting to {fileserver.state}, please wait"
+        `this
       ?.  &((is-safe-url fileserver.command) (is-safe-url loopback.command))
         ~&  >>  "provider %connect-server urls must use 'https://domain' (http allowed: {<unsafe-allow-http>})"
         `this
+
       =/  setup-url  "{fileserver.command}/setup"
       =/  ob  [%o (my ~[['url' [%s (crip "{loopback.command}")]]])]
       =/  body  (some (as-octt:mimes:html (en-json:html ob)))
-      :_  this(state state(loopback loopback.command, fileserver fileserver.command, fileserverauth token.command))
+
+      :_  this(state state(fileserver-status %connecting, active-urls [~], loopback loopback.command, fileserver fileserver.command, fileserverauth token.command))
       :: send command-response in http handler
       =/  tid  `@tas`(fall threadid.command ~)
       :~  [%pass /setup/[tid] %arvo %i %request [%'POST' (crip setup-url) ~[['authtoken' (crip token.command)]] body] *outbound-config:iris]  ==
