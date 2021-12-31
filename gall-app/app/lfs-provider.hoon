@@ -52,13 +52,7 @@
   ^-  (quip card _this)
   =/  prev  !<(versioned-state old-state)
   ?-  -.prev
-  %0  :: TODO: reconnect on-load, see %on-poke %connect for reference
-      `this(state prev(fileserver-status %offline, active-urls [~]))
-      ::       ?:  =(%offline fileserver-status.prev)  `this(state prev(active-urls [~]))
-      ::       =/  setup-url  "{fileserver.prev}/setup"
-      ::       =/  body  (some (as-octt:mimes:html "{loopback.prev}"))
-      ::       :_  this(state prev(fileserver-status %offline, active-urls [~]))
-      ::       :~  [%pass /setup/[%$] %arvo %i %request [%'POST' (crip setup-url) ~[['authtoken' (crip fileserverauth.prev)]] body] *outbound-config:iris]  ==
+  %0  `this(state prev(fileserver-status %offline, active-urls [~]))
   ==
 ++  on-poke
   |=  [=mark =vase]
