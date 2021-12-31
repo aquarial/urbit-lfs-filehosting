@@ -15,6 +15,7 @@
   ==
 --
 %-  agent:dbug
+:: TODO: auto set both to false in `make build`
 =/  unsafe-reuse-upload-urls  %.n
 =/  unsafe-allow-http  %.y
 =/  state=state-0
@@ -154,10 +155,10 @@
       ?:  =(fileserver-status.state %connecting)
         ~&  >>  "provider %connect-server already connecting to {fileserver.state}, please wait"
         `this
-      ?.  &((is-safe-url fileserver.command) (is-safe-url loopback.command))
-        ~&  >>  "provider %connect-server urls must use 'https://domain' (http allowed: {<unsafe-allow-http>})"
-        `this
-
+      ?.  unsafe-allow-http
+        ?.  &((is-safe-url fileserver.command) (is-safe-url loopback.command))
+          ~&  >>  "provider %connect-server urls must use 'https://domain' (http allowed: {<unsafe-allow-http>})"
+          `this
       =/  setup-url  "{fileserver.command}/setup"
       =/  ob  [%o (my ~[['url' [%s (crip "{loopback.command}")]]])]
       =/  body  (some (as-octt:mimes:html (en-json:html ob)))
