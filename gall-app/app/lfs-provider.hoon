@@ -8,13 +8,10 @@
 +$  state-0
   $:  %0
       =fileserver-status
-      store=(map ship storageinfo)
-      active-urls=(map ship tape)
+      store=(map ship storageinfo)  active-urls=(map ship tape)
       pending=(list [src=ship action=action])
       =upload-rules
-      loopback=tape
-      fileserver=tape
-      fileserverauth=tape
+      loopback=tape  fileserver=tape  fileserverauth=tape
   ==
 --
 %-  agent:dbug
@@ -24,12 +21,9 @@
   :*  %0
       fileserver-status=%offline
       store=[~]
-      upload-rules=[~]
-      active-urls=[~]
+      upload-rules=[~]  active-urls=[~]
       pending=[~]
-      loopback=""
-      fileserver=""
-      fileserverauth=""
+      loopback=""  fileserver=""  fileserverauth=""
   ==
 ^-  agent:gall
 =<
