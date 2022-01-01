@@ -99,14 +99,21 @@ async fn setup_provider(_tok: AuthToken, state: &State<Info>, info: Json<InfoSet
 
 
 #[derive(Deserialize)]
-struct InfoUploadNew<'r> { file_id: Cow<'r, str>, size: u64, }
+struct InfoUploadNew<'r> { file_id: Cow<'r, str>, size: Cow<'r, str>, }
 
 #[post("/upload/new", data = "<info>")]
-async fn upload_new(_tok: AuthToken, state: &State<Info>, info: Json<InfoUploadNew<'_>>) -> &'static str {
+async fn upload_new(_tok: AuthToken, state: &State<Info>, info: Json<InfoUploadNew<'_>>) -> (Status, &'static str) {
+    if info.file_id.contains("..") {
+        return (Status::Conflict, "invalid file_id\n");
+    }
+    // TODO cleaner valid number checking. safe to parse now tho
+    if !info.size.bytes().all(|c| b'0' <= c && c <= b'9') || info.size.len() > 15 {
+        return (Status::Conflict, "invalid size\n");
+    }
     let mut ups = state.upload_paths.write().await;
     println!("available for uploading {} bytes with {}", info.size, info.file_id);
-    ups.insert(info.file_id.to_string(), info.size);
-    "upload path active\n"
+    ups.insert(info.file_id.to_string(), info.size.parse().unwrap());
+    return (Status::Accepted, "upload path active\n");
 }
 
 
@@ -116,15 +123,15 @@ async fn upload_new(_tok: AuthToken, state: &State<Info>, info: Json<InfoUploadN
 struct InfoUploadRemove<'r> { file_id: Cow<'r, str>, }
 
 #[delete("/upload/remove", data = "<info>")]
-async fn upload_remove(_tok: AuthToken, state: &State<Info>, info: Json<InfoUploadRemove<'_>>) -> &'static str {
+async fn upload_remove(_tok: AuthToken, state: &State<Info>, info: Json<InfoUploadRemove<'_>>) -> (Status, &'static str) {
     if info.file_id.contains("..") {
-        return "invalid key\n";
+        return (Status::Conflict, "invalid file_id\n");
     }
     let mut ups = state.upload_paths.write().await;
     println!("removing upload path to {}", info.file_id);
     ups.remove(&info.file_id.to_string());
     std::fs::remove_file(format!("./files/{}", info.file_id)).unwrap();
-    "upload path removed\n"
+    return (Status::Accepted, "upload path removed\n");
 }
 
 
@@ -166,14 +173,15 @@ async fn upload_file(state: &State<Info>, key: String, data: Data<'_>) -> (Statu
                         return (Status::Accepted, "uploaded\n");
                     } else {
                         println!("Error uploading {}: {:?}", key, res);
-                        ups.insert(key, size);
+                        ups.insert(key.clone(), size);
                     }
                 },
                 Err(err) => {
                     println!("Error uploading {}: {:?}", key, err);
-                    ups.insert(key, size);
+                    ups.insert(key.clone(), size);
                 }
             }
+            std::fs::remove_file(format!("./files/{}", key)).unwrap();
             return (Status::Conflict, "could not confirm upload with provider. try again when it's online\n");
         }
         None => {
@@ -200,7 +208,7 @@ async fn download_file(key: String) -> Result<NamedFile, NotFound<String>> {
     if key.contains("..") || key.contains("/") {
         return Err(NotFound("invalid path".into()));
     }
-    NamedFile::open(&format!("./files/{}", key)).await.map_err(|e| NotFound(e.to_string()))
+    NamedFile::open(&format!("./files/{}", key)).await.map_err(|_| NotFound("invalid fileid".to_string()))
 }
 
 
