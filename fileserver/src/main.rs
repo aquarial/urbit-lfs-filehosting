@@ -188,27 +188,35 @@ async fn upload_remove(_tok: AuthToken, state: &State<Info>, key: String) -> &'s
     "upload path removed\n"
 }
 
+#[get("/download/file/<key>")]
+fn download_file(key: String) -> Result<NamedFile, NotFound<String>> {
+    // TODO: any other security concerns?
+    if key.contains("..") || key.contains("/") {
+        return Err(NotFound("invalid path".into()));
+    }
+    NamedFile::open(&format!("./files/{}", key)).map_err(|e| NotFound(e.to_string()))
+}
+
 #[launch]
 fn rocket() -> _ {
     let args: HashSet<String> = std::env::args().map(|s| s.to_ascii_lowercase()).collect();
 
-    {
-        let key: String = if args.contains("--unsafe_debug_auth") {
-            "hunter2".into()
-        } else {
-            generate_password(60)
-        };
-        println!("Authorized Header is {}", key);
-        unsafe {
-            AUTH_KEY = key;
-        }
+    let key: String = if args.contains("--unsafe_debug_auth") {
+        "hunter2".into()
+    } else {
+        generate_password(60)
+    };
+    println!("Authorized Header is {}", key);
+    unsafe {
+        AUTH_KEY = key;
     }
-    // args.contains("--add-cors-headers")
 
     std::fs::create_dir_all("./files/").unwrap();
     rocket::build()
         .manage(Info::new())
-        .mount("/", routes![default, default_secure, upload_new, upload_file, upload_remove, setup_provider, options_handler])
-        .mount("/download/file", FileServer::from(relative!("files")))
+        .mount("/", routes![default, default_secure, upload_new, upload_file, upload_remove, download_file, setup_provider, options_handler])
         .attach(cors::CORS { enabled: args.contains("--add-cors-headers")})
+
+    // Can't use built in FileServer::server() because it determines src directory at compile time.
+    // //  .mount("/download/file", FileServer::from(relative!("files")))
 }
