@@ -161,7 +161,7 @@
           ~&  >>  "provider %connect-server urls must use 'https://domain' (http allowed: {<unsafe-allow-http>})"
           `this
       =/  setup-url  "{fileserver.command}/setup"
-      =/  json-body  (some (as-octt:mimes:html (en-json:html [%o (my ~[['url' [%s (crip "{loopback.command}")]]])])))
+      =/  json-body  (some (as-octt:mimes:html (en-json:html [%o (my ~[['url' [%s (crip loopback.command)]]])])))
 
       :_  this(state state(fileserver-status %connecting, active-urls [~], loopback loopback.command, fileserver fileserver.command, fileserverauth token.command))
       :: send command-response in http handler
@@ -412,7 +412,7 @@
 
     =/  newstorage  storageinfo(used (sub used.storageinfo size.u.ufile), files (~(del by files.storageinfo) fileid.action))
     =/  del-url  "{fileserver.state}/upload/remove"
-    =/  json-body  (some (as-octt:mimes:html (en-json:html [%o (my ~[['file_id' [%s (crip "{<fileid.action>}")]]])])))
+    =/  json-body  (some (as-octt:mimes:html (en-json:html [%o (my ~[['file_id' [%s (crip fileid.action)]]])])))
 
     :_  state(store (~(put by store.state) (subscriber-name src) newstorage))
     :~  [%pass /upload/remove/[(crip "{<src>}")]/[(crip "{<id.action>}")]/[(crip fileid.action)] %arvo %i %request [%'DELETE' (crip del-url) ~[['authtoken' (crip fileserverauth.state)]] json-body] *outbound-config:iris]
