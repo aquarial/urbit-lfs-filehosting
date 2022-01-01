@@ -161,13 +161,12 @@
           ~&  >>  "provider %connect-server urls must use 'https://domain' (http allowed: {<unsafe-allow-http>})"
           `this
       =/  setup-url  "{fileserver.command}/setup"
-      =/  ob  [%o (my ~[['url' [%s (crip "{loopback.command}")]]])]
-      =/  body  (some (as-octt:mimes:html (en-json:html ob)))
+      =/  json-body  (some (as-octt:mimes:html (en-json:html [%o (my ~[['url' [%s (crip "{loopback.command}")]]])])))
 
       :_  this(state state(fileserver-status %connecting, active-urls [~], loopback loopback.command, fileserver fileserver.command, fileserverauth token.command))
       :: send command-response in http handler
       =/  tid  `@tas`(fall threadid.command ~)
-      :~  [%pass /setup/[tid] %arvo %i %request [%'POST' (crip setup-url) ~[['authtoken' (crip token.command)]] body] *outbound-config:iris]  ==
+      :~  [%pass /setup/[tid] %arvo %i %request [%'POST' (crip setup-url) ~[['authtoken' (crip token.command)]] json-body] *outbound-config:iris]  ==
     ==
   ::
   %lfs-provider-action
@@ -409,10 +408,13 @@
     ?~  ufile
       :_  state
       :~  [%give %fact ~[(subscriber-path src)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="no such fileid"]])]  ==
-    =/  del-url  "{fileserver.state}/upload/remove/{fileid.action}"
+
     =/  newstorage  storageinfo(used (sub used.storageinfo size.u.ufile), files (~(del by files.storageinfo) fileid.action))
+    =/  del-url  "{fileserver.state}/upload/remove"
+    =/  json-body  (some (as-octt:mimes:html (en-json:html [%o (my ~[['file_id' [%s (crip "{<fileid.action>}")]]])])))
+
     :_  state(store (~(put by store.state) (subscriber-name src) newstorage))
-    :~  [%pass /upload/remove/[(crip "{<src>}")]/[(crip "{<id.action>}")]/[(crip fileid.action)] %arvo %i %request [%'DELETE' (crip del-url) ~[['authtoken' (crip fileserverauth.state)]] ~] *outbound-config:iris]
+    :~  [%pass /upload/remove/[(crip "{<src>}")]/[(crip "{<id.action>}")]/[(crip fileid.action)] %arvo %i %request [%'DELETE' (crip del-url) ~[['authtoken' (crip fileserverauth.state)]] json-body] *outbound-config:iris]
     ==
   %request-upload
     ?.  server-accepting-upload
@@ -432,9 +434,10 @@
     =/  code  ?:  unsafe-reuse-upload-urls  "0vbeef"  "{<`@uv`(cut 8 [0 1] eny.bowl)>}"
     =/  name  (sanitize-filename (fall filename.action "file"))
     =/  pass  "{code}-{name}"
-    =/  new-url  "{fileserver.state}/upload/new/{pass}/{(format-number space)}"
-    ~&  >  "provider sends authorizing url to {new-url}"
+    =/  new-url  "{fileserver.state}/upload/new"
+    =/  json-body  (some (as-octt:mimes:html (en-json:html [%o (my ~[['file_id' [%s (crip pass)]] ['size' [%s (crip "{<(format-number space)>}")]]])])))
+    ~&  >  "provider sends authorizing url to {new-url} for {<space>} bytes with key {pass}"
     :_  state(active-urls (~(put by active-urls.state) (subscriber-name src) pass))
-    :~  [%pass /upload/request/[(crip "{<src>}")]/[(crip "{<id.action>}")]/[(crip pass)] %arvo %i %request [%'POST' (crip new-url) ~[['authtoken' (crip fileserverauth.state)]] ~] *outbound-config:iris]  ==
+    :~  [%pass /upload/request/[(crip "{<src>}")]/[(crip "{<id.action>}")]/[(crip pass)] %arvo %i %request [%'POST' (crip new-url) ~[['authtoken' (crip fileserverauth.state)]] json-body] *outbound-config:iris]  ==
   ==
 --

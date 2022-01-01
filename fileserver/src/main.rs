@@ -9,9 +9,11 @@ use async_lock::{Mutex, RwLock};
 
 use rocket::{State, Data};
 use rocket::http::Status;
-use rocket::request::{FromRequest, Request, Outcome};
 use rocket::data::ToByteUnit;
-use rocket::fs::{FileServer, relative};
+use rocket::request::{FromRequest, Request, Outcome};
+
+use rocket::fs::{NamedFile};
+use rocket::response::status::{NotFound};
 
 use rocket::serde::{json::Json};
 use serde::{Deserialize};
@@ -72,7 +74,7 @@ fn default_secure(_tok: AuthToken) -> &'static str {
 }
 
 #[derive(Deserialize)]
-struct InfoSetupProvider<'r> {url: Cow<'r, str>}
+struct InfoSetupProvider<'r> { url: Cow<'r, str> }
 
 #[post("/setup", data = "<info>")]
 async fn setup_provider(_tok: AuthToken, state: &State<Info>, info: Json<InfoSetupProvider<'_>>) -> &'static str {
@@ -86,12 +88,14 @@ async fn setup_provider(_tok: AuthToken, state: &State<Info>, info: Json<InfoSet
 }
 
 
+#[derive(Deserialize)]
+struct InfoUploadNew<'r> { file_id: Cow<'r, str>, size: u64, }
 
-#[post("/upload/new/<key>/<space>")]
-async fn upload_new(_tok: AuthToken, state: &State<Info>, key: String, space: u64) -> &'static str {
+#[post("/upload/new", data = "<info>")]
+async fn upload_new(_tok: AuthToken, state: &State<Info>, info: Json<InfoUploadNew<'_>>) -> &'static str {
     let mut ups = state.upload_paths.write().await;
-    println!("available for uploading {} bytes with {}", space, key);
-    ups.insert(key, space);
+    println!("available for uploading {} bytes with {}", info.size, info.file_id);
+    ups.insert(info.file_id.to_string(), info.size);
     "upload path active\n"
 }
 
@@ -176,15 +180,18 @@ fn generate_password(len: usize) -> String {
     password
 }
 
-#[delete("/upload/remove/<key>")]
-async fn upload_remove(_tok: AuthToken, state: &State<Info>, key: String) -> &'static str {
-    if key.contains("..") {
+#[derive(Deserialize)]
+struct InfoUploadRemove<'r> { file_id: Cow<'r, str>, }
+
+#[delete("/upload/remove", data = "<info>")]
+async fn upload_remove(_tok: AuthToken, state: &State<Info>, info: Json<InfoUploadRemove<'_>>) -> &'static str {
+    if info.file_id.contains("..") {
         return "invalid key\n";
     }
     let mut ups = state.upload_paths.write().await;
-    println!("removing upload path to {}", key);
-    ups.remove(&key);
-    std::fs::remove_file(format!("./files/{}", key)).unwrap();
+    println!("removing upload path to {}", info.file_id);
+    ups.remove(&info.file_id.to_string());
+    std::fs::remove_file(format!("./files/{}", info.file_id)).unwrap();
     "upload path removed\n"
 }
 
