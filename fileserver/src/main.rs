@@ -44,6 +44,22 @@ impl<'r> FromRequest<'r> for AuthToken {
     }
 }
 
+
+
+
+#[get("/")]
+fn default() -> &'static str {
+    "fileserver online\n"
+}
+
+#[get("/secure")]
+fn default_secure(_tok: AuthToken) -> &'static str {
+    "fileserver secure\n"
+}
+
+
+
+
 struct Info {
     upload_paths: RwLock<HashMap<String, u64>>,
     //download_paths: RwLock<HashMap<String, ()>>,
@@ -63,15 +79,7 @@ impl Info {
     }
 }
 
-#[get("/")]
-fn default() -> &'static str {
-    "fileserver online\n"
-}
 
-#[get("/secure")]
-fn default_secure(_tok: AuthToken) -> &'static str {
-    "fileserver secure\n"
-}
 
 #[derive(Deserialize)]
 struct InfoSetupProvider<'r> { url: Cow<'r, str> }
@@ -88,6 +96,8 @@ async fn setup_provider(_tok: AuthToken, state: &State<Info>, info: Json<InfoSet
 }
 
 
+
+
 #[derive(Deserialize)]
 struct InfoUploadNew<'r> { file_id: Cow<'r, str>, size: u64, }
 
@@ -98,6 +108,27 @@ async fn upload_new(_tok: AuthToken, state: &State<Info>, info: Json<InfoUploadN
     ups.insert(info.file_id.to_string(), info.size);
     "upload path active\n"
 }
+
+
+
+
+#[derive(Deserialize)]
+struct InfoUploadRemove<'r> { file_id: Cow<'r, str>, }
+
+#[delete("/upload/remove", data = "<info>")]
+async fn upload_remove(_tok: AuthToken, state: &State<Info>, info: Json<InfoUploadRemove<'_>>) -> &'static str {
+    if info.file_id.contains("..") {
+        return "invalid key\n";
+    }
+    let mut ups = state.upload_paths.write().await;
+    println!("removing upload path to {}", info.file_id);
+    ups.remove(&info.file_id.to_string());
+    std::fs::remove_file(format!("./files/{}", info.file_id)).unwrap();
+    "upload path removed\n"
+}
+
+
+
 
 
 #[options("/upload/file/<_key>")]
@@ -163,38 +194,6 @@ fn hoon_format_num(n: u64) -> String {
 }
 
 
-/// https://rust-lang-nursery.github.io/rust-cookbook/algorithms/randomness.html
-fn generate_password(len: usize) -> String {
-    use rand::Rng;
-    const CHARSET: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ\
-                             abcdefghijklmnopqrstuvwxyz\
-                             0123456789)(*&^%$#@!~<>?";
-    let mut rng = rand::thread_rng();
-
-    let password: String = (0..len)
-        .map(|_| {
-            let idx = rng.gen_range(0..CHARSET.len());
-            CHARSET[idx] as char
-        })
-        .collect();
-    password
-}
-
-#[derive(Deserialize)]
-struct InfoUploadRemove<'r> { file_id: Cow<'r, str>, }
-
-#[delete("/upload/remove", data = "<info>")]
-async fn upload_remove(_tok: AuthToken, state: &State<Info>, info: Json<InfoUploadRemove<'_>>) -> &'static str {
-    if info.file_id.contains("..") {
-        return "invalid key\n";
-    }
-    let mut ups = state.upload_paths.write().await;
-    println!("removing upload path to {}", info.file_id);
-    ups.remove(&info.file_id.to_string());
-    std::fs::remove_file(format!("./files/{}", info.file_id)).unwrap();
-    "upload path removed\n"
-}
-
 #[get("/download/file/<key>")]
 async fn download_file(key: String) -> Result<NamedFile, NotFound<String>> {
     // TODO: any other security concerns?
@@ -202,6 +201,21 @@ async fn download_file(key: String) -> Result<NamedFile, NotFound<String>> {
         return Err(NotFound("invalid path".into()));
     }
     NamedFile::open(&format!("./files/{}", key)).await.map_err(|e| NotFound(e.to_string()))
+}
+
+
+fn generate_password(len: usize) -> String {
+    use rand::Rng;
+    let mut rng = rand::thread_rng();
+
+    const CHARSET: &[u8] = b"#@%~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    let password: String = (0..len).map(|_| {
+          let idx = rng.gen_range(0..CHARSET.len());
+          CHARSET[idx] as char
+        })
+        .collect();
+    password
 }
 
 #[launch]
