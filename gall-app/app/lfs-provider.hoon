@@ -155,8 +155,9 @@
       ?:  =(fileserver-status.state %connecting)
         ~&  >>  "provider %connect-server already connecting to {fileserver.state}, please wait"
         `this
-      ?.  unsafe-allow-http
-        ?.  &((is-safe-url fileserver.command) (is-safe-url loopback.command))
+      ?:  ?&  ?!  unsafe-allow-http
+              ?!  &((is-safe-url fileserver.command) (is-safe-url loopback.command))
+          ==
           ~&  >>  "provider %connect-server urls must use 'https://domain' (http allowed: {<unsafe-allow-http>})"
           `this
       =/  setup-url  "{fileserver.command}/setup"
