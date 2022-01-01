@@ -435,7 +435,7 @@
     =/  name  (sanitize-filename (fall filename.action "file"))
     =/  pass  "{code}-{name}"
     =/  new-url  "{fileserver.state}/upload/new"
-    =/  json-body  (some (as-octt:mimes:html (en-json:html [%o (my ~[['file_id' [%s (crip pass)]] ['size' [%s (crip "{<(format-number space)>}")]]])])))
+    =/  json-body  (some (as-octt:mimes:html (en-json:html [%o (my ~[['file_id' [%s (crip pass)]] ['size' [%s (crip (format-number space))]]])])))
     ~&  >  "provider sends authorizing url to {new-url} for {<space>} bytes with key {pass}"
     :_  state(active-urls (~(put by active-urls.state) (subscriber-name src) pass))
     :~  [%pass /upload/request/[(crip "{<src>}")]/[(crip "{<id.action>}")]/[(crip pass)] %arvo %i %request [%'POST' (crip new-url) ~[['authtoken' (crip fileserverauth.state)]] json-body] *outbound-config:iris]  ==
