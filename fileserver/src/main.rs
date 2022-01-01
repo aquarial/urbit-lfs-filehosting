@@ -189,12 +189,12 @@ async fn upload_remove(_tok: AuthToken, state: &State<Info>, key: String) -> &'s
 }
 
 #[get("/download/file/<key>")]
-fn download_file(key: String) -> Result<NamedFile, NotFound<String>> {
+async fn download_file(key: String) -> Result<NamedFile, NotFound<String>> {
     // TODO: any other security concerns?
     if key.contains("..") || key.contains("/") {
         return Err(NotFound("invalid path".into()));
     }
-    NamedFile::open(&format!("./files/{}", key)).map_err(|e| NotFound(e.to_string()))
+    NamedFile::open(&format!("./files/{}", key)).await.map_err(|e| NotFound(e.to_string()))
 }
 
 #[launch]
