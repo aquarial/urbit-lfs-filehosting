@@ -328,7 +328,8 @@
   =/  src-subscriber  [p=src.bowl q=(subscriber-path src.bowl)]
   ?!  =(~ (find ~[src-subscriber] subscribers))
 ++  upload-space
-  =/  m  (~(get by store.state) (subscriber-name src.bowl))
+  |=  =ship
+  =/  m  (~(get by store.state) (subscriber-name ship))
   ?:  =(m ~)  0
   ?:  (lte storage:(need m) used:(need m))  0
   (sub storage:(need m) used:(need m))
@@ -418,7 +419,7 @@
       :_  state
       :~  [%give %fact ~[(subscriber-path src)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="server offline"]])]  ==
     ::
-    =/  space  upload-space
+    =/  space  (upload-space src.bowl)
     ?:  =(space 0)
       :_  state
       :~  [%give %fact ~[(subscriber-path src)] %lfs-provider-server-update !>([%request-response id=id.action response=[%failure reason="no space left"]])]  ==
