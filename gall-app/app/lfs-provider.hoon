@@ -257,7 +257,7 @@
   ?>  ?=(%http-response +<.sign-arvo)
   ~&  "provider on-arvo {<wire>}"
   ?+  wire  ~&  "provider unexpected on-arvo on {<wire>}"  (on-arvo:default wire sign-arvo)
-    :: client-response = [%finished response-header=[status-code=200
+    :: client-response = [%finished response-header=[status-code=202
     ::   headers=~[[key='content-type' value='text/plain; charset=utf-8'] [key='server' value='Rocket']
     ::   [key='content-length' value='19'] [key='date' value='Tue, 16 Mar 2021 01:23:34 GMT']]]
     ::   full-file=[~ [type='text/plain; charset=utf-8' data=[p=19 q=231.846.086.356.972.333.783.885.125.050.632.381.030.756.469]]]]
@@ -265,7 +265,7 @@
     =/  tid  &2:wire
     ?.  ?=(%finished -.client-response.sign-arvo)  `this
     ~&  "provider on-arvo setup response code {<status-code.response-header.client-response.sign-arvo>}"
-    ?:  =(200 status-code.response-header.client-response.sign-arvo)
+    ?:  =(202 status-code.response-header.client-response.sign-arvo)
       ~&  "provider connected to {fileserver.state}"
       :_  this(state state(fileserver-status %online, active-urls [~]))
       ?:  ?=(~ tid)  [~]
@@ -279,7 +279,8 @@
     =/  action-type  &2:wire   =/  src  (slav %p &3:wire)  =/  id  (slav %uv &4:wire)  =/  pass  (trip &5:wire)
     ::
     =/  response
-        ?.  =(200 status-code.response-header.client-response.sign-arvo)  [%failure reason="internal error: fileserver not responding"]
+        =/  sc  status-code.response-header.client-response.sign-arvo
+        ?.  =(202 sc)  [%failure reason="internal error: fileserver status code [{<sc>}]"]
         ::
         ?+  action-type  [%failure reason="internal error: unhandled client-action"]
         %request  [%got-url url="{fileserver.state}/upload/file/{pass}" key=pass]

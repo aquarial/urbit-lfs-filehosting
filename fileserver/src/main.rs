@@ -85,14 +85,14 @@ impl Info {
 struct InfoSetupProvider<'r> { url: Cow<'r, str> }
 
 #[post("/setup", data = "<info>")]
-async fn setup_provider(_tok: AuthToken, state: &State<Info>, info: Json<InfoSetupProvider<'_>>) -> &'static str {
+async fn setup_provider(_tok: AuthToken, state: &State<Info>, info: Json<InfoSetupProvider<'_>>) -> (Status, &'static str) {
     let mut url = state.provider_url.lock().await;
     *url = Some(info.url.to_string());
 
     let mut ups = state.upload_paths.write().await;
     ups.clear();
 
-    "setup provider\n"
+    return (Status::Accepted, "setup provider\n");
 }
 
 
