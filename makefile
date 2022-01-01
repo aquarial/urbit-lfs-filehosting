@@ -1,22 +1,49 @@
-# NOTE https://github.com/aquarial/urbit-lfs-filehosting/issues/1
+
+# make build-deploy             # copy latest lfs-client + src packages into /out
+# make start-fileserver         # start debug fileserver
+#
+
+# make reload-zod               # reload lfs-client
+#
+# make zod-clean-deep           # build lfs-client onto modified zod
+
+# for info on how to deploy from source, see https://github.com/aquarial/urbit-lfs-filehosting/issues/1
 #
 # make create-new-clean-zod     # build old.untouched.zod from scratch
 #
 # make create-modified-zod      # re builds desks using up to date urbit source
 #
-# make zod-clean-deep           # build lfs-client onto modified zod
-#
-# make reload-zod               # reload lfs-client
 #
 
 
-# make build-deploy             # copy latest lfs-client + src packages into /out
-# make start-fileserver         # start debug fileserver
+.PHONY: build-deploy
+build-deploy:
+	mkdir -p ./out/
+	rm -rf out/*
+	cp -RL ../urbit-git/pkg/landscape/* ./out/
+	cp -RL ../urbit-git/pkg/garden/*    ./out/
+	rm ./out/desk.ship
+	rsync -a --ignore-times ./gall-app/ ./out/
 
 
-.PHONY: choose
-choose:
-	echo 'choose a target'
+
+.PHONY: start-fileserver
+start-fileserver:
+	cd ./fileserver && ROCKET_PORT=8000 cargo run -- --authtoken_file "../data/unsafe_password" --add-cors-headers
+
+
+
+.PHONY: reload-zod
+reload-zod:
+	tmux send-keys -t zod "C-l";
+	rsync -a --ignore-times ./gall-app/ ./data/ignored/zod/lfs-client/; sleep 0.3
+	tmux send-keys -t zod "|commit %lfs-client" "ENTER"; sleep 1
+	#tmux send-keys -t zod "KP-"
+	#tmux send-keys -t zod "lfs-client-action" "ENTER"
+	#tmux send-keys -t zod "=parse -build-file %/lib/parse/hoon" "ENTER"
+	#tmux send-keys -t zod "a:parse" "ENTER"
+
+
 
 .PHONY: create-new-clean-zod
 create-new-clean-zod:
@@ -87,7 +114,7 @@ zod-clean-deep:
 	 # can't figure this out yet...
 	 #curl --cookie "$$(curl -i localhost:8080/~/login -X POST -d 'password=lidlut-tabwed-pillex-ridrup' | rg set-cookie | sed 's/set-cookie..//' | sed 's/;.*//')" --form "desk=lfs-client" --form "glob=<html-glob/index.html;filename=html-glob/index.html" http://localhost:8080/docket/upload
 	 # setup provider
-	tmux send-keys -t zod "|rein %lfs-client [& %lfs-provider]" "ENTER"; sleep 5;
+	tmux send-keys -t zod "|rein %lfs-client [& %lfs-provider]" "ENTER"; sleep 7;
 	tmux send-keys -t zod ":lfs-provider &lfs-provider-command "; sleep 2;
 	tmux send-keys -t zod "[threadid=~ %connect-server loopback=\"http://localhost:8080\" fileserver=\"http://localhost:8000\" token=\"hunter2\"]"; sleep 0.5; tmux send-keys -t zod "ENTER"; sleep 2
 	tmux send-keys -t zod ":lfs-provider &lfs-provider-command ";
@@ -96,28 +123,4 @@ zod-clean-deep:
 	tmux send-keys -t zod ":lfs-client &lfs-client-action [threadid=~ %add-provider ~zod]"; sleep 0.5; tmux send-keys -t zod "ENTER"; sleep 0.5
 	 #tmux send-keys -t zod ":lfs-client &lfs-client-action [threadid=~ %request-upload ~zod ~]"; sleep 0.5; tmux send-keys -t zod "ENTER"; sleep 0.5
 
-
-.PHONY: build-deploy
-build-deploy:
-	mkdir -p ./out/
-	rm -rf out/*
-	cp -RL ../urbit-git/pkg/landscape/* ./out/
-	cp -RL ../urbit-git/pkg/garden/*    ./out/
-	rm ./out/desk.ship
-	rsync -a --ignore-times ./gall-app/ ./out/
-
-.PHONY: reload-zod
-reload-zod:
-	tmux send-keys -t zod "C-l";
-	rsync -a --ignore-times ./gall-app/ ./data/ignored/zod/lfs-client/; sleep 0.3
-	tmux send-keys -t zod "|commit %lfs-client" "ENTER"; sleep 1
-	#tmux send-keys -t zod "KP-"
-	#tmux send-keys -t zod "lfs-client-action" "ENTER"
-	#tmux send-keys -t zod "=parse -build-file %/lib/parse/hoon" "ENTER"
-	#tmux send-keys -t zod "a:parse" "ENTER"
-
-
-.PHONY: start-fileserver
-start-fileserver:
-	cd ./fileserver && ROCKET_PORT=8000 cargo run -- --authtoken_file "../data/unsafe_password" --add-cors-headers
 
