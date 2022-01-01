@@ -3,7 +3,7 @@
 pub mod cors;
 
 use std::borrow::Cow;
-use std::collections::{HashMap, HashSet};
+use std::collections::{HashMap};
 
 use async_lock::{Mutex, RwLock};
 
@@ -229,14 +229,30 @@ fn generate_password(len: usize) -> String {
 
 #[launch]
 fn rocket() -> _ {
-    let args: HashSet<String> = std::env::args().map(|s| s.to_ascii_lowercase()).collect();
+    let args: Vec<String> = std::env::args().map(|s| s.to_ascii_lowercase()).collect();
 
-    let key: String = if args.contains("--unsafe_debug_auth") {
-        "hunter2".into()
-    } else {
-        generate_password(60)
-    };
-    println!("Authorized Header is {}", key);
+    let mut key: String = String::new();
+
+    for i in 0..args.len() - 1 {
+        if args[i] == "--authtoken_file" {
+            match std::fs::read_to_string(&args[i+1]) {
+                Ok(s) => {
+                    key = s.trim().to_string();
+                    println!("Ignoring generated header, Using header read from {}", args[i+1]);
+                }
+                Err(e) => {
+                    eprintln!("Error reading tokenfile {}: {}", args[i+1], e);
+                    std::process::exit(1);
+                }
+            }
+        }
+    }
+
+    if key.len() == 0 {
+        eprintln!("Fatal: No keyfile provided! Use the --authtoken_file <file> arg to specify a password");
+        std::process::exit(1);
+    }
+
     unsafe {
         AUTH_KEY = key;
     }
@@ -245,7 +261,7 @@ fn rocket() -> _ {
     rocket::build()
         .manage(Info::new())
         .mount("/", routes![default, default_secure, upload_new, upload_file, upload_remove, download_file, setup_provider, options_handler])
-        .attach(cors::CORS { enabled: args.contains("--add-cors-headers")})
+        .attach(cors::CORS { enabled: args.iter().any(|a| a == "--add-cors-headers") })
 
     // Can't use built in FileServer::server() because it determines src directory at compile time.
     // //  .mount("/download/file", FileServer::from(relative!("files")))

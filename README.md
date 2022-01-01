@@ -31,7 +31,7 @@
         - hoon/fileserver comms are in url (`http:url/<key>/<bytes`), should be JSON
         - needed to restore state
         - example includes https://github.com/aquarial/urbit-lfs-filehosting/commit/1fe17293ebf28dc2df524e020200dff717089005
-    - [ ] add fileserver config for static security code
+    - [x] add fileserver config for static security code
         - rust code creates new key each run of server, requires manual hoon app reconnect
         - rust code should allow reading key from config file
     - [ ] transactions either succeed or can be safely retried

@@ -119,5 +119,5 @@ reload-zod:
 
 .PHONY: start-fileserver
 start-fileserver:
-	cd ./fileserver && ROCKET_PORT=8000 cargo run -- --UNSAFE_DEBUG_AUTH --add-cors-headers
+	cd ./fileserver && ROCKET_PORT=8000 cargo run -- --authtoken_file "../data/unsafe_password" --add-cors-headers
 

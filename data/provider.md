@@ -8,20 +8,12 @@ Use software distribution to install `%lfs-client` app. If you want to build fro
 
 ### How to setup fileserver
 
-First need to setup the rust HTTP fileserver. You will need to install [rustup](https://rustup.rs/) rust manager. There is no dockerfile yet.
-
-The steps to run are
+First need to setup the rust HTTP fileserver. You will need to install [rustup](https://rustup.rs/) rust manager. There is no dockerfile yet. You can generate the token however you want, here I use openssl. You will need this token later to setup the hoon provider.
 
 ```bash
 cd ./urbit-lfs/fileserver/
-ROCKET_PORT=8000 cargo run --release
-# works with stable rust
-```
-
-Every time the fileserver starts up, it generates a new secret key to communicate with the provider. This key makes sure only the provider ship can authorize actions on the fileserver. (todo: allow configuring a static key)
-
-```
-Authorized Header is aosdivj)(*jOIgs0gjipaox-v*)
+echo "$(openssl rand -base64 40) > ./AUTHTOKEN_FILE"
+ROCKET_PORT=8000 cargo run --release  --  --authtoken_file ./AUTHTOKEN_FILE
 ```
 
 ### How to setup NGINX for ship (based off https://subject.network/posts/urbit-nginx-letsencrypt/)
