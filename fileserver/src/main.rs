@@ -128,9 +128,9 @@ async fn upload_remove(_tok: AuthToken, state: &State<Info>, info: Json<InfoUplo
         return (Status::Conflict, "invalid file_id\n");
     }
     let mut ups = state.upload_paths.write().await;
-    println!("removing upload path to {}", info.file_id);
+    println!("deleting file {}", format!("./files/{}", info.file_id));
     ups.remove(&info.file_id.to_string());
-    std::fs::remove_file(format!("./files/{}", info.file_id)).unwrap();
+    let _ = std::fs::remove_file(format!("./files/{}", info.file_id));
     return (Status::Accepted, "upload path removed\n");
 }
 
@@ -169,7 +169,8 @@ async fn upload_file(state: &State<Info>, key: String, data: Data<'_>) -> (Statu
             match res {
                 Ok(res) => {
                     if res.status() == 200 {
-                        println!("uploaded file {}", key);
+                        println!("uploaded file {}", format!("./files/{}", key));
+
                         return (Status::Accepted, "uploaded\n");
                     } else {
                         println!("Error uploading {}: {:?}", key, res);
