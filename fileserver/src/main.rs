@@ -72,10 +72,10 @@ fn default_secure(_tok: AuthToken) -> &'static str {
 }
 
 #[derive(Deserialize)]
-struct SetupProviderInfo<'r> {url: Cow<'r, str>}
+struct InfoSetupProvider<'r> {url: Cow<'r, str>}
 
 #[post("/setup", data = "<info>")]
-async fn setup_provider(_tok: AuthToken, state: &State<Info>, info: Json<SetupProviderInfo<'_>>) -> &'static str {
+async fn setup_provider(_tok: AuthToken, state: &State<Info>, info: Json<InfoSetupProvider<'_>>) -> &'static str {
     let mut url = state.provider_url.lock().await;
     *url = Some(info.url.to_string());
 
