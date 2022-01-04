@@ -1,7 +1,7 @@
 :~  title+'LFS Client'
     info+'Large File Storage'
     color+0x32.abd3
-    image+'https://lfs-fileserver.stephan55.com/download/file/0va.1i8ni.7vh3m.d13s4.4ouio.pr1nm.me722.iqj6i.mihgs.vsm20.n8dvn-lfs-app-icon.svg'
+    image+'https://raw.githubusercontent.com/aquarial/urbit-lfs-filehosting/master/data/lfs-app-icon.svg'
     base+'lfs-client'
     glob-ames+[~nilsud-walwyd-tabnus-fondeg 0v0]
     version+[0 0 1]
