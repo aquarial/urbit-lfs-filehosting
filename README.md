@@ -53,6 +53,9 @@
     - sanity check
 - [ ] ensure provider is safe even if clients are modified
     - minor security check
+- [ ] change fileserver format to `http://domain/key/filename.jpeg` and store `/files/key/` ?
+    - allow metadata about the file stored
+    - can renaming a file without breaking links
 
 <br />
 
