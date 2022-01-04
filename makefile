@@ -27,6 +27,7 @@ build-deploy:
 	find ./gall-app/ -type f | sed 's#./gall-app/#./#' | while read i; do   \
 	 		python3 ./data/replace_strings.py "./gall-app/$$i" "./out/$$i";     \
 	done # overwrite with post-processing
+	echo "~nilsud-walwyd-tabnus-fondeg" > ./out/desk.ship
 
 
 

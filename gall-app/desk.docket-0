@@ -3,7 +3,7 @@
     color+0x32.abd3
     image+'https://raw.githubusercontent.com/aquarial/urbit-lfs-filehosting/master/data/lfs-app-icon.svg'
     base+'lfs-client'
-    glob-ames+[~nilsud-walwyd-tabnus-fondeg 0v0]
+    glob-ames+[~zod 0v0] :: BUILD_REPLACE ~zod ~nilsud-walwyd-tabnus-fondeg
     version+[0 0 1]
     website+'https://github.com/aquarial/urbit-lfs-filehosting'
     license+'MIT'
