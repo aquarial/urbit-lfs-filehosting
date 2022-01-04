@@ -23,7 +23,10 @@ build-deploy:
 	cp -RL ../urbit-git/pkg/landscape/* ./out/
 	cp -RL ../urbit-git/pkg/garden/*    ./out/
 	rm ./out/desk.ship
-	rsync -a --ignore-times ./gall-app/ ./out/
+	rsync -a --ignore-times ./gall-app/ ./out/ # sync to create files and dirs
+	find ./gall-app/ -type f | sed 's#./gall-app/#./#' | while read i; do   \
+	 		python3 ./data/replace_strings.py "./gall-app/$$i" "./out/$$i";     \
+	done # overwrite with post-processing
 
 
 
