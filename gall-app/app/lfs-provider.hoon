@@ -15,9 +15,8 @@
   ==
 --
 %-  agent:dbug
-:: TODO: auto set both to false in `make build`
-=/  unsafe-reuse-upload-urls  %.n
-=/  unsafe-allow-http  %.y
+=/  unsafe-reuse-upload-urls  %.n    :: BUILD_REPLACE .y .n
+=/  unsafe-allow-http  %.y           :: BUILD_REPLACE .y .n
 =/  state=state-0
   :*  %0
       fileserver-status=%offline
@@ -72,10 +71,10 @@
       :: extra param * needed because parse-request-line remoes trailing ".stuff"
       =/  fileid=tape  (trip &3:site.url)
       =/  filesize=@ud  (slav %ud &4:site.url)
-      ~&  >  "provider knows someone uploaded {<filesize>} bytes of {fileid}, notifying them"
+      ~&  >  "provider knows someone uploaded {<filesize>} bytes of {fileid}, notifying them" :: BUILD_COMMENT
       =/  src  (skim ~(tap by active-urls.state) |=([=ship id=tape] =(id fileid)))
       ?~  src
-        ~&  >>  "provider could not identify who uploaded fileid {fileid}"
+        ~&  >>  "provider could not identify who uploaded fileid {fileid}" :: BUILD_COMMENT
         :_  this
         (give-simple-payload:app:srv id (handle-http-request:hc inbound-request 'failure'))
       =/  down-url  "{fileserver.state}/download/file/{fileid}"
@@ -185,11 +184,11 @@
   |=  =path
   ^-  (quip card _this)
   ?:  ?=([%http-response *] path)
-    ~&  "provider on-watch http-response on path: {<path>}"
+    ~&  "provider on-watch http-response on path: {<path>}" :: BUILD_COMMENT
     `this
   :: only ~ship can subscribe to /uploader/~ship path (moons count as parent)
   ?>  =((subscriber-path:hc src.bowl) path)
-  ~&  "provider on-watch subscription from {<src.bowl>} on path: {<path>}"
+  ~&  "provider on-watch subscription from {<src.bowl>} on path: {<path>}" :: BUILD_COMMENT
   :: need to store files under the subscriber name (only different for moons)
   =/  updated  ((compute-ship-storage:hc upload-rules.state) [src.bowl (~(gut by store.state) (subscriber-name:hc src.bowl) [current-state=0 storage=0 used=0 files=[~]])])
   ?>  (gth storage.storageinfo.updated 0)
@@ -210,7 +209,7 @@
   ==
 ++  on-agent
   |=  [=wire =sign:agent:gall]
-  ~&  "provider on-agent got {<-.sign>} from {<dap.bowl>} on wire {<wire>}"
+  ~&  "provider on-agent got {<-.sign>} from {<dap.bowl>} on wire {<wire>}" :: BUILD_COMMENT
   ?+   wire  (on-agent:default wire sign)
   [%groups ~]
     ?+  -.sign  (on-agent:default wire sign)
@@ -222,7 +221,7 @@
       ?+  p.cage.sign  (on-agent:default wire sign)
       %group-update-0
         =/  resp  !<(update:group-store q.cage.sign)
-        ~&  "provider received group-update {<-.resp>}"
+        ~&  "provider received group-update {<-.resp>}" :: BUILD_COMMENT
         ?+  -.resp  `this
         %initial
           :: TODO filter to only look at groups referenced in upload rules
@@ -251,11 +250,11 @@
   ^-  (quip card _this)
   |^
   ?:  ?=(%eyre -.sign-arvo)
-    ~&  "provider on-arvo Eyre returned: {<+.sign-arvo>}"
+    ~&  "provider on-arvo Eyre returned: {<+.sign-arvo>}" :: BUILD_COMMENT
     `this
   ?:  ?=(%iris -.sign-arvo)
   ?>  ?=(%http-response +<.sign-arvo)
-  ~&  "provider on-arvo {<wire>}"
+  ~&  "provider on-arvo {<wire>}" :: BUILD_COMMENT
   ?+  wire  ~&  "provider unexpected on-arvo on {<wire>}"  (on-arvo:default wire sign-arvo)
     :: client-response = [%finished response-header=[status-code=202
     ::   headers=~[[key='content-type' value='text/plain; charset=utf-8'] [key='server' value='Rocket']
@@ -264,7 +263,7 @@
   [%setup @ta ~]
     =/  tid  &2:wire
     ?.  ?=(%finished -.client-response.sign-arvo)  `this
-    ~&  "provider on-arvo setup response code {<status-code.response-header.client-response.sign-arvo>}"
+    ~&  "provider on-arvo setup response code {<status-code.response-header.client-response.sign-arvo>}" :: BUILD_COMMENT
     ?:  =(202 status-code.response-header.client-response.sign-arvo)
       ~&  "provider connected to {fileserver.state}"
       :_  this(state state(fileserver-status %online, active-urls [~]))
@@ -304,7 +303,7 @@
     |=  [url=@t resp=client-response:iris]
     ^-  (quip card _state)
     ?.  ?=(%finished -.resp)
-      ~&  "provider handle-response got {<-.resp>}"
+      ~&  "provider handle-response got {<-.resp>}" :: BUILD_COMMENT
       `state
     ::  =.  files.state  (~(put by files.state) url full-file.resp)
     `state
@@ -368,7 +367,7 @@
   ::      add custom methods for adding ships vs changing rules
   =/  izes  (turn (skim rules (match-rule ship)) |=([=justification size=@ud] size))
   =/  space  (roll (snoc izes 0) max)
-  ~&  "  compute-ship-storage gave {<ship>} {<space>} bytes"
+  ~&  "  compute-ship-storage gave {<ship>} {<space>} bytes" :: BUILD_COMMENT
   [ship=(subscriber-name ship) storageinfo=storageinfo(storage space)]
 ++  match-rule
   |=  =ship
@@ -437,7 +436,7 @@
     =/  pass  "{code}-{name}"
     =/  new-url  "{fileserver.state}/upload/new"
     =/  json-body  (some (as-octt:mimes:html (en-json:html [%o (my ~[['file_id' [%s (crip pass)]] ['size' [%s (crip (format-number space))]]])])))
-    ~&  >  "provider sends authorizing url to {new-url} for {<space>} bytes with key {pass}"
+    ~&  >  "provider sends authorizing url to {new-url} for {<space>} bytes with key {pass}" :: BUILD_COMMENT
     :_  state(active-urls (~(put by active-urls.state) (subscriber-name src) pass))
     :~  [%pass /upload/request/[(crip "{<src>}")]/[(crip "{<id.action>}")]/[(crip pass)] %arvo %i %request [%'POST' (crip new-url) ~[['authtoken' (crip fileserverauth.state)]] json-body] *outbound-config:iris]  ==
   ==
